@@ -1,0 +1,24 @@
+.header {
+    box-sizing: border-box;
+    background: #1c738e;
+    height: 70px;
+    color: #ffffff;
+  }
+  
+  .logo-css {
+    margin-top: 2px;
+    width: 100%;
+    min-width: 140px;
+    max-width: 150px;
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    .desktop-nav {
+      display: none;
+    }
+    .mob-nav {
+      display: block;
+    }
+  }
+  
+  

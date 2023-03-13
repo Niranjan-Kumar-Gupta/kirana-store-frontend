@@ -1,0 +1,17 @@
+.custom-dialog {
+    width: 90%;
+    margin: auto;
+    min-width:280px;
+    min-height: 600px;
+    background: #F8F8FC;
+    border-radius: 6px;
+}
+
+.custom-dialog > .p-dialog-header
+{
+    padding: 0.5rem 1rem !important;
+}
+.custom-dialog > .p-dialog-content{
+    min-height: 600px;
+    padding: 0 1rem 0.5rem !important;
+}

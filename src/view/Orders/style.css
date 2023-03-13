@@ -1,0 +1,51 @@
+.sklbt-calender .p-calendar, .sklbt-calender .p-inputtext{
+    width: 120px !important;
+    height: 40px !important;
+}
+
+.sklbt-calender .p-button{
+  
+    background:  #ededed !important ;
+    border: 1px solid #b9bbbb !important;
+    height: 40px !important;
+    color: black !important;
+}
+.__leftDivDrop{
+    height: 0px;
+    
+}
+
+.__leftDivDrop button{
+    height: 40px !important;
+    min-width: 160px !important;
+}
+.__search{
+    padding-top: 0px; 
+    padding-bottom: 0px;
+    height: 43px;  
+    display: flex;   
+  }
+
+.__searchButton{
+    width: 40px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+.__searchInput{
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    width: 250px;
+}
+@media only screen and (width < 768px) {
+    .sklbt-calender .p-inputtext.p-component{
+        border-radius: 0.5rem;
+    }
+
+    .sklbt-calender .p-button { 
+        display: none;
+    }
+    .___mt{
+        margin-top: 15px;
+    }
+  
+}
