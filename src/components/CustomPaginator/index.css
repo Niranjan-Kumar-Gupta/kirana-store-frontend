@@ -1,0 +1,36 @@
+.custom-paginator{
+  background: inherit !important;
+}
+.custom-paginator.p-paginator {
+  color: #1c738e !important;
+}
+
+.custom-paginator.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last, .custom-paginator.p-paginator .p-paginator-pages .p-paginator-page {
+  color: #1c738e !important;
+  border-radius: 4px !important ;
+  min-width: 1.2rem !important;
+  height: 2rem !important;
+  padding: 4px 8px !important;
+}
+
+.custom-paginator.p-paginator
+  .p-paginator-first:not(.p-disabled):not(.p-highlight):hover,
+  .custom-paginator.p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover,
+  .custom-paginator.p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover,
+  .custom-paginator.p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover,
+  .custom-paginator.p-paginator .p-paginator-pages .p-paginator-page.p-highlight  {
+  background: rgba(28, 115, 142, 0.25) !important;
+}
+
+.custom-paginator.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover{
+    background: rgba(28, 115, 142, 0.25) !important;
+}
+.cutom-paginator.p-paginator .p-paginator-pages .p-paginator-page.p-highlight{
+    background: rgba(28, 115, 142, 0.25) !important;
+}
+.p-link:focus{
+ box-shadow: none !important;
+}

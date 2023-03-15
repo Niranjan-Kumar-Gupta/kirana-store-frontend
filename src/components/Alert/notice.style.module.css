@@ -1,0 +1,13 @@
+.notice-wrapper{
+    box-sizing: border-box;
+    padding: 0.15rem 0.5rem;
+    background: rgb(247, 233, 207);
+    border: 0.05rem solid rgb(253, 209, 128);
+    border-radius: 4px;
+    font-size: 8px;
+}
+
+.icon-color{
+    color: #495057;
+    font-size: 0.8rem;
+}
