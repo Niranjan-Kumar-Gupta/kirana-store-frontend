@@ -30,86 +30,10 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
         setGlobalFilterValue('');  
     };
 
-    const [column,setColumn]=useState([])
 
-
-    useEffect(()=>{
-        let cols = []
-         columns.map((col, i) => {  
-            if (col?.isActions) {
-                if (col.actionType.length>1) {
-                    cols.push( <Column
-                                header="Actions"
-                                body={actionBodyTemplate}
-                                exportable={false}
-                                bodyStyle={{ width: "100px" }}
-                            ></Column>)
-                }else if (col.actionType[0]==='edit') {
-                    cols.push( <Column
-                                header="Actions"
-                                body={actionEditBodyTemplate}
-                                exportable={false}
-                                bodyStyle={{ width: "100px" }}
-                            ></Column>)
-                }else if (col.actionType[0]==='delete') {
-                    cols.push( <Column
-                                header="Actions"
-                                body={actionDeleteBodyTemplate}
-                                exportable={false}
-                                bodyStyle={{ width: "100px" }}
-                            ></Column> )
-                }
-            }else if(col?.viewDetails){
-                 cols.push(<Column
-                             body={viewDetailsBody}
-                             bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
-                         />)
-            }        
-           else{
-                cols.push(<Column 
-                    key={col.field} 
-                    columnKey={col.field} 
-                    field={col.field} 
-                    header={col.header} 
-                    showFilterMatchModes={false}
-                    filter={col.isFilter}
-                    filterElement={col.filterType==='dropdown'?dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder):''}
-                    onFilterApplyClick={(e)=>onClickFilter(e)}
-                    onFilterClear={()=>{onClearFilter(col)}}  
-                    body={col.isImageBody?imageBodyTemplate:''}
-                    headerStyle={col.isImageBody?
-                          {
-                           display: "flex",
-                           justifyContent: "center",
-                           marginTop: "5px",
-                           }:
-                           ''
-                       }
-                    bodyStyle={col.isImageBody?
-                       { 
-                        display: "flex",
-                        justifyContent: "center" 
-                       }:
-                       {
-                       width: "auto",
-                       minWidth: "150px",
-                       maxWidth: "350px",
-                       textOverflow: "ellipsis",
-                     }}
-                   />)
-            }
-        });    
-        setColumn(prevCol => [...prevCol, cols])
-        console.log(column,cols)
-    },[])
-
-    const dynamicColumns = column.map((col, i) => {
-        return col
-    });
-   
     useEffect(()=>{
         initFilters()
-        console.log(paginator)
+        //console.log(paginator)
        //handleDelete('rowData')
     },[]) 
   
@@ -138,7 +62,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
             }
           
         });       
-      //  console.log(filtersData) 
+        console.log(filtersData) 
        }
 
        const onClearFilter = (col)=>{  
@@ -146,7 +70,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
        }
 
        useEffect(()=>{
-       // console.log(filtersData)
+         console.log(filtersData)
        },[filtersData])
 
     const onGlobalFilterChange = (e) => {
@@ -234,7 +158,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
     const imageBodyTemplate = (rowData) => {
         // console.log(rowData)
          if ( Array.isArray(rowData.url) && rowData.url && rowData.url?.length>0) {
-            console.log(rowData.url)
+            //console.log(rowData.url)
             return  <SkalebotCarousel carouselItems={rowData.url} />;      
          }
          else  {
@@ -263,6 +187,77 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
           />
         )
       }
+
+
+    const dynamicColumns = columns.map((col, i) => {
+        if (col?.isActions) {
+                    if (col.actionType.length>1) {
+                        return  <Column
+                                    key={col.field}
+                                    header="Actions"
+                                    body={actionBodyTemplate}
+                                    exportable={false}
+                                    bodyStyle={{ width: "100px" }}
+                                ></Column>
+                    }else if (col.actionType[0]==='edit') {
+                        return  <Column
+                                    key={col.field}
+                                    header="Actions"
+                                    body={actionEditBodyTemplate}
+                                    exportable={false}
+                                    bodyStyle={{ width: "100px" }}
+                                ></Column>
+                    }else if (col.actionType[0]==='delete') {
+                        return  <Column
+                                    key={col.field}
+                                    header="Actions"
+                                    body={actionDeleteBodyTemplate}
+                                    exportable={false}
+                                    bodyStyle={{ width: "100px" }}
+                                ></Column> 
+                    }
+                }else if(col?.viewDetails){
+                     return <Column
+                                 key={col.field}
+                                 body={viewDetailsBody}
+                                 bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
+                             />
+                }        
+               else{
+                    return <Column 
+                                key={col.field} 
+                                columnKey={col.field} 
+                                field={col.field} 
+                                header={col.header} 
+                                showFilterMatchModes={false}
+                                filter={col.isFilter}
+                                filterElement={col.filterType==='dropdown'?dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder):''}
+                                onFilterApplyClick={(e)=>onClickFilter(e)}
+                                onFilterClear={()=>{onClearFilter(col)}}  
+                                body={col.isImageBody?imageBodyTemplate:''}
+                                headerStyle={col.isImageBody?
+                                    {
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    marginTop: "5px",
+                                    }:
+                                    ''
+                                }
+                                bodyStyle={col.isImageBody?
+                                { 
+                                    display: "flex",
+                                    justifyContent: "center" 
+                                }:
+                                {
+                                width: "auto",
+                                minWidth: "150px",
+                                maxWidth: "350px",
+                                textOverflow: "ellipsis",
+                                }}
+                            />
+                 }
+    });
+     
 
 
   return ( <>

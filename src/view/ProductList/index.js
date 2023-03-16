@@ -115,13 +115,13 @@ const ProductList = () => {
   };
 
   const handleEdit = (product) => {
-    console.log(product)
+    console.log('prod edit',product)
     // dispatch(changeMode("update"));
     // dispatch(changeSelectedProduct(product));
     // setDisplayAddProductModule(true);
   };
   const handleDelete = (product) => {
-    console.log(product)
+    console.log('prod del',product)
     //setMessage(product)
     // dispatch(changeMode("delete"));
     // dispatch(changeSelectedProduct(product));

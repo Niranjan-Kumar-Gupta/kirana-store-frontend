@@ -111,11 +111,11 @@ const handleEdit = (rowData) => {
  
 };
 const handleDelete = (rowData) => {
-  console.log(rowData)
+  console.log('order edit',rowData)
  
 };
 const handleOrderSelect = (rowData)=>{
-  console.log(rowData)
+  console.log('order view detail',rowData)
 }
 
 
