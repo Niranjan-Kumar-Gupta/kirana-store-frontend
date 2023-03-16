@@ -14,7 +14,7 @@ const CustomPaginator = ({page,limit, totalRecords, changePage}) =>{
     const handlePageChange = (event) =>{
         setBasicFirst(event.first);
         setBasicRows(event.rows);
-      //  dispatch(changePage(event.page));
+        dispatch(changePage(event.page));
     }
 
     const customTemplate = {

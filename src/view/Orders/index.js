@@ -1,7 +1,48 @@
 import React, { useEffect, useState, useRef } from "react";
 import CustomTable from "../../components/CustomTable";
+import { useDispatch, useSelector } from "react-redux";
+import * as Messag from "../../config/ToastMessage";
+import Loader from "../../components/Loader";
+import { Text } from "../../components/Text";
+import {
+  changeSelectedOrder,
+  updateMode,
+  getOrders,
+  resetMode,
+  updateOrder,
+  changePage,
+  resetSelectedOrder,
+  updateSelectedOrdersList,
+  resetSelectedOrdersList,
+} from "../../reducers/orderTableSlice";
+import { Toast } from "primereact/toast";
+import "./style.css";
+import { API_GET_ORDERS } from "../../api/order.services";
+import { underlineStyle } from "../../utils/commonStyles";
+import { getCompany, setCompany } from '../../reducers/companySlice'
 
 const Orders = () => {
+
+  
+  const {
+    orderData,
+    loading,
+    mode,
+    page,
+    limit,
+    selectedOrder,
+    totalOrderCount,
+    selectedOrderId,
+    selectedOrderProducts,
+    selectedOrdersList,
+  } = useSelector((state) => state.orderTable);
+
+  const dispatch = useDispatch();
+
+  const toast = useRef(null);
+  const modalLoad = () => {
+    return <Loader visible={loading} />;
+  };
 
   const [orders, setOrders] = useState([
     {
@@ -62,21 +103,34 @@ const Orders = () => {
     {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'price', header: 'Price',isFilter:false,filterPlaceholder:"Search by Price"},
     {field: 'rating', header: 'Rating',isFilter:false,filterPlaceholder:"Search by Rating"},
+    {field: 'viewDetails', header: '',viewDetails:true},
 ];
 
-const handleEdit = (product) => {
-  console.log(product)
+const handleEdit = (rowData) => {
+  console.log(rowData)
  
 };
-const handleDelete = (product) => {
-  console.log(product)
+const handleDelete = (rowData) => {
+  console.log(rowData)
  
 };
+const handleOrderSelect = (rowData)=>{
+  console.log(rowData)
+}
+
 
   return (
     <div className="w-11 pt-3 m-auto">
       <h4>Order List</h4>
-      <CustomTable data={orders} columns={columns}  handleEdit={handleEdit} handleDelete={handleDelete}/>
+      <CustomTable 
+        data={orders}
+        columns={columns} 
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        handleOrderSelect={handleOrderSelect}
+        paginator={{page:page,limit:limit,totalRecords:30,changePage:changePage}}
+      />  
+    
     </div>
   );
 };

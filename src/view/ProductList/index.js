@@ -3,10 +3,26 @@ import CustomTable from "../../components/CustomTable";
 import "./index.css";
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import { Toast } from "primereact/toast";
-
-
+import {
+  changeSelectedProduct,
+  getProducts,
+  changeMode,
+  changePage,
+  updateSelectedProductsList,
+  resetSelectedProductsList,
+} from "../../reducers/productTableSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductList = () => {
+
+  const {
+    productData,
+    loading,
+    page,
+    limit,
+    totalProductCount,
+    selectedProductsList,
+  } = useSelector((state) => state.productTable);
 
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
 
@@ -23,7 +39,8 @@ const ProductList = () => {
         category: 'Accessories',
         quantity: 24,
         inventoryStatus: 'INSTOCK',
-        rating: 5
+        rating: 5,
+        url:['https://picsum.photos/320/180','https://picsum.photos/330/190','https://picsum.photos/300/170']
     },
     {
         id: '1001',
@@ -35,7 +52,8 @@ const ProductList = () => {
         category: 'Accessories',
         quantity: 61,
         inventoryStatus: 'INSTOCK',
-        rating: 4
+        rating: 4,
+        url:'https://picsum.photos/300/180'
     },
     {
         id: '1002',
@@ -47,7 +65,8 @@ const ProductList = () => {
         category: 'Fitness',
         quantity: 2,
         inventoryStatus: 'LOWSTOCK',
-        rating: 3
+        rating: 3,
+        url:['https://picsum.photos/300/180','https://picsum.photos/300/190','https://picsum.photos/300/170']
     },
     {
         id: '1003',
@@ -78,7 +97,9 @@ const ProductList = () => {
     {field: 'name', header: 'Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
     {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'quantity', header: 'Quantity',isFilter:true,filterType:'input',filterPlaceholder:"Search by Quantity"},
+    {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
     {field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
+    {field: 'actions', header: 'Actions',isActions:true,actionType:['edit']},
   ];
 
 
@@ -109,10 +130,18 @@ const ProductList = () => {
 
   return (
     <div className="w-11 pt-3 m-auto">
-        <h4>Product List</h4>
+       <Toast ref={toast} />
         <div className="card my-3">
             {displayAlertDelete && deleteModule()}
-           <CustomTable data={products} columns={columns} handleEdit={handleEdit} handleDelete={handleDelete}/>       
+            <div className="">
+               <CustomTable 
+                  data={products}
+                  columns={columns}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                  paginator={{page:page,limit:limit,totalRecords:10,changePage:changePage}}
+                />       
+            </div>
         </div>
     </div>
   );

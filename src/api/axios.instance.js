@@ -1,6 +1,21 @@
 import axios from "axios";
 import baseUrl from "./server";
 
+
+// const axiosInstance = axios.create({
+//     baseURL: baseUrl,
+//     headers: {
+//         Accept: "*/*",
+//         "Content-Type": "application/json",
+//         authorization: localStorage.getItem("token")
+//     },
+
+//     withCredentials: true,
+// });
+
+
+
+
 export const axiosInstance = axios.create({
     baseURL: baseUrl,
     headers: {

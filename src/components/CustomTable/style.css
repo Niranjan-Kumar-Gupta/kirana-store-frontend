@@ -1,0 +1,46 @@
+.p-dialog-header, .p-dialog-content{
+    background: #EDEDED !important;
+}
+
+.skalebot-table .p-checkbox .p-checkbox-box{
+    /* background: #FFFFFF !important; */
+    border: 0.5px solid rgba(0, 0, 0, 0.25) !important;
+    border-radius: 2px !important;
+}
+
+.skalebot-table .p-checkbox .p-checkbox-box.p-highlight{
+    background:#FFFFFF !important;
+}
+
+.skalebot-table .p-checkbox .p-checkbox-box .p-checkbox-icon{
+    color: #1C738E !important;
+}
+.skalebot-table .p-datatable-tbody > tr.p-highlight{
+
+    background: rgba(28, 115, 142, 0.05) !important;
+    color: #000 !important;
+
+}
+.skalebot-table.p-datatable.p-datatable-selectable .p-datatable-tbody > tr.p-selectable-row:not(.p-highlight):not(.p-datatable-emptymessage):hover {
+    background: rgba(28, 115, 142, 0.05) !important;
+    color: #000 !important;
+}
+.p-column-filter-buttonbar > .p-button{
+    background-color: #EDEDED !important;
+    color: #000 !important;
+    border-color: #1C738E !important;
+}
+.p-column-filter-buttonbar > .p-button:hover{
+    background-color: #d0d3d2 !important;
+    color: #000 !important;
+    border-color: #1C738E !important;
+}
+
+.pi-filter-icon{
+    margin-top: 5px !important;
+}
+
+.p-datatable-header{
+    padding: 0.5rem 0rem !important;
+}
+

@@ -1,0 +1,77 @@
+.carousel-container{
+    width: 120px;
+    height: auto;
+    position: relative;
+}
+.car-item{
+    width: 120px;
+    height: 100px;
+}
+.carousel-img-continer{
+ width: inherit;
+ height: 80px;
+ border-radius: 4px;
+ overflow: hidden;
+ display: flex;
+ justify-content: center;
+}
+.carousel-container .p-carousel-container {
+    position: relative;
+}
+.carousel-container .p-carousel-container  > button {
+    position: absolute;
+    bottom: 45%;
+    z-index: 10;
+}
+.carousel-container .p-carousel-container .p-carousel-next,
+.carousel-container .p-carousel-container .p-carousel-prev{
+    color: #1C738E !important;
+    margin: 0 !important;
+}
+.carousel-container .p-carousel-container .p-carousel-next{
+    right: 0;
+}
+
+
+.carousel-container .p-carousel-container .p-carousel-next:focus,
+.carousel-container .p-carousel-container .p-carousel-prev:focus{
+box-shadow: none !important;
+}
+.carousel-container .p-carousel-content {
+    position: relative;
+}
+.skalebot-carousel .p-carousel-indicators {
+    display: none !important;
+    position: absolute !important;
+    flex-wrap: nowrap !important;
+    box-sizing: content-box !important;
+    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    margin: auto !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    padding: 2px !important;
+    /* background: #7aa6b2; */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+.carousel-container .p-carousel-indicator {
+    margin: 2px !important;
+    border-radius: 50% !important;
+}
+
+.carousel-container .p-carousel-indicator > button {
+    width: 4px !important;
+    height: 4px !important;
+    border-radius: 50% !important;
+    border: 1px solid #1C738E;
+    background: rgba(255, 255, 255, 0.4) !important;
+}
+
+.carousel-container .p-highlight > button {
+    background-color: #1C738E !important;
+}

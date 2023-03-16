@@ -9,8 +9,10 @@ import { ReactComponent as Edit } from "../../svg/edit.svg";
 import { ReactComponent as Delete } from "../../svg/delete.svg";
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import { CustomButton } from "../../components/CustomButton";
+import SkalebotCarousel from "../../components/SkalebotCarousel";
+import "./style.css";
 
-const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
+const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,paginator}) => {
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({});
@@ -27,17 +29,94 @@ const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
         setFilters(initData)
         setGlobalFilterValue('');  
     };
+
+    const [column,setColumn]=useState([])
+
+
+    useEffect(()=>{
+        let cols = []
+         columns.map((col, i) => {  
+            if (col?.isActions) {
+                if (col.actionType.length>1) {
+                    cols.push( <Column
+                                header="Actions"
+                                body={actionBodyTemplate}
+                                exportable={false}
+                                bodyStyle={{ width: "100px" }}
+                            ></Column>)
+                }else if (col.actionType[0]==='edit') {
+                    cols.push( <Column
+                                header="Actions"
+                                body={actionEditBodyTemplate}
+                                exportable={false}
+                                bodyStyle={{ width: "100px" }}
+                            ></Column>)
+                }else if (col.actionType[0]==='delete') {
+                    cols.push( <Column
+                                header="Actions"
+                                body={actionDeleteBodyTemplate}
+                                exportable={false}
+                                bodyStyle={{ width: "100px" }}
+                            ></Column> )
+                }
+            }else if(col?.viewDetails){
+                 cols.push(<Column
+                             body={viewDetailsBody}
+                             bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
+                         />)
+            }        
+           else{
+                cols.push(<Column 
+                    key={col.field} 
+                    columnKey={col.field} 
+                    field={col.field} 
+                    header={col.header} 
+                    showFilterMatchModes={false}
+                    filter={col.isFilter}
+                    filterElement={col.filterType==='dropdown'?dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder):''}
+                    onFilterApplyClick={(e)=>onClickFilter(e)}
+                    onFilterClear={()=>{onClearFilter(col)}}  
+                    body={col.isImageBody?imageBodyTemplate:''}
+                    headerStyle={col.isImageBody?
+                          {
+                           display: "flex",
+                           justifyContent: "center",
+                           marginTop: "5px",
+                           }:
+                           ''
+                       }
+                    bodyStyle={col.isImageBody?
+                       { 
+                        display: "flex",
+                        justifyContent: "center" 
+                       }:
+                       {
+                       width: "auto",
+                       minWidth: "150px",
+                       maxWidth: "350px",
+                       textOverflow: "ellipsis",
+                     }}
+                   />)
+            }
+        });    
+        setColumn(prevCol => [...prevCol, cols])
+        console.log(column,cols)
+    },[])
+
+    const dynamicColumns = column.map((col, i) => {
+        return col
+    });
    
     useEffect(()=>{
         initFilters()
-       // console.log(filters)
+        console.log(paginator)
        //handleDelete('rowData')
     },[]) 
   
     const [filtersData, setFiltersData] = useState({});
     const [isApply, setIsApply] = useState(false);
 
-    const dropdownFilterTemplate = (field,dropdownItems,filterPlaceholder) => {
+     const dropdownFilterTemplate = (field,dropdownItems,filterPlaceholder) => {
         //  console.log('dropdownItems....',dropdownItems)
         return <Dropdown  
                 value={filtersData[field]} 
@@ -50,7 +129,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
 
 
     
-    const onClickFilter=(e)=>{   
+     const onClickFilter=(e)=>{   
         columns.forEach(col => {
             if (col.field === e.field) {
                 if (col.filterType!=='dropdown') {
@@ -67,7 +146,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
        }
 
        useEffect(()=>{
-        console.log(filtersData)
+       // console.log(filtersData)
        },[filtersData])
 
     const onGlobalFilterChange = (e) => {
@@ -110,7 +189,25 @@ const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
 
     const actionBodyTemplate = (rowData) => {
   
-        console.log(rowData)
+        // console.log(rowData)
+         return (
+           <div className="flex justify-content-end align-items-center gap-3">
+             <CustomButton
+               varient="icon-button"
+               icon={<Edit />}
+               onClick={() => handleEdit(rowData)}        
+             />
+             <CustomButton
+               varient="icon-button"
+               icon={<Delete />}
+               onClick={() => handleDelete(rowData)}
+             />
+           </div> 
+         );
+       };
+ 
+
+    const actionEditBodyTemplate = (rowData) => {
         return (
           <div className="flex justify-content-end align-items-center gap-3">
             <CustomButton
@@ -118,49 +215,77 @@ const CustomTable = ({data,columns,handleEdit,handleDelete}) => {
               icon={<Edit />}
               onClick={() => handleEdit(rowData)}        
             />
-            <CustomButton
-              varient="icon-button"
-              icon={<Delete />}
-              onClick={() => handleDelete(rowData)}
-            />
           </div> 
         );
       };
-
-    const dynamicColumns = columns.map((col, i) => {
-        return <Column 
-                 key={col.field} 
-                 columnKey={col.field} 
-                 field={col.field} 
-                 header={col.header} 
-                 showFilterMatchModes={false}
-                 filter={col.isFilter}
-                 filterElement={col.filterType==='dropdown'?dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder):''}
-                 onFilterApplyClick={(e)=>onClickFilter(e)}
-                 onFilterClear={()=>{onClearFilter(col)}}  
-                />;
-    });
-
-  return (
-    <div>
-        <DataTable 
-            value={data}
-            tableStyle={{ minWidth: '50rem' }} 
-            className="skalebot-table"
-            filters={filters}         
-            paginator rows={2} 
-            header={header} emptyMessage="No customers found."
-            >
-            {dynamicColumns}
-            <Column
-              header="Actions"
-              body={actionBodyTemplate}
-              exportable={false}
-              bodyStyle={{ width: "100px" }}
-            ></Column>
-        </DataTable>
+    const actionDeleteBodyTemplate = (rowData) => {
+         return (
+           <div className="flex justify-content-end align-items-center gap-3">
+             <CustomButton
+               varient="icon-button"
+               icon={<Delete />}
+               onClick={() => handleDelete(rowData)}
+             />
+           </div> 
+         );
+       };
+ 
+      
+    const imageBodyTemplate = (rowData) => {
+        // console.log(rowData)
+         if ( Array.isArray(rowData.url) && rowData.url && rowData.url?.length>0) {
+            console.log(rowData.url)
+            return  <SkalebotCarousel carouselItems={rowData.url} />;      
+         }
+         else  {
+            return (
+                <div
+                    className="flex justify-content-center"
+                    style={{ width: "120px", height: "80px" }}
+                >
+                    <img
+                    src={`${rowData.url}?v=${rowData.updatedAt}`}
+                    onError={(e) => (e.target.src = "./images/ImgPlaceholder.svg")}
+                    style={{ maxWidth: "100%", height: "100%" }}
+                    />
+                </div>
+                );
         
-    </div>
+        } 
+    };
+
+    const viewDetailsBody = (rowData) => {
+        return (
+          <CustomButton
+            varient="icon-button"
+            onClick={(e) => handleOrderSelect(rowData)}
+            label="View Details"
+          />
+        )
+      }
+
+
+  return ( <>
+        <div>
+            <DataTable 
+                value={data}
+                tableStyle={{ minWidth: '50rem' }} 
+                className="skalebot-table"
+                filters={filters}         
+                header={header} emptyMessage="No customers found."
+                >
+                {dynamicColumns}
+            </DataTable>
+        </div>
+        <div className="flex  justify-content-end">
+          <CustomPaginator
+            page={paginator.page}
+            limit={paginator.limit}
+            totalRecords={paginator.totalRecords}
+            changePage={paginator.changePage}
+          />
+        </div>
+        </>
   )
 }
 

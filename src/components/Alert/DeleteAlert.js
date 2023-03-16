@@ -1,18 +1,18 @@
 import { Dialog } from "primereact/dialog";
 import { CustomButton } from "../CustomButton";
-// import { useSelector, useDispatch } from "react-redux"
-// import { deleteCustomer, resetSelectedCustomer } from "../../reducers/customerTableSlice";
-// import { deleteCategory, resetSelectedCategory } from "../../reducers/categoryTableSlice"
-// import { deleteProduct, resetSelectedProduct } from "../../reducers/productTableSlice";
+import { useSelector, useDispatch } from "react-redux"
+import { deleteCustomer, resetSelectedCustomer } from "../../reducers/customerTableSlice";
+import { deleteCategory, resetSelectedCategory } from "../../reducers/categoryTableSlice"
+import { deleteProduct, resetSelectedProduct } from "../../reducers/productTableSlice";
 
-// import * as Messag from '../../config/ToastMessage';
-// import { changeShowNotice } from "../../reducers/appSlice";
+import * as Messag from '../../config/ToastMessage';
+import { changeShowNotice } from "../../reducers/appSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
   // const { selectedCustomer } = useSelector(state => state.customerTable);
   // const { selectedCategory } = useSelector(state => state.categoryTable);
   // const { selectedProduct } = useSelector(state => state.productTable);
 
- // const dispatch = useDispatch();
+ const dispatch = useDispatch();
 
   const deleteProductItem = () => {
     // dispatch(deleteProduct(selectedProduct.id))
@@ -59,10 +59,10 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     setDisplayAlertDelete(false)
     switch (item) {
       case 'product':
-       // dispatch(resetSelectedProduct())
+        //dispatch(resetSelectedProduct())
         break;
       case 'category':
-       // dispatch(resetSelectedCategory())
+        //dispatch(resetSelectedCategory())
         break;
       case "customer":
         //dispatch(resetSelectedCustomer())
