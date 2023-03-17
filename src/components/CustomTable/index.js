@@ -11,6 +11,7 @@ import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import { CustomButton } from "../../components/CustomButton";
 import SkalebotCarousel from "../../components/SkalebotCarousel";
 import "./style.css";
+import { Text } from "../../components/Text";
 
 const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,paginator}) => {
 
@@ -38,7 +39,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
     },[]) 
   
     const [filtersData, setFiltersData] = useState({});
-    const [isApply, setIsApply] = useState(false);
+    const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
 
      const dropdownFilterTemplate = (field,dropdownItems,filterPlaceholder) => {
         //  console.log('dropdownItems....',dropdownItems)
@@ -52,16 +53,20 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
       }
 
 
+      
+     const textFilterTemplate = (field,filterPlaceholder) => {
+       // console.log('textItems....',field,filterPlaceholder)
+          return <InputText  
+                  value={filtersData[field]} 
+                  onChange={(e) => setFiltersData({...filtersData,[field]:e.target.value})}            
+                  placeholder={filterPlaceholder} 
+                  className="p-column-filter" 
+                />;
+      }
+
+
     
-     const onClickFilter=(e)=>{   
-        columns.forEach(col => {
-            if (col.field === e.field) {
-                if (col.filterType!=='dropdown') {
-                    setFiltersData({...filtersData,[e.field]: e.constraints.constraints[0].value})
-                }
-            }
-          
-        });       
+     const onClickFilter=(e)=>{        
         console.log(filtersData) 
        }
 
@@ -69,42 +74,41 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
         setFiltersData({...filtersData,[col.field]: null})
        }
 
-       useEffect(()=>{
-         console.log(filtersData)
-       },[filtersData])
-
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
         setGlobalFilterValue(value);
+        //console.log(globalFilterValue)
     }
 
-    const managePaginationData = ()=>{
-            let filterData = []
-            for (var key in filtersData) {
-            // console.log(key,filters1[key].value);
-            if (filtersData[key]) {
-                //console.log(key);
-                filterData.push({
-                    key:key,
-                    value:filtersData[key]
-                })
-            }
-            }
-            let paginationData = {
-            filterData,
-            globalFilterValue
-            };
-            return paginationData;
-       }
-       
+    
+    const onGlobalFilterClick = (e) => {
+      //const value = e;
+      if (globalFilterValue !== '') {
+        if (isGlobalFilterClick) {
+          setIsGlobalFilterClick(false)
+          setGlobalFilterValue('')
+        } else {
+          setIsGlobalFilterClick(true)
+        }       
+      } 
+      console.log(globalFilterValue)  
+  }
 
+  function handelKeyDown(e) {
+    if (e.key==='Enter') {
+      if (!isGlobalFilterClick) {
+          onGlobalFilterClick()
+       }
+    }
+  }
+  
 
     const renderHeader = () => {
         return (
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <i className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+            <div className="flex justify-content-end __searchField">
+                <span className="p-input-icon-right" onClick={onGlobalFilterClick}>  
+                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange}  placeholder="Keyword Search" onKeyPress={handelKeyDown}/>
+                    <i className={!isGlobalFilterClick?"pi pi-search cursor-pointer":"pi pi-times cursor-pointer"} />
                 </span>
             </div>
         );
@@ -224,37 +228,72 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                              />
                 }        
                else{
+                  if (col.filterType==='dropdown') {
                     return <Column 
-                                key={col.field} 
-                                columnKey={col.field} 
-                                field={col.field} 
-                                header={col.header} 
-                                showFilterMatchModes={false}
-                                filter={col.isFilter}
-                                filterElement={col.filterType==='dropdown'?dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder):''}
-                                onFilterApplyClick={(e)=>onClickFilter(e)}
-                                onFilterClear={()=>{onClearFilter(col)}}  
-                                body={col.isImageBody?imageBodyTemplate:''}
-                                headerStyle={col.isImageBody?
-                                    {
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    marginTop: "5px",
-                                    }:
-                                    ''
-                                }
-                                bodyStyle={col.isImageBody?
-                                { 
-                                    display: "flex",
-                                    justifyContent: "center" 
-                                }:
-                                {
-                                width: "auto",
-                                minWidth: "150px",
-                                maxWidth: "350px",
-                                textOverflow: "ellipsis",
-                                }}
-                            />
+                    key={col.field} 
+                    columnKey={col.field} 
+                    field={col.field} 
+                    header={col.header} 
+                    showFilterMatchModes={false}
+                    filter={col.isFilter}
+                    filterElement={dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder)}
+                    onFilterApplyClick={(e)=>onClickFilter(e)}
+                    onFilterClear={()=>{onClearFilter(col)}}  
+                    body={col.isImageBody?imageBodyTemplate:''}
+                    headerStyle={col.isImageBody?
+                        {
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "5px",
+                        }:
+                        ''
+                    }
+                    bodyStyle={col.isImageBody?
+                    { 
+                        display: "flex",
+                        justifyContent: "center" 
+                    }:
+                    {
+                    width: "auto",
+                    minWidth: "150px",
+                    maxWidth: "350px",
+                    textOverflow: "ellipsis",
+                    }}
+                />
+                  }else{
+                    return <Column 
+                    key={col.field} 
+                    columnKey={col.field} 
+                    field={col.field} 
+                    header={col.header} 
+                    showFilterMatchModes={false}
+                    filter={col.isFilter}
+                    filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
+                    onFilterApplyClick={(e)=>onClickFilter(e)}
+                    onFilterClear={()=>{onClearFilter(col)}}  
+                    body={col.isImageBody?imageBodyTemplate:''}
+                    headerStyle={col.isImageBody?
+                        {
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "5px",
+                        }:
+                        ''
+                    }
+                    bodyStyle={col.isImageBody?
+                    { 
+                        display: "flex",
+                        justifyContent: "center" 
+                    }:
+                    {
+                    width: "auto",
+                    minWidth: "150px",
+                    maxWidth: "350px",
+                    textOverflow: "ellipsis",
+                    }}
+                />
+                  }
+                   
                  }
     });
      

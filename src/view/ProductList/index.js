@@ -130,6 +130,7 @@ const ProductList = () => {
 
   return (
     <div className="w-11 pt-3 m-auto">
+        <h4>Product List</h4>
        <Toast ref={toast} />
         <div className="card my-3">
             {displayAlertDelete && deleteModule()}

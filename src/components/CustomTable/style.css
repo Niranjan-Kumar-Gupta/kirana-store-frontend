@@ -44,3 +44,19 @@
     padding: 0.5rem 0rem !important;
 }
 
+.__searchField input{
+    height: 42px;
+    width: 250px;
+}
+
+@media only screen and (width < 768px) {
+    .__searchField span{
+        height: 42px;
+        width: 100%;
+    }
+    .__searchField input{
+        height: 42px;
+        width: 100%;
+    }
+    
+}
