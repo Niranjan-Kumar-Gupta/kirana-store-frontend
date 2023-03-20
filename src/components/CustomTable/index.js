@@ -12,12 +12,33 @@ import { CustomButton } from "../../components/CustomButton";
 import SkalebotCarousel from "../../components/SkalebotCarousel";
 import "./style.css";
 import { Text } from "../../components/Text";
+import { Calendar } from 'primereact/calendar';
+import { Button } from "primereact/button";
 
-const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,paginator}) => {
+const CustomTable = (
+                      {
+                        tableName=null,
+                        data=null,
+                        columns=null,
+                        globalSearch=true,
+                        handleEdit = () => {},
+                        handleDelete = () => {},
+                        handleSelect = () => {},
+                        onApplyFilter = () => {},
+                        onApplySearch = () => {},
+                        onClearFilter = () => {},
+                        onClearSearch = () => {},
+                        paginator = null
+                      }
+                    ) => {
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({});
-
+    const [isFiltersInit, setIsFiltersInit] = useState(false);
+    const [filtersData, setFiltersData] = useState({});
+    const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
+   
+    
     const initFilters = () => {
         let initData = {...filters}
         columns.forEach(col => { 
@@ -25,24 +46,37 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                     initData[col.field] = { value: null,constraints: [{ value: null}] }
                 }else if (col.isFilter===true && col.filterType === 'dropdown' ) {           
                     initData[col.field] = { value: null}
-                }             
+                }else if (col.isFilter===true && col.filterType === 'date' ) {           
+                  initData[col.field] = { value: null}
+              }                          
         });  
         setFilters(initData)
         setGlobalFilterValue('');  
     };
 
-
     useEffect(()=>{
-        initFilters()
-        //console.log(paginator)
-       //handleDelete('rowData')
-    },[]) 
+        initFilters()   
+          const data = JSON.parse(localStorage.getItem(`${tableName}FiltersData`));
+          //console.log(`${tableName}filtersData is...`, data)
+          if (data && (Object.keys(data).length === 0 )) {
+            //console.log('nope')
+          } else {
+            //console.log(data)
+           // setFiltersData(data)
+          }   
+          
+    },[])
+    
+    useEffect(()=>{
+       if (tableName) {
+          localStorage.setItem(`${tableName}FiltersData`, JSON.stringify(filtersData));
+       }
+    
+    },[filtersData])
   
-    const [filtersData, setFiltersData] = useState({});
-    const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
 
      const dropdownFilterTemplate = (field,dropdownItems,filterPlaceholder) => {
-        //  console.log('dropdownItems....',dropdownItems)
+        //console.log('dropdownItems....',dropdownItems)
         return <Dropdown  
                 value={filtersData[field]} 
                 onChange={(e) => setFiltersData({...filtersData,[field]:e.value})} 
@@ -52,26 +86,45 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                 showClear />;
       }
 
-
-      
      const textFilterTemplate = (field,filterPlaceholder) => {
-       // console.log('textItems....',field,filterPlaceholder)
-          return <InputText  
-                  value={filtersData[field]} 
+        //console.log('textItems....',field,filterPlaceholder)
+         return <InputText  
+                  value={filtersData[field] || ''} 
                   onChange={(e) => setFiltersData({...filtersData,[field]:e.target.value})}            
                   placeholder={filterPlaceholder} 
                   className="p-column-filter" 
                 />;
       }
-
-
-    
+  
      const onClickFilter=(e)=>{        
-        console.log(filtersData) 
+        //console.log(e) 
+        onApplyFilter(filtersData)
+        const btn = document.querySelectorAll(".p-column-filter");
+        columns.map((col,index)=>{
+          if (filtersData.hasOwnProperty(col['field'])) {
+              //console.log(filtersData[col['field']],index)
+              if (filtersData[col['field']]) {
+              // console.log(btn[index].children[0].children[0].style.color)
+               btn[index].children[0].children[0].style.color = 'white'
+               btn[index].classList.add('__activeFilter')           
+              } 
+           }
+        })
        }
 
-       const onClearFilter = (col)=>{  
-        setFiltersData({...filtersData,[col.field]: null})
+     const onClickClearFilter = (e)=>{       
+        const btn = document.querySelectorAll(".p-column-filter");
+        columns.map((col,index)=>{
+          if (filtersData.hasOwnProperty(col['field']) && (col['field']===e.field)) {
+              //console.log(filtersData[col['field']],index)
+              if (filtersData[col['field']]) {
+                setFiltersData({...filtersData,[e.field]: null})
+                btn[index].classList.remove('__activeFilter')   
+                btn[index].children[0].children[0].style.color = '#6c757d'        
+              }
+           }
+        })
+        onClearFilter(filtersData)
        }
 
     const onGlobalFilterChange = (e) => {
@@ -87,23 +140,27 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
         if (isGlobalFilterClick) {
           setIsGlobalFilterClick(false)
           setGlobalFilterValue('')
+          onClearSearch('')
         } else {
           setIsGlobalFilterClick(true)
+          onApplySearch(globalFilterValue)  
         }       
       } 
-      console.log(globalFilterValue)  
-  }
+      //console.log(globalFilterValue)
+    
+    }
 
-  function handelKeyDown(e) {
+    function handelKeyDown(e) {
     if (e.key==='Enter') {
       if (!isGlobalFilterClick) {
           onGlobalFilterClick()
+       }else{
+        onGlobalFilterClick()
        }
     }
-  }
-  
+    }
 
-    const renderHeader = () => {
+  const renderHeader = () => {
         return (
             <div className="flex justify-content-end __searchField">
                 <span className="p-input-icon-right" onClick={onGlobalFilterClick}>  
@@ -113,7 +170,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
             </div>
         );
     };
-    const header = renderHeader();
+    const header = globalSearch ? renderHeader() :'';
 
     const actionBodyTemplate = (rowData) => {
   
@@ -186,12 +243,50 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
         return (
           <CustomButton
             varient="icon-button"
-            onClick={(e) => handleOrderSelect(rowData)}
+            onClick={(e) => handleSelect(rowData)}
             label="View Details"
           />
         )
       }
 
+  //----------Date Filter--------------------------------
+
+  const dateBodyTemplate = (rowData) => {
+      return rowData.date;
+    };
+  const dateFilterTemplate = (field,placeholder) => {
+    return <div className="card flex flex-column justify-content-center">
+              <div>
+                <Text>From</Text>
+                <Calendar 
+                  value={filtersData[`from${field}`] || ''}
+                  onChange={(e) => setFiltersData({...filtersData,[`from${field}`]:e.target.value})} 
+                  dateFormat="dd-mm-yy" 
+                  placeholder="dd-mm-yyyy"
+                  mask="99/99/9999" 
+                  className="mt-1 mb-3 dateInput"
+                  showIcon 
+                  maxDate={new Date()}
+                />
+              </div>
+              <div>
+                <Text>To</Text>
+                <Calendar 
+                  value={filtersData[`to${field}`] || ''}
+                  onChange={(e) => setFiltersData({...filtersData,[`to${field}`]:e.target.value})} 
+                  dateFormat="dd-mm-yy" 
+                  placeholder="dd-mm-yyyy"
+                  mask="99/99/9999" 
+                  className="mt-1 dateInput"
+                  showIcon 
+                  maxDate={new Date()}
+                  minDate={filtersData[`from${field}`]}
+                />
+              </div>
+           </div>
+
+
+    };
 
     const dynamicColumns = columns.map((col, i) => {
         if (col?.isActions) {
@@ -220,13 +315,13 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                                     bodyStyle={{ width: "100px" }}
                                 ></Column> 
                     }
-                }else if(col?.viewDetails){
-                     return <Column
-                                 key={col.field}
-                                 body={viewDetailsBody}
-                                 bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
-                             />
-                }        
+        }else if(col?.viewDetails){
+            return <Column
+                        key={col.field}
+                        body={viewDetailsBody}
+                        bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
+                    />
+              }        
                else{
                   if (col.filterType==='dropdown') {
                     return <Column 
@@ -238,7 +333,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                     filter={col.isFilter}
                     filterElement={dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder)}
                     onFilterApplyClick={(e)=>onClickFilter(e)}
-                    onFilterClear={()=>{onClearFilter(col)}}  
+                    onFilterClear={()=>{onClickClearFilter(col)}}  
                     body={col.isImageBody?imageBodyTemplate:''}
                     headerStyle={col.isImageBody?
                         {
@@ -260,7 +355,26 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                     textOverflow: "ellipsis",
                     }}
                 />
-                  }else{
+                  }
+                else if (col.filterType==='date'){
+                    return  <Column
+                                key={col.field} 
+                                field={col.field} 
+                                header={col.header} 
+                                showFilterMatchModes={false}
+                                filterField={col.field} 
+                                dataType="date"
+                                style={{ minWidth: '10rem' }}
+                                body={dateBodyTemplate}
+                                filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
+                                onFilterApplyClick={(e)=>onClickFilter(e)}
+                                onFilterClear={()=>{onClickClearFilter(col)}} 
+                                disabled={false} 
+                                
+                                />
+               
+                  }              
+                  else{
                     return <Column 
                     key={col.field} 
                     columnKey={col.field} 
@@ -270,7 +384,7 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                     filter={col.isFilter}
                     filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
                     onFilterApplyClick={(e)=>onClickFilter(e)}
-                    onFilterClear={()=>{onClearFilter(col)}}  
+                    onFilterClear={()=>{onClickClearFilter(col)}}  
                     body={col.isImageBody?imageBodyTemplate:''}
                     headerStyle={col.isImageBody?
                         {
@@ -311,14 +425,16 @@ const CustomTable = ({data,columns,handleEdit,handleDelete,handleOrderSelect,pag
                 {dynamicColumns}
             </DataTable>
         </div>
-        <div className="flex  justify-content-end">
-          <CustomPaginator
-            page={paginator.page}
-            limit={paginator.limit}
-            totalRecords={paginator.totalRecords}
-            changePage={paginator.changePage}
-          />
-        </div>
+       {
+        paginator && <div className="flex  justify-content-end">
+                        <CustomPaginator
+                          page={paginator.page}
+                          limit={paginator.limit}
+                          totalRecords={paginator.totalRecords}
+                          changePage={paginator.changePage}
+                        />
+                      </div>
+       }
         </>
   )
 }

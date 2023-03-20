@@ -48,6 +48,21 @@
     height: 42px;
     width: 250px;
 }
+.dateInput{
+    height: 40px !important;
+}
+.p-datepicker-trigger{
+    background: #ededed!important;
+    color: black !important;
+    border: #7e7c7c !important;
+}
+
+.__activeFilter{
+    background-color: #1c738e !important; 
+    border-radius: 50px;
+}
+
+
 
 @media only screen and (width < 768px) {
     .__searchField span{

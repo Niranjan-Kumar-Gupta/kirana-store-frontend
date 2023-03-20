@@ -40,6 +40,7 @@ const ProductList = () => {
         quantity: 24,
         inventoryStatus: 'INSTOCK',
         rating: 5,
+        date: '2015-09-13',
         url:['https://picsum.photos/320/180','https://picsum.photos/330/190','https://picsum.photos/300/170']
     },
     {
@@ -53,6 +54,7 @@ const ProductList = () => {
         quantity: 61,
         inventoryStatus: 'INSTOCK',
         rating: 4,
+        date: '2015-09-07',
         url:'https://picsum.photos/300/180'
     },
     {
@@ -66,6 +68,7 @@ const ProductList = () => {
         quantity: 2,
         inventoryStatus: 'LOWSTOCK',
         rating: 3,
+        date: '2015-09-01',
         url:['https://picsum.photos/300/180','https://picsum.photos/300/190','https://picsum.photos/300/170']
     },
     {
@@ -78,7 +81,8 @@ const ProductList = () => {
         category: 'Clothing',
         quantity: 25,
         inventoryStatus: 'INSTOCK',
-        rating: 5
+        rating: 5,
+        date: '2015-09-13',
     },
 ]
  );
@@ -98,9 +102,13 @@ const ProductList = () => {
     {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'quantity', header: 'Quantity',isFilter:true,filterType:'input',filterPlaceholder:"Search by Quantity"},
     {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-    {field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'actions', header: 'Actions',isActions:true,actionType:['edit']},
+    //{field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Rating"},
+    {field: 'date', header: 'Date',isFilter:true,filterType:'date',filterPlaceholder:"Search by Date"},
+    {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
+  
   ];
+
+
 
 
   const deleteModule = () => {
@@ -128,6 +136,19 @@ const ProductList = () => {
      setDisplayAlertDelete(true);
   };
 
+  const onApplyFilter = (data)=>{
+      console.log(data)
+  }
+  const onApplySearch = (data)=>{
+    console.log(data)
+  }
+  const onClearFilter = (data)=>{
+    console.log(data)
+  }
+  const onClearSearch = (data)=>{
+  console.log(data)
+  }
+
   return (
     <div className="w-11 pt-3 m-auto">
         <h4>Product List</h4>
@@ -136,10 +157,16 @@ const ProductList = () => {
             {displayAlertDelete && deleteModule()}
             <div className="">
                <CustomTable 
+                  tableName={'productTable'}
                   data={products}
                   columns={columns}
+                  globalSearch={true}
                   handleEdit={handleEdit}
                   handleDelete={handleDelete}
+                  onApplyFilter={onApplyFilter}
+                  onApplySearch={onApplySearch}
+                  onClearFilter={onClearFilter}
+                  onClearSearch={onClearSearch}
                   paginator={{page:page,limit:limit,totalRecords:10,changePage:changePage}}
                 />       
             </div>

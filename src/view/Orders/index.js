@@ -118,16 +118,36 @@ const handleOrderSelect = (rowData)=>{
   console.log('order view detail',rowData)
 }
 
+const onApplyFilter = (data)=>{
+  console.log(data)
+}
+const onApplySearch = (data)=>{
+console.log(data)
+}
+const onClearFilter = (data)=>{
+  console.log(data)
+}
+const onClearSearch = (data)=>{
+console.log(data)
+}
+
+
 
   return (
     <div className="w-11 pt-3 m-auto">
       <h4>Order List</h4>
       <CustomTable 
+        tableName={'orderTable'}
         data={orders}
         columns={columns} 
+        globalSearch={false}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
-        handleOrderSelect={handleOrderSelect}
+        handleSelect={handleOrderSelect}
+        onApplyFilter={onApplyFilter}
+        onApplySearch={onApplySearch}
+        onClearFilter={onClearFilter}
+        onClearSearch={onClearSearch}
         paginator={{page:page,limit:limit,totalRecords:30,changePage:changePage}}
       />  
     
