@@ -33,7 +33,7 @@
     border-bottom: 0.5px dashed rgba(255, 255, 255, 0.25);
   }
   
-  @media only screen and (min-width: 1001px) {
+  @media only screen and (min-width: 1101px) {
     .mob-nav{
      display: none;
     }

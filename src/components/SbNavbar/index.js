@@ -9,6 +9,7 @@ const navbarItems = [
   { label: "Dashboard", icon: "dashboard", route: "/dashboard" },
   { label: "Products", icon: "product", route: "/products" },
   { label: "Orders", icon: "order", route: "/orders" },
+  { label: "Categories", icon: "category", route: "/categories" },
   { label: "Stock", icon: "enquiry", route: "/stocks" },
   { label: "Production Cards", icon: "category", route: "/productionCards" },
   { label: "Customers", icon: "customer", route: "/customers" },
@@ -42,7 +43,7 @@ export const SbNavbar = () => {
               key={index}
                 className={`flex justify-content-start align-items-center gap-2 cursor-pointer py-2 ${
                   styles["tab"]
-                } ${navItem.route === selectedTab ? styles["selected"] : ""}`}
+                } ${navItem.route === selectedTab || navItem.route.substring(1) === selectedTab.split('/')[1] ? styles["selected"] : ""}`}
                 onClick={() => handleNav(index)}
               >
                 <NavIcon icon={navItem.icon} />

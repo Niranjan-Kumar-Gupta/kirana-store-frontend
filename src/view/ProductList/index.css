@@ -1,7 +1,3 @@
- .p-dialog-header, .p-dialog-content{
-    background: #EDEDED !important;
-}
-
 .skalebot-table .p-checkbox .p-checkbox-box{
     /* background: #FFFFFF !important; */
     border: 0.5px solid rgba(0, 0, 0, 0.25) !important;
@@ -60,4 +56,12 @@
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     min-width: 250px !important;
+}
+
+.products {
+    cursor: pointer;
+    height: 4rem;
+    width: 10rem;
+    background-color: rgba(0, 0, 0, 0.25);
+    border: 1px solid lightblue;
 }

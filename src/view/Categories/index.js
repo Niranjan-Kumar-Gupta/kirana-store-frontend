@@ -1,56 +1,56 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './style.css'
-import { CustomerForm } from '../../components/Forms/CustomerForm'
+import { CategoryForm } from "../../components/Forms/CategoryForm"
 import Loader from '../../components/Loader'
 import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
+import { Text } from '../../components/Text'
 
-const CustomerList = () => {
-  const loading = false
-
-  const toast = useRef(null)
-
-  const [showCustomerForm, setShowCustomerForm] = useState(false)
+const Categories = () => {
+  const loading = false;
+  const [showCategoryForm, setShowCategoryForm] = useState(false)
 
   const onAddNewClick = () => {
-    setShowCustomerForm(true)
+    setShowCategoryForm(true)
   }
 
   const onHide = () => {
-    setShowCustomerForm(false)
+    setShowCategoryForm(false)
   }
 
   const loader = () => {
     return <Loader visible={loading} />
   }
 
-  const customerModal = () => {
+  const toast = useRef(null)
+
+  const categoryModal = () => {
     return (
-      <CustomerForm
-        onHide={onHide}
-        showCustomerForm={showCustomerForm}
+      <CategoryForm
+        onHide = {onHide}
+        showCategoryForm={showCategoryForm}
         toast={toast}
       />
     )
   }
 
-  return (
+  return(
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
-      {showCustomerForm ? customerModal() : <></>}
-      {loading ? loader() : <></>}
+      {showCategoryForm ? categoryModal() : <></>}
+      {loader ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
-        <div></div>
+        <div>
+          <Text type='heading'>Categories</Text>
+        </div>
         <CustomButton
           varient='filled'
-          label={'Add New Customer'}
+          label={'Add New Category'}
           icon={'pi pi-plus'}
           onClick={onAddNewClick}
         />
       </div>
-      
     </div>
   )
 }
 
-export default CustomerList
+export default Categories

@@ -1,32 +1,35 @@
-.skalebot-header{
-    z-index: 1000;
-    }
-    
-    .header__app {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    
-    .App{
-      min-width: 300px;
-      height: max-content;
-      min-height: 100vh;
-    }
-    
-    .container {
-      width: 90%;
-      margin: auto;
-    }
-    
-    @media only screen and (max-width: 768px) {
-      .p-toast {
-        width: 75% !important;
-      }
-    
-    }
-    
-    .p-datatable {
-      text-transform: capitalize !important;
-    }
-    
+* {
+  font-family: 'Lato';
+}
+
+.skalebot-header {
+  z-index: 1000;
+}
+
+.header__app {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.App {
+  min-width: 300px;
+  height: max-content;
+  min-height: 100vh;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+@media only screen and (max-width: 768px) {
+  .p-toast {
+    width: 75% !important;
+  }
+
+}
+
+.p-datatable {
+  text-transform: capitalize !important;
+}

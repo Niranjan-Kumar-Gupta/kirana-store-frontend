@@ -1,0 +1,19 @@
+.file-upload .p-button {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #bcbcbc !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  font-family: "Lato" !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  line-height: 140% !important;
+}
+.file-upload .p-button:focus{
+box-shadow:none !important
+}
+
+.file-upload .p-button-icon {
+display: none !important;
+}

@@ -1,0 +1,36 @@
+.dialog-custom {
+  width: 90%;
+  min-width:250px;
+  max-width: 500px;
+}
+.p-dialog-header, .p-dialog-content{
+  background: #FFF !important;
+}
+
+.PhoneInput
+.PhoneInputInput {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1rem;
+  color: #495057;
+  background: #ffffff;
+  padding: 0.75rem 0.75rem;
+  border: 1px solid #ced4da;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 0.2s, 0.2s, 0.2s, 0.2s;
+  transition-timing-function: ease, ease, ease, ease;
+  transition-delay: 0s, 0s, 0s, 0s;
+  appearance: none;
+  border-radius: 6px;
+}
+
+.PhoneInputInput:hover {
+  border-color: #6366F1;
+}
+
+.PhoneInputInput:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #C7D2FE;
+  border-color: #6366F1;
+}
