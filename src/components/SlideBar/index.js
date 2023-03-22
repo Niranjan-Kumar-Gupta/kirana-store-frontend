@@ -23,7 +23,18 @@ export const SlideBar = () => {
 
   const handleLogout = () => {
     dispatch(changeSidebarOpenStatus());
-   
+    dispatch(logout())
+      .unwrap()
+      .then(() => {
+        //Cookies.remove("token");
+        localStorage.clear();
+        axiosInstance.defaults.headers.common["authorization"] = null;
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        //show toast message from here
+      });
   };
   const nav=(path)=>{
     navigate(path);

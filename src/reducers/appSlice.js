@@ -9,7 +9,7 @@ const initialState = {
 };
 
 const appSlice = createSlice({
-  name: "skaleworkApp",
+  name: "skalebotApp",
   initialState,
   reducers: {
     changeLoadingStatus(state){

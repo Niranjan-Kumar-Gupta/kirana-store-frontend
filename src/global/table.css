@@ -1,0 +1,94 @@
+.skalebot-table.p-datatable .p-datatable-tbody > tr{
+    border-width: 0.5px !important;
+    border-style: solid !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    font-family: "Lato" !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    line-height: 1.1rem !important;
+}
+
+.skalebot-table.p-datatable .p-datatable-tbody > tr > td{
+  border: none;
+  padding:1rem 0.5rem;
+}
+.skalebot-table.p-datatable .p-datatable-thead > tr {
+  background: #ededed ;
+  border-radius: 5px 5px 0px 0px ;
+  overflow: hidden;
+}
+.skalebot-table.p-datatable .p-datatable-thead > tr > th {
+  background: inherit ;
+  color: #000000 ;
+  font-size: 0.9rem ;
+  font-weight: 600 ;
+  border: none;
+  padding: 1rem 0.5rem;
+
+
+}
+.skalebot-table2.p-datatable .p-datatable-thead > tr > th {
+  color: #000000 !important;
+}
+
+.skalebot-table2 .p-checkbox .p-checkbox-box{
+  /* background: #FFFFFF !important; */
+  border: 0.5px solid rgba(0, 0, 0, 0.25) !important;
+  border-radius: 2px !important;
+}
+
+.skalebot-table2 .p-checkbox .p-checkbox-box.p-highlight{
+  background:#FFFFFF !important;
+}
+
+.skalebot-table2 .p-checkbox .p-checkbox-box .p-checkbox-icon{
+  color: #1C738E !important;
+}
+.skalebot-table2.p-datatable.p-datatable-selectable .p-datatable-tbody > tr.p-selectable-row:not(.p-highlight):not(.p-datatable-emptymessage):hover {
+  background: rgba(28, 115, 142, 0.05) !important;
+  color: #000 !important;
+}
+.skalebot-table2 .p-datatable-tbody > tr.p-highlight{
+
+  background: rgba(28, 115, 142, 0.05) !important;
+  color: #000 !important;
+
+}
+
+.grp-search{
+  width:25vw;
+}
+
+
+.sklbtsr .p-column-header-content{
+  display: flex;
+  justify-content: center;
+}
+
+.skalebot-table.skalebot-table.p-datatable .p-column-filter-menu{
+  margin-left: 0 !important;
+}
+
+.p-datatable.p-datatable-selectable .p-datatable-tbody > tr.p-selectable-row:focus {
+outline: none !important;
+}
+
+.skalebot-table.p-datatable .p-checkbox-box.p-focus{
+  box-shadow: none !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.not-selectable{
+  background: #f8f7f7;
+  user-select: none;
+}
+
+.p-datatable .p-datatable-tbody > tr.not-selectable .p-checkbox .p-checkbox-box {
+  background: inherit !important;
+  cursor: default;
+}
+@media only screen and (width < 768px) {
+  .grp-search{
+    width: 100%;  
+  }
+}
