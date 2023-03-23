@@ -14,6 +14,7 @@ import "./style.css";
 import { Text } from "../../components/Text";
 import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
+import { TreeTable } from 'primereact/treetable';
 
 const CustomTable = (
                       {
@@ -28,6 +29,7 @@ const CustomTable = (
                         onApplySearch = () => {},
                         onClearFilter = () => {},
                         onClearSearch = () => {},
+                        tableType = 'dataTable',
                         paginator = null
                       }
                     ) => {
@@ -37,6 +39,8 @@ const CustomTable = (
     const [isFiltersInit, setIsFiltersInit] = useState(false);
     const [filtersData, setFiltersData] = useState({});
     const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
+    const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
+
    
     
     const initFilters = () => {
@@ -100,14 +104,19 @@ const CustomTable = (
         //console.log(e) 
         onApplyFilter(filtersData)
         const btn = document.querySelectorAll(".p-column-filter");
+        let activeFilterIndex = 0
+
         columns.map((col,index)=>{
-          if (filtersData.hasOwnProperty(col['field'])) {
-              //console.log(filtersData[col['field']],index)
+           if (col.isFilter) {
+            if (filtersData.hasOwnProperty(col['field'])) {
+              console.log(filtersData[col['field']],index,activeFilterIndex)
               if (filtersData[col['field']]) {
               // console.log(btn[index].children[0].children[0].style.color)
-               btn[index].children[0].children[0].style.color = 'white'
-               btn[index].classList.add('__activeFilter')           
+               btn[activeFilterIndex].children[0].children[0].style.color = 'white'
+               btn[activeFilterIndex].classList.add('__activeFilter')           
               } 
+           }
+             activeFilterIndex += 1
            }
         })
        }
@@ -364,7 +373,7 @@ const CustomTable = (
                                 showFilterMatchModes={false}
                                 filterField={col.field} 
                                 dataType="date"
-                                style={{ minWidth: '10rem' }}
+                                style={{ minWidth: '1rem' }}
                                 body={dateBodyTemplate}
                                 filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
                                 onFilterApplyClick={(e)=>onClickFilter(e)}
@@ -375,11 +384,12 @@ const CustomTable = (
                
                   }              
                   else{
-                    return <Column 
+                    return  <Column 
                     key={col.field} 
                     columnKey={col.field} 
                     field={col.field} 
                     header={col.header} 
+                    expander = {col.expander}
                     showFilterMatchModes={false}
                     filter={col.isFilter}
                     filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
@@ -415,15 +425,30 @@ const CustomTable = (
 
   return ( <>
         <div>
-            <DataTable 
+            {
+              tableType === 'dataTable'?<DataTable 
                 value={data}
                 tableStyle={{ minWidth: '50rem' }} 
                 className="skalebot-table"
                 filters={filters}         
-                header={header} emptyMessage="No customers found."
+                header={header} emptyMessage="No data found."
                 >
-                {dynamicColumns}
-            </DataTable>
+              {dynamicColumns}
+               </DataTable>
+               :
+               <TreeTable 
+                  value={data}
+                  tableStyle={{ minWidth: '50rem' }} 
+                  className="skalebot-table"
+                  filters={filters}         
+                  header={header} emptyMessage="No data found."
+                  selectionMode="checkbox" 
+                  selectionKeys={selectedNodeKeys} 
+                  onSelectionChange={(e) => setSelectedNodeKeys(e.value)}
+                  >
+                  {dynamicColumns}
+              </TreeTable>
+            }
         </div>
        {
         paginator && <div className="flex  justify-content-end">
