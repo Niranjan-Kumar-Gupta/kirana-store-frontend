@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { CustomButton } from "../../components/CustomButton";
 import { useState, useRef, useEffect } from "react";
-// import { ReactComponent as SkalebotLogo } from "../../assets/svgIcons/Skalebot.svg";
+import { ReactComponent as SkaleworkLogo } from "../../assets/svgIcons/Skalework.svg";
 import { login } from "../../reducers/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +81,7 @@ export const Login = () => {
         >
           <div className={` ${styles["login-module"]}`}>
           <div className="w-5 py-2">
-            {/* <SkalebotLogo /> */}
+            <SkaleworkLogo />
           </div>
           <div className={`${styles["login-form"]}`}>
             <form onSubmit={handleSubmit(onSubmit)} className="p-fluid pt-8">

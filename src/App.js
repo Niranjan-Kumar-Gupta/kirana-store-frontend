@@ -22,6 +22,7 @@ import Categories from './view/Categories'
 import PaymentHistory from './view/PaymentHistory'
 import UserProfile from './view/UserProfile'
 import { Login } from './view/Login'
+import { ResetPass } from './view/ResetPass'
 import parseJwt from './utils/authUtils'
 import { setUser } from './reducers/authSlice'
 
@@ -66,9 +67,10 @@ function App() {
           <Route path='categories' element={<Categories />} />
           <Route path='userProfile' element={<UserProfile />} />
           <Route path='paymentHistory' element={<PaymentHistory />} />
-          <Route path='*' element={<p>There's nothing here... </p>} />
         </Route>
         <Route index path='login' element={<Login />} />
+        {/* <Route path="/resetpass" element={<ResetPass />} /> */}
+        <Route path='*' element={<p>There's nothing here... </p>} />
       </Routes>
     </div>
   )
