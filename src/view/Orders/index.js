@@ -203,6 +203,7 @@ console.log(data)
         onApplySearch={onApplySearch}
         onClearFilter={onClearFilter}
         onClearSearch={onClearSearch}
+        tableType={'dataTable'}
         paginator={{page:page,limit:limit,totalRecords:30,changePage:changePage}}
       />  
     
