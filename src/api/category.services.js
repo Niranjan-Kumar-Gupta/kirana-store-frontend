@@ -4,7 +4,6 @@ import axiosInstance from "./axios.instance";
 
 const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) => {
   let resp;
-  console.log(filterData,globalFilterValue)
   try {
     if (filterData || globalFilterValue) {
       console.log(filterData,globalFilterValue)
@@ -17,12 +16,12 @@ const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) =>
          allFilter += `&global=${globalFilterValue}`
       }
       resp = await axiosInstance.get(
-        `/category?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+        `/category?page=${pageNo}&limit=${limit}&${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/category?page=${pageNo}&limit=${limit}&isActive=1`
+      `/category?page=${pageNo}&limit=${limit}`
       );
      }
     return resp.data;

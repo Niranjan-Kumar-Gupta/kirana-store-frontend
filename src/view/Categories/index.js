@@ -5,6 +5,15 @@ import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
 import { Text } from '../../components/Text'
 import CustomTable from "../../components/CustomTable";
+import {
+  changeSelectedCategory,
+  getCategories,
+  changePage,
+  changeMode,
+  resetSelectedCategory,
+  resetMode,
+  changelimit
+} from "../../reducers/categoryTableSlice";
 
 const Categories = () => {
   const loading = false;
@@ -13,95 +22,7 @@ const Categories = () => {
   // table--------------------------------
 
 
-  const [category, setCategory] = useState([
-    {
-      key: '0',
-      data: {
-          name: 'Applications',
-          size: '100kb',
-          type: 'Folder'
-      },
-      children: [
-          {
-              key: '0-0',
-              data: {
-                  name: 'React',
-                  size: '25kb',
-                  type: 'Folder'
-              },
-              children: [
-                  {
-                      key: '0-0-0',
-                      data: {
-                          name: 'react.app',
-                          size: '10kb',
-                          type: 'Application'
-                      }
-                  },
-                  {
-                      key: '0-0-1',
-                      data: {
-                          name: 'native.app',
-                          size: '10kb',
-                          type: 'Application'
-                      }
-                  },
-                  {
-                      key: '0-0-2',
-                      data: {
-                          name: 'mobile.app',
-                          size: '5kb',
-                          type: 'Application'
-                      }
-                  }
-              ]
-          },
-          {
-              key: '0-1',
-              data: {
-                  name: 'editor.app',
-                  size: '25kb',
-                  type: 'Application'
-              }
-          },
-          {
-              key: '0-2',
-              data: {
-                  name: 'settings.app',
-                  size: '50kb',
-                  type: 'Application'
-              }
-          }
-      ]
-  },
-  {
-      key: '1',
-      data: {
-          name: 'Cloud',
-          size: '20kb',
-          type: 'Folder'
-      },
-      children: [
-          {
-              key: '1-0',
-              data: {
-                  name: 'backup-1.zip',
-                  size: '10kb',
-                  type: 'Zip'
-              }
-          },
-          {
-              key: '1-1',
-              data: {
-                  name: 'backup-2.zip',
-                  size: '10kb',
-                  type: 'Zip'
-              }
-          }
-      ]
-  },
-]
-  );
+  const [category, setCategory] = useState([]);
 
   let items = ['New','In Progress','Done']
   const columns = [
