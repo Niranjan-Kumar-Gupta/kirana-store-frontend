@@ -57,10 +57,10 @@ export const getCustomerRole = createAsyncThunk(
 
 export const addCustomer = createAsyncThunk(
   "customerTable/addCustomer",
-  async ({data,selectedGroupId,selectedGroupCustomers}, thunkAPI) => {
+  async (data, thunkAPI) => {
 
     try {
-      const resp = await API_ADD_CUSTOMER(data, selectedGroupId,selectedGroupCustomers);
+      const resp = await API_ADD_CUSTOMER(data);
       return resp;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)

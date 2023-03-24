@@ -13,7 +13,7 @@ const initialState = {
   loading: false,
   selectedCategory: null,
   page: 0,
-  limit: 10,
+  limit: 100000,
   mode: null,
 };
 
@@ -91,7 +91,7 @@ const categoryTableSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.totalCategoryCount = action.payload.count;
-      state.categoryData = action.payload.rows;
+      state.categoryData = action.payload.children;
       state.loading = false;
     });
     builder.addCase(getCategories.pending, (state) => {

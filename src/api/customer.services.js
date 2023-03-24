@@ -28,20 +28,9 @@ const API_CREATE_GROUP = async (data) => {
   }
 };
 
-const API_ADD_CUSTOMER = async (data, groupId, selectedGroupCustomers) => {
+const API_ADD_CUSTOMER = async (data) => {
   try {
     const resp = await axiosInstance.post(`/customer`, data);
-    const customerId = resp.data.id;
-
-    if (groupId && customerId) {
-      const updateGroupWithNewCustomer = {
-        customerIds: [...selectedGroupCustomers, customerId],
-      };
-      await axiosInstance.put(
-        `/customer-group/${groupId}`,
-        updateGroupWithNewCustomer
-      );
-    }
     return resp.data;
   } catch (err) {
     throw err;

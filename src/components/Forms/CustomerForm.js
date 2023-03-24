@@ -1,32 +1,35 @@
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { CustomButton } from "../CustomButton";
-import { classNames } from "primereact/utils";
-import "./formStyle.css";
-import { useDispatch, useSelector } from "react-redux";
-// import { addCustomer, updateCustomer } from "../../reducers/customerTableSlice";
-import * as Messag from "../../config/ToastMessage";
-import PhoneInputWithCountry from "react-phone-number-input/react-hook-form"
+import { useState, useEffect } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { Dialog } from 'primereact/dialog'
+import { InputText } from 'primereact/inputtext'
+import { CustomButton } from '../CustomButton'
+import { classNames } from 'primereact/utils'
+import './formStyle.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { addCustomer, updateCustomer } from '../../reducers/customerTableSlice'
+import * as Messag from '../../config/ToastMessage'
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form'
 import { isValidPhoneNumber } from 'react-phone-number-input'
-import 'react-phone-number-input/style.css';
-import { Text } from "../Text";
+import 'react-phone-number-input/style.css'
+import { Text } from '../Text'
+import axiosInstance from '../../api/axios.instance'
+import { sortAlphabeticalObjectArr } from '../../utils/tableUtils'
+import { Dropdown } from 'primereact/dropdown'
 
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
-  const mode = "Add"
-  const selectedCustomer = {}
-  // const { mode, selectedCustomer } = useSelector(
-  //   (state) => state.customerTable
-  // );
+  const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
+  const [warehouse, setWarehouse] = useState([])
 
   const defaultValues = {
-    name: "",
-    phone: "",
-    email: "",
-  };
+    name: '',
+    phone: '',
+    email: '',
+    warehouseId: '',
+    gstNumber: '',
+    panNumber: '',
+  }
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const {
     control,
@@ -34,95 +37,141 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     handleSubmit,
     reset,
     setValue,
-  } = useForm({ defaultValues });
+  } = useForm({ defaultValues })
 
   //function form get error message
   const getFormErrorMessage = (name) => {
     return (
-      errors[name] && <small className="p-error">{errors[name].message}</small>
-    );
-  };
+      errors[name] && <small className='p-error'>{errors[name].message}</small>
+    )
+  }
 
-  
   // handle sumbit formdata
   const onSubmit = (data) => {
-    
-    data = {...data, phone: data.phone.substring(1)}
- 
-    console.log(data);
-    onHide();
-  };
+    data = { ...data, phone: data.phone.substring(1) }
+
+    if (mode === 'update') {
+      const customerId = selectedCustomer.id
+      dispatch(updateCustomer({ customerId, data }))
+        .unwrap()
+        .then((res) => {
+          onHide(reset)
+          let Message_Success = Messag.Update_Cust_ToastSuccessMessage
+          toast.current.show({ severity: 'success', detail: Message_Success })
+        })
+        .catch((err) => {
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
+    } else {
+      dispatch(addCustomer(data))
+        .unwrap()
+        .then((res) => {
+          onHide(reset)
+          //show toast here
+          let Message_Success = Messag.Add_Cust_ToastSuccessMessage
+          toast.current.show({ severity: 'success', detail: Message_Success })
+        })
+        .catch((err) => {
+          //show toast here
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
+    }
+  }
 
   useEffect(() => {
-    if (mode === "update" && selectedCustomer) {
-      setValue("name", selectedCustomer.name);
-      setValue("phone", '+' + selectedCustomer.phone);
-      setValue("email", selectedCustomer.email || "");
+    if (mode === 'update' && selectedCustomer) {
+      setValue('name', selectedCustomer.name)
+      setValue('phone', '+' + selectedCustomer.phone)
+      setValue('email', selectedCustomer.email || '')
+      setValue('warehouseId', selectedCustomer.warehouseId)
+      setValue('gstNumber', selectedCustomer.gstNumber || '')
+      setValue('panNumber', selectedCustomer.panNumber || '')
     }
-  }, []);
+
+    axiosInstance
+      .get(`/company/warehouse?page=0&limit=100000&isActive=1`)
+      .then((resp) => {
+        let sortedWarehouse = sortAlphabeticalObjectArr(resp.data, 'name')
+        setWarehouse(sortedWarehouse)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }, [])
 
   return (
     <Dialog
-      header={ <Text type={'heading'}><span style={{textDecorationLine:"underline", textDecorationStyle:"dashed"}}>{`${mode === "update" ? "Update" : "Add"} Customer`}</span></Text>}
+      header={
+        <Text type={'heading'}>
+          <span
+            style={{
+              textDecorationLine: 'underline',
+              textDecorationStyle: 'dashed',
+            }}
+          >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
+        </Text>
+      }
       visible={showCustomerForm}
-      className="dialog-custom"
+      className='dialog-custom'
       onHide={() => onHide(reset)}
     >
       <div className={`card`}>
-        <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
-          <div className="field">
-            <label htmlFor="name">Name *</label>
+        <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
+          <div className='field'>
+            <label htmlFor='name'>Name *</label>
             <Controller
-              name="name"
+              name='name'
               control={control}
-              rules={{ required: "Customer name is required." }}
+              rules={{ required: 'Customer name is required.' }}
               render={({ field, fieldState }) => (
                 <InputText
                   id={field.name}
                   maxLength={24}
-                  className={classNames({ "p-invalid": fieldState.invalid })}
-                  placeholder="Enter your name here"
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter your name here'
                   {...field}
                 />
               )}
             />
-            {getFormErrorMessage("name")}
+            {getFormErrorMessage('name')}
           </div>
-          <div className="field">
-            <label htmlFor="phone">Phone *</label>
+          <div className='field'>
+            <label htmlFor='phone'>Phone *</label>
             <Controller
-              name="phone"
+              name='phone'
               control={control}
-              rules={{ required: "phone number is required.",
-              // validate:value=> value.toString().length == 10 || "Please enter a valid phone number. " 
-              validate:value => isValidPhoneNumber(value.toString()) || "Please enter a valid phone number. " 
-            }}
+              rules={{
+                required: 'phone number is required.',
+                validate: (value) =>
+                  isValidPhoneNumber(value.toString()) ||
+                  'Please enter a valid phone number. ',
+              }}
               render={({ field, fieldState }) => (
                 <PhoneInputWithCountry
-                  name="phone"
+                  name='phone'
                   control={control}
-                  defaultCountry="IN"
+                  defaultCountry='IN'
                   id={field.name}
-                  placeholder="Enter phone number"
+                  placeholder='Enter phone number'
                   value={field.value}
-                  onChange={(e)=>field.onChange(e.value)}
-                  className={classNames({ "p-invalid": fieldState.invalid })}
+                  onChange={(e) => field.onChange(e.value)}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
                   {...field}
                 />
               )}
             />
-            {getFormErrorMessage("phone")}
+            {getFormErrorMessage('phone')}
           </div>
-          <div className="field">
-            <label htmlFor="email">Email</label>
+          <div className='field'>
+            <label htmlFor='email'>Email</label>
             <Controller
-              name="email"
+              name='email'
               control={control}
               rules={{
                 required: false,
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: "Enter a valid e-mail address",
+                  message: 'Enter a valid e-mail address',
                 },
               }}
               render={({ field, fieldState }) => (
@@ -130,42 +179,82 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                   id={field.name}
                   value={field.value}
                   onChange={(e) => field.onChange(e.value)}
-                  placeholder="Enter your email here"
-                  className={classNames({ "p-invalid": fieldState.invalid })}
+                  placeholder='Enter your email here'
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
                   {...field}
                 />
               )}
             />
-            {getFormErrorMessage("email")}
+            {getFormErrorMessage('email')}
+          </div>
+          <div className='field'>
+            <label htmlFor='categoryId'>Warehouse *</label>
+            <Controller
+              name='warehouseId'
+              control={control}
+              rules={{ required: 'Please select a warehouse.' }}
+              render={({ field, fieldState }) => (
+                <Dropdown
+                  id={field.name}
+                  options={warehouse}
+                  value={field.value}
+                  filter
+                  onChange={(e) => field.onChange(e.value)}
+                  optionLabel='name'
+                  optionValue='id'
+                  placeholder='Choose warehouse'
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                />
+              )}
+            />
+            {getFormErrorMessage('warehouseId')}
           </div>
 
-          {/* {mode !== "update" ? (
-            <div className="field">
-              <label htmlFor="groupId">Group (Optional)</label>
-              <Dropdown
-                id="groupId"
-                optionLabel="groupName"
-                optionValue="id"
-                options={availableGroups}
-                placeholder="Select a group"
-                value={selectedGroupId}
-                onChange={handleGroupSelect}
-                showClear
-              />
-            </div>
-          ) : (
-            <></>
-          )} */}
+          <div className='field'>
+            <label htmlFor='gstNumber'>GST No </label>
+            <Controller
+              name='gstNumber'
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputText
+                  id={field.name}
+                  maxLength={24}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter GST No'
+                  {...field}
+                />
+              )}
+            />
+            {getFormErrorMessage('gstNumber')}
+          </div>
+
+          <div className='field'>
+            <label htmlFor='panNumber'>PAN No </label>
+            <Controller
+              name='panNumber'
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputText
+                  id={field.name}
+                  maxLength={24}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter PAN No'
+                  {...field}
+                />
+              )}
+            />
+            {getFormErrorMessage('panNumber')}
+          </div>
 
           <div>
             <CustomButton
-              varient="filled"
-              type="submit"
-              label={mode === "update" ? "Update" : "Save"}
+              varient='filled'
+              type='submit'
+              label={mode === 'update' ? 'Update' : 'Save'}
             />
           </div>
         </form>
       </div>
     </Dialog>
-  );
-};
+  )
+}
