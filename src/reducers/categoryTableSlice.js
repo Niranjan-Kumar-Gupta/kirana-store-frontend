@@ -13,7 +13,7 @@ const initialState = {
   loading: false,
   selectedCategory: null,
   page: 0,
-  limit: 10,
+  limit: 100000,
   mode: null,
 };
 

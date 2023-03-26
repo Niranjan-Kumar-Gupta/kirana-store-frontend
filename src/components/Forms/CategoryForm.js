@@ -116,6 +116,8 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
     }
   }
 
+  console.log(categories)
+
   useEffect(() => {
     if (mode === 'update' && selectedCategory) {
 
