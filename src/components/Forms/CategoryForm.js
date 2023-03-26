@@ -66,11 +66,14 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
   }
 
   const onSubmit = (data) => {
+    console.log(data)
     if (data.parentId === '') {
       data.parentId = null
     }
     if (mode === 'update') {
+      console.log(selectedCategory)
       const categoryId = selectedCategory.id
+      console.log(categoryId)
       dispatch(updateCategory({ categoryId, data }))
         .unwrap()
         .then((res) => {
@@ -115,6 +118,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
 
   useEffect(() => {
     if (mode === 'update' && selectedCategory) {
+
       setValue('categoryName', selectedCategory.categoryName)
       setValue('parentId', selectedCategory.parentId)
       setValue('status', selectedCategory.status)

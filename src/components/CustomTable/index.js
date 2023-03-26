@@ -259,10 +259,21 @@ const CustomTable = (
       }
 
   //----------Date Filter--------------------------------
+  const formatDate = (value) => {
+    //console.log(value)
+    return new Date(value).toLocaleDateString();
+};
 
-  const dateBodyTemplate = (rowData) => {
-      return rowData.date;
-    };
+const dateBodyTemplate = (rowData) => {  
+  return rowData.date;
+};
+
+const dateBodyTemplateTree = (rowData)=>{
+ // console.log(rowData.data)
+ // return formatDate(rowData.data.updatedAt);
+ return formatDate('2023-03-24T14:37:11.000Z')
+}
+
   const dateFilterTemplate = (field,placeholder) => {
     return <div className="card flex flex-column justify-content-center">
               <div>
@@ -313,7 +324,7 @@ const CustomTable = (
                                     header="Actions"
                                     body={actionEditBodyTemplate}
                                     exportable={false}
-                                    bodyStyle={{ width: "100px" }}
+                                    bodyStyle={{ width: "80px" }}
                                 ></Column>
                     }else if (col.actionType[0]==='delete') {
                         return  <Column
@@ -321,7 +332,7 @@ const CustomTable = (
                                     header="Actions"
                                     body={actionDeleteBodyTemplate}
                                     exportable={false}
-                                    bodyStyle={{ width: "100px" }}
+                                    bodyStyle={{ width: "80px" }}
                                 ></Column> 
                     }
         }else if(col?.viewDetails){
@@ -331,7 +342,7 @@ const CustomTable = (
                         bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
                     />
               }        
-               else{
+        else{
                   if (col.filterType==='dropdown') {
                     return <Column 
                     key={col.field} 
@@ -365,8 +376,27 @@ const CustomTable = (
                     }}
                 />
                   }
-                else if (col.filterType==='date'){
-                    return  <Column
+                  else if (col.isDate){
+                   console.log('fff')
+                   if (col.isFilter) {
+                    if (tableType=='dataTable') {
+                      <Column
+                      key={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      showFilterMatchModes={false}
+                      filterField={col.field} 
+                      dataType="date"
+                      style={{ minWidth: '1rem' }}
+                      body={dateBodyTemplate}
+                      filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}} 
+                      disabled={false} 
+                      
+                      />
+                    } else if(tableType=='treeTable'){
+                      <Column
                                 key={col.field} 
                                 field={col.field} 
                                 header={col.header} 
@@ -374,14 +404,40 @@ const CustomTable = (
                                 filterField={col.field} 
                                 dataType="date"
                                 style={{ minWidth: '1rem' }}
-                                body={dateBodyTemplate}
+                                body={dateBodyTemplateTree}
                                 filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
                                 onFilterApplyClick={(e)=>onClickFilter(e)}
                                 onFilterClear={()=>{onClickClearFilter(col)}} 
                                 disabled={false} 
                                 
                                 />
-               
+                    }
+                    
+                   }else{
+                    if (tableType=='dataTable') {
+                    return  <Column
+                      key={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      dataType="date"
+                      style={{ minWidth: '1rem' }}
+                      body={dateBodyTemplate} 
+                      disabled={false}                  
+                      />
+                    } else if(tableType=='treeTable'){
+                     
+                     return <Column
+                                key={col.field} 
+                                field={col.field} 
+                                header={col.header} 
+                                dataType="date"
+                                style={{ minWidth: '1rem' }}
+                                body={dateBodyTemplateTree}
+                                disabled={false} 
+                                
+                                />
+                      }
+                    }
                   }              
                   else{
                     return  <Column 
@@ -411,7 +467,7 @@ const CustomTable = (
                     }:
                     {
                     width: "auto",
-                    minWidth: "150px",
+                    minWidth: "50px",
                     maxWidth: "350px",
                     textOverflow: "ellipsis",
                     }}
