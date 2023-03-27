@@ -21,10 +21,12 @@ import OrderDetails from './view/OrderDetails'
 import Categories from './view/Categories'
 import PaymentHistory from './view/PaymentHistory'
 import UserProfile from './view/UserProfile'
+import NewOrder from './view/New Order'
 import { Login } from './view/Login'
 import { ResetPass } from './view/ResetPass'
 import parseJwt from './utils/authUtils'
 import { setUser } from './reducers/authSlice'
+
 
 function App() {
   const dispatch = useDispatch()
@@ -55,6 +57,7 @@ function App() {
         >
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='orders' element={<Orders />} />
+          <Route path='orders/create' element={<NewOrder />} />
           <Route path='orders/orderDetails/:id' element={<OrderDetails />} />
           <Route path='stocks' element={<Stocks />} />
           <Route path='productionCards' element={<ProductionCards />} />
