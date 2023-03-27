@@ -1,6 +1,4 @@
-.p-dialog-header, .p-dialog-content{
-    background: #EDEDED !important;
-}
+
 
 .skalebot-table .p-checkbox .p-checkbox-box{
     /* background: #FFFFFF !important; */
@@ -61,9 +59,19 @@
     background-color: #1c738e !important; 
     border-radius: 50px;
 }
-
-
-
+.__numberBtn input{
+    width:50px !important; 
+    height: 40px;
+}
+.__saveBtn button{
+    width:60px !important; 
+    height: 40px;
+    padding: 0px !important;
+    margin-left: 5px !important;
+}
+.__inputNumberBody{
+    width: 100px !important;
+}
 @media only screen and (width < 768px) {
     .__searchField span{
         height: 42px;

@@ -6,11 +6,11 @@ const API_GET_CUSTOMERS = async (pageNo, limit,globalFilterValue) => {
     let resp;
     if (globalFilterValue) {    
      resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}&isActive=1&global=${globalFilterValue}`
+      `/customer?page=${pageNo}&limit=${limit}&global=${globalFilterValue}`
     );
     }else{
      resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}&isActive=1`
+      `/customer?page=${pageNo}&limit=${limit}`
     );
      }
     return resp.data;

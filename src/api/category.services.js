@@ -21,7 +21,7 @@ const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) =>
     }
     else{
       resp = await axiosInstance.get(
-      `/category?page=${pageNo}&limit=${limit}`
+      `/category/treetable`
       );
      }
     return resp.data;

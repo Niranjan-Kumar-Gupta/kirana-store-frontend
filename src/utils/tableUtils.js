@@ -1,4 +1,5 @@
 function updateTableData(currentList, updatedData) {
+  console.log(currentList,updatedData)
   const updatedList = currentList.map((item) => {
     if (item.id === updatedData.id) return updatedData;
     else return item;

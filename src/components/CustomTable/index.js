@@ -15,6 +15,7 @@ import { Text } from "../../components/Text";
 import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
 import { TreeTable } from 'primereact/treetable';
+import { InputNumber } from 'primereact/inputnumber';
 
 const CustomTable = (
                       {
@@ -40,6 +41,8 @@ const CustomTable = (
     const [filtersData, setFiltersData] = useState({});
     const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
     const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
+    const [inputNumberValue, setInputNumberValue] = useState(0);
+    const [isInputNumberChange, setIsInputNumberChange] = useState({isClick:false,columnId:''});
 
    
     
@@ -223,6 +226,35 @@ const CustomTable = (
            </div> 
          );
        };
+
+      function onClickNumberInput(rowData) {
+          console.log(rowData)
+          setIsInputNumberChange({...isInputNumberChange,['isClick']:false,['columnId']:rowData.id})
+       
+      } 
+      function onChangeNumberInput(e,rowData) {
+        console.log(rowData)
+        setInputNumberValue(e.value)
+        setIsInputNumberChange({...isInputNumberChange,['isClick']:true,['columnId']:rowData.id})
+        console.log(isInputNumberChange)
+      } 
+
+      const inputNumberBodyTemplate = (rowData) => {
+        console.log(rowData)
+         return (<>
+            <div className="flex __inputNumberBody">
+                   <div className="__numberBtn">        
+                       <InputNumber   inputId="minmax-buttons" value={rowData.onHold} 
+                                        onValueChange={(e) => {onChangeNumberInput(e,rowData)} } mode="decimal" showButtons  />   
+                   </div>
+                   <div className="__saveBtn">    
+                    {isInputNumberChange.isClick && (rowData.id === isInputNumberChange.columnId)? 
+                       <Button label="Save" onClick={()=>onClickNumberInput(rowData)} severity="success" raised />
+                    :<></>} 
+                  </div>
+             </div>
+         </>);
+      };
  
       
     const imageBodyTemplate = (rowData) => {
@@ -259,10 +291,21 @@ const CustomTable = (
       }
 
   //----------Date Filter--------------------------------
+  const formatDate = (value) => {
+    //console.log(value)
+    return new Date(value).toLocaleDateString();
+};
 
-  const dateBodyTemplate = (rowData) => {
-      return rowData.date;
-    };
+const dateBodyTemplate = (rowData) => {  
+  return rowData.date;
+};
+
+const dateBodyTemplateTree = (rowData)=>{
+ // console.log(rowData.data)
+ // return formatDate(rowData.data.updatedAt);
+ return formatDate('2023-03-24T14:37:11.000Z')
+}
+
   const dateFilterTemplate = (field,placeholder) => {
     return <div className="card flex flex-column justify-content-center">
               <div>
@@ -313,7 +356,7 @@ const CustomTable = (
                                     header="Actions"
                                     body={actionEditBodyTemplate}
                                     exportable={false}
-                                    bodyStyle={{ width: "100px" }}
+                                    bodyStyle={{ width: "80px" }}
                                 ></Column>
                     }else if (col.actionType[0]==='delete') {
                         return  <Column
@@ -321,7 +364,7 @@ const CustomTable = (
                                     header="Actions"
                                     body={actionDeleteBodyTemplate}
                                     exportable={false}
-                                    bodyStyle={{ width: "100px" }}
+                                    bodyStyle={{ width: "80px" }}
                                 ></Column> 
                     }
         }else if(col?.viewDetails){
@@ -331,7 +374,7 @@ const CustomTable = (
                         bodyStyle={{ color: "#1C738E", minWidth: "120px" }}
                     />
               }        
-               else{
+        else{
                   if (col.filterType==='dropdown') {
                     return <Column 
                     key={col.field} 
@@ -365,8 +408,27 @@ const CustomTable = (
                     }}
                 />
                   }
-                else if (col.filterType==='date'){
-                    return  <Column
+                  else if (col.isDate){
+                   console.log('fff')
+                   if (col.isFilter) {
+                    if (tableType=='dataTable') {
+                      <Column
+                      key={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      showFilterMatchModes={false}
+                      filterField={col.field} 
+                      dataType="date"
+                      style={{ minWidth: '1rem' }}
+                      body={dateBodyTemplate}
+                      filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}} 
+                      disabled={false} 
+                      
+                      />
+                    } else if(tableType=='treeTable'){
+                      <Column
                                 key={col.field} 
                                 field={col.field} 
                                 header={col.header} 
@@ -374,15 +436,51 @@ const CustomTable = (
                                 filterField={col.field} 
                                 dataType="date"
                                 style={{ minWidth: '1rem' }}
-                                body={dateBodyTemplate}
+                                body={dateBodyTemplateTree}
                                 filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
                                 onFilterApplyClick={(e)=>onClickFilter(e)}
                                 onFilterClear={()=>{onClickClearFilter(col)}} 
                                 disabled={false} 
                                 
                                 />
-               
-                  }              
+                    }
+                    
+                   }else{
+                    if (tableType=='dataTable') {
+                    return  <Column
+                      key={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      dataType="date"
+                      style={{ minWidth: '1rem' }}
+                      body={dateBodyTemplate} 
+                      disabled={false}                  
+                      />
+                    } else if(tableType=='treeTable'){
+                     
+                     return <Column
+                                key={col.field} 
+                                field={col.field} 
+                                header={col.header} 
+                                dataType="date"
+                                style={{ minWidth: '1rem' }}
+                                body={dateBodyTemplateTree}
+                                disabled={false} 
+                                
+                                />
+                      }
+                    }
+                  } 
+                  else if(col.bodyType==='numberInput'){
+                      return <Column
+                          key={col.field} 
+                          field={col.field} 
+                          header={col.header}                   
+                          style={{ minWidth: '1rem' }}
+                          body={inputNumberBodyTemplate}
+                          disabled={false}                    
+                      />
+                  }             
                   else{
                     return  <Column 
                     key={col.field} 
@@ -411,7 +509,7 @@ const CustomTable = (
                     }:
                     {
                     width: "auto",
-                    minWidth: "150px",
+                    minWidth: "50px",
                     maxWidth: "350px",
                     textOverflow: "ellipsis",
                     }}

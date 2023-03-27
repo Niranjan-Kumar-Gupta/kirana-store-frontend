@@ -6,12 +6,43 @@ import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
 import CustomTable from "../../components/CustomTable";
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  changeMode,
+  changeSelectedCustomer,
+  changeShowCustomersType,
+  changePage,
+  getCustomers,
+  resetMode,
+  resetSelectedCustomer,
+} from "../../reducers/customerTableSlice";
 
 const CustomerList = () => {
-  const loading = false
-
+  
   const toast = useRef(null)
+  const [displayBasic, setDisplayBasic] = useState(false);
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
+  const dispatch = useDispatch();
+
+  const {
+    customerData,
+    page,
+    limit,
+    loading,
+    totalCustomerCount,
+    showCustomersType,
+  } = useSelector((state) => state.customerTable);
+
+  useEffect(()=>{
+    dispatch(getCustomers({page:page,limit:limit}))
+    .unwrap()
+    .catch(()=>{ 
+      console.log(customerData)
+
+    }) 
+  },[page,limit])
+
 
 
   // customer list table------------------------
@@ -55,13 +86,15 @@ const CustomerList = () => {
  );
 
 
+
  const columns = [
-    {field: 'sNo',header: 'S.No.',isFilter:true,filterType:'input'},
-    {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'customerCode', header: 'Customer Code',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Code"},
-    {field: 'district', header: 'District',isFilter:true,filterType:'input',filterPlaceholder:"Search by District"},
+   // {field: 'id',header: 'S.No.',isFilter:false,filterType:'input'},
+    {field: 'name', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},
+    {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
     {field: 'email', header: 'Email',isFilter:false},  
-    {field: 'phoneNumber', header: 'Phone Number',isFilter:true,filterType:'input',filterPlaceholder:"Search by Phone Number"},
+    {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
+    //{field: 'gstNumber', header: 'GST Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
+    //{field: 'panNumber', header: 'PAN Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},  
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
   ];
 
@@ -80,15 +113,15 @@ const CustomerList = () => {
   
   const handleEdit = (customer) => {
      console.log('customer edit',customer)
-    // dispatch(changeMode("update"));
-    // dispatch(changeSelectedProduct(product));
-    // setDisplayAddProductModule(true);
+     dispatch(changeSelectedCustomer(customer));
+     dispatch(changeMode("update"));
+     setDisplayBasic(true);
   };
   const handleDelete = (customer) => {
     console.log('customer del',customer)
     //setMessage(product)
-    //dispatch(changeMode("delete"));
-    //dispatch(changeSelectedProduct(product));
+    dispatch(changeMode("delete"));
+   // dispatch(changeSelectedProduct(product));
      setDisplayAlertDelete(true);
   };
   const onApplyFilter = (data)=>{
@@ -132,6 +165,7 @@ const CustomerList = () => {
   return (
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
+      {displayBasic ? customerModal() : <></>}
       {showCustomerForm ? customerModal() : <></>}
       {loading ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
@@ -149,7 +183,7 @@ const CustomerList = () => {
             <div className="">
                <CustomTable 
                   tableName={'customerList'}
-                  data={customer}
+                  data={customerData}
                   columns={columns}
                   globalSearch={true}
                   handleEdit={handleEdit}
@@ -159,7 +193,7 @@ const CustomerList = () => {
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
                   tableType={'dataTable'}
-                  paginator={{page:0,limit:3,totalRecords:10,changePage:()=>{}}}
+                  paginator={{page:page,limit:limit,totalRecords:totalCustomerCount,changePage:changePage}}
                 />       
             </div>
         </div>

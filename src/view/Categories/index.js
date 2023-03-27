@@ -5,6 +5,8 @@ import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
 import { Text } from '../../components/Text'
 import CustomTable from "../../components/CustomTable";
+import { useDispatch,useSelector } from "react-redux";
+import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import {
   changeSelectedCategory,
   getCategories,
@@ -16,20 +18,42 @@ import {
 } from "../../reducers/categoryTableSlice";
 
 const Categories = () => {
-  const loading = false;
-  const [showCategoryForm, setShowCategoryForm] = useState(false)
+  
+  const { 
+        categoryData,
+        mode,
+        page,
+        limit,
+        loading,
+        totalCategoryCount 
+        } = useSelector((state) => state.categoryTable);
+
+  //const loading = false;
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(getCategories({page:page,limit:limit}))
+    .unwrap()
+    .catch(()=>{ 
+      console.log(categoryData)
+
+    }) 
+  },[page,limit])
 
   // table--------------------------------
 
 
-  const [category, setCategory] = useState([]);
-
   let items = ['New','In Progress','Done']
   const columns = [
-    {field: 'name', header: 'name',expander:true,isFilter:false,filterType:'input',filterPlaceholder:"Search by name"},
-    {field: 'size', header: 'size',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
-    {field: 'type', header: 'type',isFilter:false,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by type"},
-   
+    {field: 'categoryName', header: 'Category Name',expander:true,isFilter:false,filterType:'input',filterPlaceholder:"Search by name"},
+    {field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
+    {field: 'status', header: 'Status',isFilter:false,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by type"},
+    {field: 'desc', header: 'Description',isFilter:false,filterType:'input',filterPlaceholder:"Search by type"},
+    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
+    {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
+  
   ];
 
   const onApplyFilter = (data)=>{
@@ -44,7 +68,38 @@ const Categories = () => {
   const onClearSearch = (data)=>{
   console.log(data)
   }
-  
+  const handleEdit = (data) => {
+    console.log(' edit',data)
+    setShowCategoryForm(true)
+    dispatch(changeMode("update"));
+    const dataSelected = {
+      parentId:data.parentId,
+      categoryName:data.data.categoryName,
+      status:data.data.status,
+      desc:data.data.desc,
+      id:data.id
+    }
+    dispatch(changeSelectedCategory(dataSelected));
+  };
+
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item="category"
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    );
+  };
+
+  const handleDelete = (data) => {
+    console.log(' del',data)
+     dispatch(changeMode("delete"));
+     dispatch(changeSelectedCategory(data));
+     setDisplayAlertDelete(true);
+  };
+
   //-----------------------------------
 
   const onAddNewClick = () => {
@@ -75,6 +130,7 @@ const Categories = () => {
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
       {showCategoryForm ? categoryModal() : <></>}
+      {displayAlertDelete && deleteModule()}
       {loader ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
         <div>
@@ -91,15 +147,17 @@ const Categories = () => {
       <div>
       <CustomTable 
         tableName={'categoryTable'}
-        data={category}
+        data={categoryData}
         columns={columns} 
         globalSearch={true}
         onApplyFilter={onApplyFilter}
         onApplySearch={onApplySearch}
         onClearFilter={onClearFilter}
         onClearSearch={onClearSearch}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
         tableType={'treeTable'}
-        paginator={{page:0,limit:5,totalRecords:30,changePage:()=>{}}}
+        paginator={{page:page,limit:limit,totalRecords:totalCategoryCount,changePage:changePage}}
       />  
       </div>
     </div>

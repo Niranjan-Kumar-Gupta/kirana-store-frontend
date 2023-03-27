@@ -22,6 +22,7 @@ export const getCategories = createAsyncThunk(
   async ({ page, limit,filterData,globalFilterValue }, thunkAPI) => {
     try {
       const categories = await API_GET_CATEGORIES(page, limit,filterData,globalFilterValue);
+     
       return categories;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -92,6 +93,7 @@ const categoryTableSlice = createSlice({
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.totalCategoryCount = action.payload.count;
       state.categoryData = action.payload.children;
+      console.log(state.categoryData)
       state.loading = false;
     });
     builder.addCase(getCategories.pending, (state) => {
@@ -121,6 +123,7 @@ const categoryTableSlice = createSlice({
 
     //update category
     builder.addCase(updateCategory.fulfilled, (state, action) => {
+      console.log(state.categoryData,action.payload)
       state.categoryData = updateTableData(state.categoryData, action.payload)
       state.loading = false;
     });
