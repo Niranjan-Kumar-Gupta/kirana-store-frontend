@@ -177,7 +177,7 @@ console.log(data)
           varient='filled'
           label={'Create Order'}
           icon={'pi pi-plus'}
-          onClick={onAddNewClick}
+          onClick={() => navigate(`./create`)}
         />
       </div>
       <div className='flex flex-wrap gap-2 mt-2'>

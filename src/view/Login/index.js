@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 export const Login = () => {
   
   const {isLogedIn} = useSelector(state => state.authenticate);
-  console.log(isLogedIn)
+  
     
   const toast = useRef();
   const dispatch = useDispatch();
