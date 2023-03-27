@@ -13,7 +13,7 @@ import * as Messag from '../../config/ToastMessage'
 import { Text } from '../Text'
 import { TreeSelect } from 'primereact/treeselect'
 import { sortAlphabeticalObjectArr } from '../../utils/tableUtils'
-import { API_GET_CATEGORIES } from '../../api/category.services'
+import { API_GET_CATEGORIES_Dropdown } from '../../api/category.services'
 
 const statusOption = [
   { key: 'Available', value: 'Available' },
@@ -104,7 +104,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
 
   const getAllCategories = async () => {
     try {
-      const allCategories = await API_GET_CATEGORIES(0, 100000)
+      const allCategories = await API_GET_CATEGORIES_Dropdown(0, 100000)
       let sortedCategories = sortAlphabeticalObjectArr(
         allCategories.children,
         'categoryName'
