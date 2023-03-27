@@ -15,6 +15,7 @@ import { Text } from "../../components/Text";
 import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
 import { TreeTable } from 'primereact/treetable';
+import { InputNumber } from 'primereact/inputnumber';
 
 const CustomTable = (
                       {
@@ -40,6 +41,8 @@ const CustomTable = (
     const [filtersData, setFiltersData] = useState({});
     const [isGlobalFilterClick, setIsGlobalFilterClick] = useState(false);
     const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
+    const [inputNumberValue, setInputNumberValue] = useState(0);
+    const [isInputNumberChange, setIsInputNumberChange] = useState({isClick:false,columnId:''});
 
    
     
@@ -223,6 +226,35 @@ const CustomTable = (
            </div> 
          );
        };
+
+      function onClickNumberInput(rowData) {
+          console.log(rowData)
+          setIsInputNumberChange({...isInputNumberChange,['isClick']:false,['columnId']:rowData.id})
+       
+      } 
+      function onChangeNumberInput(e,rowData) {
+        console.log(rowData)
+        setInputNumberValue(e.value)
+        setIsInputNumberChange({...isInputNumberChange,['isClick']:true,['columnId']:rowData.id})
+        console.log(isInputNumberChange)
+      } 
+
+      const inputNumberBodyTemplate = (rowData) => {
+        console.log(rowData)
+         return (<>
+            <div className="flex __inputNumberBody">
+                   <div className="__numberBtn">        
+                       <InputNumber   inputId="minmax-buttons" value={rowData.onHold} 
+                                        onValueChange={(e) => {onChangeNumberInput(e,rowData)} } mode="decimal" showButtons  />   
+                   </div>
+                   <div className="__saveBtn">    
+                    {isInputNumberChange.isClick && (rowData.id === isInputNumberChange.columnId)? 
+                       <Button label="Save" onClick={()=>onClickNumberInput(rowData)} severity="success" raised />
+                    :<></>} 
+                  </div>
+             </div>
+         </>);
+      };
  
       
     const imageBodyTemplate = (rowData) => {
@@ -438,7 +470,17 @@ const dateBodyTemplateTree = (rowData)=>{
                                 />
                       }
                     }
-                  }              
+                  } 
+                  else if(col.bodyType==='numberInput'){
+                      return <Column
+                          key={col.field} 
+                          field={col.field} 
+                          header={col.header}                   
+                          style={{ minWidth: '1rem' }}
+                          body={inputNumberBodyTemplate}
+                          disabled={false}                    
+                      />
+                  }             
                   else{
                     return  <Column 
                     key={col.field} 
