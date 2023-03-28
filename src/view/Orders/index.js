@@ -26,11 +26,37 @@ import "./style.css";
 
 const Orders = () => {
 
+    
+  const {
+    orderData,
+    loading,
+    mode,
+    page,
+    limit,
+    selectedOrder,
+    totalOrderCount,
+    selectedOrderId,
+    selectedOrderProducts,
+    selectedOrdersList,
+  } = useSelector((state) => state.orderTable);
+
+  const dispatch = useDispatch();
+
   const navigate = useNavigate()
   const ids = [1, 2, 3, 4, 5, 6, 7, 8];
 
   // const loading = false;
   const [showOrderForm, setShowOrderForm] = useState(false)
+
+  useEffect(()=>{
+    dispatch(getOrders({page:page,limit:limit}))
+    .unwrap()
+    .catch(()=>{ 
+      console.log('kl..............',orderData)
+
+    }) 
+    console.log('kl..............',orderData)
+  },[page,limit])
 
   const onAddNewClick = () => {
     setShowOrderForm(true)
@@ -57,85 +83,17 @@ const Orders = () => {
   }
 
 
-  
-  const {
-    orderData,
-    loading,
-    mode,
-    page,
-    limit,
-    selectedOrder,
-    totalOrderCount,
-    selectedOrderId,
-    selectedOrderProducts,
-    selectedOrdersList,
-  } = useSelector((state) => state.orderTable);
-
-  const dispatch = useDispatch();
-
-  
-
-  const [orders, setOrders] = useState([
-    {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1001',
-        code: 'nvklal433',
-        name: 'Black Watch',
-        description: 'Product Description',
-        image: 'black-watch.jpg',
-        price: 72,
-        category: 'Accessories',
-        quantity: 61,
-        inventoryStatus: 'INSTOCK',
-        rating: 4
-    },
-    {
-        id: '1002',
-        code: 'zz21cz3c1',
-        name: 'Blue Band',
-        description: 'Product Description',
-        image: 'blue-band.jpg',
-        price: 79,
-        category: 'Fitness',
-        quantity: 2,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3
-    },
-    {
-        id: '1003',
-        code: '244wgerg2',
-        name: 'Blue T-Shirt',
-        description: 'Product Description',
-        image: 'blue-t-shirt.jpg',
-        price: 29,
-        category: 'Clothing',
-        quantity: 25,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-]
- );
-
- let items = ['New','In Progress','Done']
+ let statusItems = ['New','In Progress','Done']
+ let paymentItems = ['Done','Due']
  const columns = [
-    {field: 'id', header: 'id',isFilter:true,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'name', header: 'Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-    {field: 'price', header: 'Price',isFilter:false,filterPlaceholder:"Search by Price"},
-    {field: 'rating', header: 'Rating',isFilter:false,filterPlaceholder:"Search by Rating"},
+    {field: 'id', header: 'id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
+    {field: 'name', header: 'Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},
+    {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
+    {field: 'totalAmount', header: 'Total amount',isFilter:false,filterPlaceholder:"Search by Rating"},
+    {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
     {field: 'viewDetails', header: '',viewDetails:true},
-];
+  ];
 
 const handleEdit = (rowData) => {
   console.log(rowData)
@@ -193,9 +151,9 @@ console.log(data)
       </div>
       <CustomTable 
         tableName={'orderTable'}
-        data={orders}
+        data={orderData}
         columns={columns} 
-        globalSearch={false}
+        globalSearch={true}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         handleSelect={handleOrderSelect}
@@ -203,8 +161,9 @@ console.log(data)
         onApplySearch={onApplySearch}
         onClearFilter={onClearFilter}
         onClearSearch={onClearSearch}
+        dispatchFunction={getOrders}
         tableType={'dataTable'}
-        paginator={{page:page,limit:limit,totalRecords:30,changePage:changePage}}
+        paginator={{page:page,limit:limit,totalRecords:totalOrderCount,changePage:changePage}}
       />  
     
     </div>

@@ -3,25 +3,29 @@ import axiosInstance from "./axios.instance";
 // apies calls for categories
 
 const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) => {
+ // console.log(pageNo, limit,filterData,globalFilterValue)
   let resp;
   try {
     if (filterData || globalFilterValue) {
-      console.log(filterData,globalFilterValue)
-      let allFilter=''
-      filterData.forEach(element => {
-         console.log(element)
-         allFilter += `&${element.key}=${element.value}`
-      });
+      console.log(pageNo, limit,filterData,globalFilterValue)
+        let allFilter=''
+      // filterData.forEach(element => {
+      //    console.log(element)
+      //    allFilter += `&${element.key}=${element.value}`
+      // });
+      //console.log('filter........',globalFilterValue)
       if (globalFilterValue) {
          allFilter += `&global=${globalFilterValue}`
+        // console.log('filter........',allFilter)
       }
+      //console.log('filter........',allFilter)
       resp = await axiosInstance.get(
-        `/category?page=${pageNo}&limit=${limit}&${allFilter}`
+        `/category/treetable?page=${pageNo}&limit=${limit}${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/category/treetable`
+      `/category/treetable?page=${pageNo}&limit=${limit}`
       );
      }
     return resp.data;

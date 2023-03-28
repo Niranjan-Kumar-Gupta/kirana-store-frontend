@@ -1,17 +1,31 @@
 import axiosInstance from "./axios.instance";
 
 // apies calls for customers
-const API_GET_CUSTOMERS = async (pageNo, limit,globalFilterValue) => {
+const API_GET_CUSTOMERS = async (pageNo, limit,filterData ,globalFilterValue) => {
+  console.log(globalFilterValue,filterData)
   try {
-    let resp;
-    if (globalFilterValue) {    
-     resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}&global=${globalFilterValue}`
-    );
-    }else{
-     resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}`
-    );
+    var resp;
+    if (filterData || globalFilterValue) {
+      console.log(filterData,globalFilterValue)
+      let allFilter=''
+      if (filterData) {
+      let entries = Object.entries(filterData)
+       entries.map( ([key, val]) => {
+        allFilter += `&${key}=${val}`
+      });
+      }
+      if (globalFilterValue) {
+        console.log(filterData,globalFilterValue)
+         allFilter += `&global=${globalFilterValue}`
+      }
+      resp = await axiosInstance.get(
+        `/customer?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+         )
+    }
+    else{
+      resp = await axiosInstance.get(
+      `/customer?page=${pageNo}&limit=${limit}&isActive=1`
+      );
      }
     return resp.data;
   } catch (err) {

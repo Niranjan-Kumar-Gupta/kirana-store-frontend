@@ -89,7 +89,7 @@ const CustomerList = () => {
 
  const columns = [
    // {field: 'id',header: 'S.No.',isFilter:false,filterType:'input'},
-    {field: 'name', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},
+    {field: 'name', header: 'Customer Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
     {field: 'email', header: 'Email',isFilter:false},  
     {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
@@ -101,7 +101,7 @@ const CustomerList = () => {
   const deleteModule = () => {
     return (
       <DeleteAlert
-        item="Customer List"
+        item="customer"
         displayAlertDelete={displayAlertDelete}
         setDisplayAlertDelete={setDisplayAlertDelete}
         toast={toast}
@@ -116,19 +116,19 @@ const CustomerList = () => {
      dispatch(changeSelectedCustomer(customer));
      dispatch(changeMode("update"));
      setDisplayBasic(true);
+     setShowCustomerForm(true)
   };
   const handleDelete = (customer) => {
     console.log('customer del',customer)
-    //setMessage(product)
     dispatch(changeMode("delete"));
-   // dispatch(changeSelectedProduct(product));
+    dispatch(changeSelectedCustomer(customer));
      setDisplayAlertDelete(true);
   };
   const onApplyFilter = (data)=>{
     console.log(data)
   }
   const onApplySearch = (data)=>{
-    console.log(data)
+    console.log('apply',data)
   }
   const onClearFilter = (data)=>{
     console.log(data)
@@ -192,6 +192,7 @@ const CustomerList = () => {
                   onApplySearch={onApplySearch}
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
+                  dispatchFunction={getCustomers}
                   tableType={'dataTable'}
                   paginator={{page:page,limit:limit,totalRecords:totalCustomerCount,changePage:changePage}}
                 />       

@@ -45,10 +45,10 @@ const Categories = () => {
   // table--------------------------------
 
 
-  let items = ['New','In Progress','Done']
+  let items = ['Available','Unavailable']
   const columns = [
     {field: 'categoryName', header: 'Category Name',expander:true,isFilter:false,filterType:'input',filterPlaceholder:"Search by name"},
-    {field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
+    //{field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
     {field: 'status', header: 'Status',isFilter:false,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by type"},
     {field: 'desc', header: 'Description',isFilter:false,filterType:'input',filterPlaceholder:"Search by type"},
     {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
@@ -56,17 +56,30 @@ const Categories = () => {
   
   ];
 
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+
+
   const onApplyFilter = (data)=>{
     console.log(data)
+    
   }
   const onApplySearch = (data)=>{
-  console.log(data)
+     console.log('apply',data)
+     setGlobalFilterValue(data)
+    
+ 
+   
   }
   const onClearFilter = (data)=>{
     console.log(data)
+   
   }
   const onClearSearch = (data)=>{
-  console.log(data)
+     console.log(data)
+     setGlobalFilterValue(data)
+    
+   
   }
   const handleEdit = (data) => {
     console.log(' edit',data)
@@ -80,6 +93,7 @@ const Categories = () => {
       id:data.id
     }
     dispatch(changeSelectedCategory(dataSelected));
+  
   };
 
   const deleteModule = () => {
@@ -156,6 +170,7 @@ const Categories = () => {
         onClearSearch={onClearSearch}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
+        dispatchFunction={getCategories}
         tableType={'treeTable'}
         paginator={{page:page,limit:limit,totalRecords:totalCategoryCount,changePage:changePage}}
       />  

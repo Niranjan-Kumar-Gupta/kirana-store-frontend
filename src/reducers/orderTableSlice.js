@@ -17,9 +17,9 @@ const initialState = {
 
 export const getOrders = createAsyncThunk(
   "orderTable/getOrderList",
-  async ({ page, limit,startDate,endDate,filterData,globalFilterValue}, thunkAPI) => {
+  async ({ page, limit,filterData,globalFilterValue}, thunkAPI) => {
     try {
-      let orders = await API_GET_ORDERS(page, limit,startDate,endDate,filterData,globalFilterValue);
+      let orders = await API_GET_ORDERS(page, limit,filterData,globalFilterValue);
       return orders;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);

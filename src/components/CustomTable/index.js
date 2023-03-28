@@ -16,6 +16,7 @@ import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
 import { TreeTable } from 'primereact/treetable';
 import { InputNumber } from 'primereact/inputnumber';
+import { useDispatch } from 'react-redux';
 
 const CustomTable = (
                       {
@@ -30,6 +31,7 @@ const CustomTable = (
                         onApplySearch = () => {},
                         onClearFilter = () => {},
                         onClearSearch = () => {},
+                        dispatchFunction=()=>{},
                         tableType = 'dataTable',
                         paginator = null
                       }
@@ -43,6 +45,7 @@ const CustomTable = (
     const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
     const [inputNumberValue, setInputNumberValue] = useState(0);
     const [isInputNumberChange, setIsInputNumberChange] = useState({isClick:false,columnId:''});
+    const dispatch = useDispatch();
 
    
     
@@ -113,7 +116,7 @@ const CustomTable = (
            if (col.isFilter) {
             if (filtersData.hasOwnProperty(col['field'])) {
               console.log(filtersData[col['field']],index,activeFilterIndex)
-              if (filtersData[col['field']]) {
+              if (filtersData[col['field']] !== null) {
               // console.log(btn[index].children[0].children[0].style.color)
                btn[activeFilterIndex].children[0].children[0].style.color = 'white'
                btn[activeFilterIndex].classList.add('__activeFilter')           
@@ -122,21 +125,46 @@ const CustomTable = (
              activeFilterIndex += 1
            }
         })
+        let paginationData = {
+          page: paginator.page,
+          limit: paginator.limit,
+          filterData:filtersData,
+          globalFilterValue
+        }; 
+        console.log(paginationData)
+        dispatch(dispatchFunction(paginationData))
        }
 
      const onClickClearFilter = (e)=>{       
         const btn = document.querySelectorAll(".p-column-filter");
+        let activeFilterIndex = 0;
         columns.map((col,index)=>{
-          if (filtersData.hasOwnProperty(col['field']) && (col['field']===e.field)) {
-              //console.log(filtersData[col['field']],index)
-              if (filtersData[col['field']]) {
-                setFiltersData({...filtersData,[e.field]: null})
-                btn[index].classList.remove('__activeFilter')   
-                btn[index].children[0].children[0].style.color = '#6c757d'        
-              }
-           }
-        })
+          if (col.isFilter) {
+           if (filtersData.hasOwnProperty(col['field'])) {
+             //console.log(filtersData[col['field']],index,activeFilterIndex)
+             if (filtersData[col['field']]) {
+              setFiltersData({...filtersData,[e.field]: null})
+             // console.log(btn[index].children[0].children[0].style.color)
+              btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
+              btn[activeFilterIndex].classList.remove('__activeFilter') 
+             // console.log(filtersData[col['field']])
+              delete filtersData[col['field']]
+              let paginationData = {
+                page: paginator.page,
+                limit: paginator.limit,
+                filterData:filtersData,
+                globalFilterValue
+              }; 
+              //console.log(paginationData)
+              dispatch(dispatchFunction(paginationData))
+             } 
+          }
+            activeFilterIndex += 1
+          }
+       })
+       
         onClearFilter(filtersData)
+       
        }
 
     const onGlobalFilterChange = (e) => {
@@ -152,13 +180,37 @@ const CustomTable = (
         if (isGlobalFilterClick) {
           setIsGlobalFilterClick(false)
           setGlobalFilterValue('')
-          onClearSearch('')
+          //onClearSearch('')
+          let paginationData = {
+            page: paginator.page,
+            limit: paginator.limit,
+            filterData:filtersData,
+            globalFilterValue:''
+          }; 
+          dispatch(dispatchFunction(paginationData))
+          .unwrap()
+          .catch(()=>{ 
+             
+          }) 
         } else {
           setIsGlobalFilterClick(true)
-          onApplySearch(globalFilterValue)  
+          
+          //onApplySearch(globalFilterValue) 
+          let paginationData = {
+            page: paginator.page,
+            limit: paginator.limit,
+            filterData:filtersData,
+            globalFilterValue
+          }; 
+          console.log(paginationData)
+          dispatch(dispatchFunction(paginationData)) 
+          .unwrap()
+          .catch(()=>{ 
+             
+          }) 
         }       
       } 
-      //console.log(globalFilterValue)
+     // console.log(globalFilterValue)
     
     }
 
@@ -172,6 +224,9 @@ const CustomTable = (
     }
     }
 
+
+    
+    
   const renderHeader = () => {
         return (
             <div className="flex justify-content-end __searchField">
@@ -188,7 +243,7 @@ const CustomTable = (
   
         // console.log(rowData)
          return (
-           <div className="flex justify-content-end align-items-center gap-3">
+           <div className="flex justify-content-center align-items-center gap-3">
              <CustomButton
                varient="icon-button"
                icon={<Edit />}
@@ -206,7 +261,7 @@ const CustomTable = (
 
     const actionEditBodyTemplate = (rowData) => {
         return (
-          <div className="flex justify-content-end align-items-center gap-3">
+          <div className="flex justify-content-center align-items-center gap-3">
             <CustomButton
               varient="icon-button"
               icon={<Edit />}
@@ -217,7 +272,7 @@ const CustomTable = (
       };
     const actionDeleteBodyTemplate = (rowData) => {
          return (
-           <div className="flex justify-content-end align-items-center gap-3">
+           <div className="flex justify-content-center align-items-center gap-3">
              <CustomButton
                varient="icon-button"
                icon={<Delete />}
@@ -270,7 +325,7 @@ const CustomTable = (
                     style={{ width: "120px", height: "80px" }}
                 >
                     <img
-                    src={`${rowData.url}?v=${rowData.updatedAt}`}
+                    src={`${rowData.previewUrl}?v=${rowData.updatedAt}`}
                     onError={(e) => (e.target.src = "./images/ImgPlaceholder.svg")}
                     style={{ maxWidth: "100%", height: "100%" }}
                     />
@@ -349,6 +404,13 @@ const dateBodyTemplateTree = (rowData)=>{
                                     body={actionBodyTemplate}
                                     exportable={false}
                                     bodyStyle={{ width: "100px" }}
+                                    headerStyle={
+                                      {
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      marginTop: "5px",
+                                      }
+                                  }
                                 ></Column>
                     }else if (col.actionType[0]==='edit') {
                         return  <Column
@@ -357,6 +419,13 @@ const dateBodyTemplateTree = (rowData)=>{
                                     body={actionEditBodyTemplate}
                                     exportable={false}
                                     bodyStyle={{ width: "80px" }}
+                                    headerStyle={
+                                      {
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      marginTop: "5px",
+                                      }
+                                  }
                                 ></Column>
                     }else if (col.actionType[0]==='delete') {
                         return  <Column
@@ -365,6 +434,13 @@ const dateBodyTemplateTree = (rowData)=>{
                                     body={actionDeleteBodyTemplate}
                                     exportable={false}
                                     bodyStyle={{ width: "80px" }}
+                                    headerStyle={
+                                      {
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      marginTop: "5px",
+                                      }
+                                  }
                                 ></Column> 
                     }
         }else if(col?.viewDetails){
@@ -409,7 +485,7 @@ const dateBodyTemplateTree = (rowData)=>{
                 />
                   }
                   else if (col.isDate){
-                   console.log('fff')
+                
                    if (col.isFilter) {
                     if (tableType=='dataTable') {
                       <Column
