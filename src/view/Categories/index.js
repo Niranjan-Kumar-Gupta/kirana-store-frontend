@@ -56,31 +56,7 @@ const Categories = () => {
   
   ];
 
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
-
-
-
-  const onApplyFilter = (data)=>{
-    console.log(data)
-    
-  }
-  const onApplySearch = (data)=>{
-     console.log('apply',data)
-     setGlobalFilterValue(data)
-    
  
-   
-  }
-  const onClearFilter = (data)=>{
-    console.log(data)
-   
-  }
-  const onClearSearch = (data)=>{
-     console.log(data)
-     setGlobalFilterValue(data)
-    
-   
-  }
   const handleEdit = (data) => {
     console.log(' edit',data)
     setShowCategoryForm(true)
@@ -158,16 +134,13 @@ const Categories = () => {
         />
       </div>
 
-      <div>
+      <div className='mt-2'>
+
       <CustomTable 
         tableName={'categoryTable'}
         data={categoryData}
         columns={columns} 
         globalSearch={true}
-        onApplyFilter={onApplyFilter}
-        onApplySearch={onApplySearch}
-        onClearFilter={onClearFilter}
-        onClearSearch={onClearSearch}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         dispatchFunction={getCategories}

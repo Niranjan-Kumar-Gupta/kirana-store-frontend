@@ -126,7 +126,6 @@ console.log(data)
   return (
     <div className="w-11 pt-3 m-auto">
       <Toast ref={toast} />
-      <h4>Order List</h4>
       {showOrderForm ? orderModal() : <></>}
       {loader ? loader() : <></>}
       <div className='flex justify-content-between align-items-center'>
@@ -138,7 +137,7 @@ console.log(data)
           onClick={() => navigate(`./create`)}
         />
       </div>
-      <div className='flex flex-wrap gap-2 mt-2'>
+      {/* <div className='flex flex-wrap gap-2 mt-2'>
         {ids.map((id) => (
           <div
             onClick={() => navigate(`orderDetails/${id}`)}
@@ -148,7 +147,8 @@ console.log(data)
             <Text type={'heading'}>Order {id}</Text>
           </div>
         ))}
-      </div>
+      </div> */}
+      <div className='mt-2'>
       <CustomTable 
         tableName={'orderTable'}
         data={orderData}
@@ -165,6 +165,7 @@ console.log(data)
         tableType={'dataTable'}
         paginator={{page:page,limit:limit,totalRecords:totalOrderCount,changePage:changePage}}
       />  
+      </div>
     
     </div>
   );

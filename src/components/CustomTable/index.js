@@ -32,6 +32,7 @@ const CustomTable = (
                         onClearFilter = () => {},
                         onClearSearch = () => {},
                         dispatchFunction=()=>{},
+                        onEditNumberInput=()=>{},
                         tableType = 'dataTable',
                         paginator = null
                       }
@@ -285,17 +286,19 @@ const CustomTable = (
       function onClickNumberInput(rowData) {
           console.log(rowData)
           setIsInputNumberChange({...isInputNumberChange,['isClick']:false,['columnId']:rowData.id})
-       
+          rowData.onHold = inputNumberValue
+          onEditNumberInput(rowData)
       } 
       function onChangeNumberInput(e,rowData) {
-        console.log(rowData)
+       // console.log(rowData)
         setInputNumberValue(e.value)
         setIsInputNumberChange({...isInputNumberChange,['isClick']:true,['columnId']:rowData.id})
-        console.log(isInputNumberChange)
+       // console.log(isInputNumberChange)
+       
       } 
 
       const inputNumberBodyTemplate = (rowData) => {
-        console.log(rowData)
+        //console.log(rowData)
          return (<>
             <div className="flex __inputNumberBody">
                    <div className="__numberBtn">        
