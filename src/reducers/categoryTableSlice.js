@@ -92,7 +92,7 @@ const categoryTableSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.totalCategoryCount = action.payload.count;
-      state.categoryData = action.payload.children;
+      state.categoryData = action.payload.rows;
       console.log(state.categoryData)
       state.loading = false;
     });

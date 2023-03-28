@@ -38,6 +38,15 @@ const API_GET_ORDERS = async (pageNo, limit,startDate,endDate,filterData,globalF
   }
 };
 
+const API_GET_ORDER_DETAILS = async (orderId ) => {
+  try {
+    const resp = await axiosInstance.get(`/order/${orderId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 const API_PUT_ORDER = async (orderId, updatedData) => {
   try {
@@ -48,4 +57,4 @@ const API_PUT_ORDER = async (orderId, updatedData) => {
   }
 };
 
-export { API_GET_ORDERS, API_PUT_ORDER };
+export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS };
