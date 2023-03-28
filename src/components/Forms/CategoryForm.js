@@ -74,7 +74,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
       console.log(selectedCategory)
       const categoryId = selectedCategory.id
       console.log(categoryId)
-      dispatch(updateCategory({ categoryId, data }))
+      dispatch(updateCategory({ categoryId, data ,page:page,limit:limit}))
         .unwrap()
         .then((res) => {
           //show toast here

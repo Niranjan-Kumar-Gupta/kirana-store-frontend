@@ -45,12 +45,13 @@ export const addCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   "categoryTable/updateCategory",
-  async ({ categoryId, data }, thunkAPI) => {
+  async ({ categoryId, data,page,limit }, thunkAPI) => {
     try {
       const resp = await API_PUT_CATEGORY(categoryId, data);
      // let currentState = current(state)
       if (resp) {
-        const respGet =  await API_GET_CATEGORIES(initialState.page, initialState.limit);     
+        
+        const respGet =  await API_GET_CATEGORIES(page,limit);     
         return respGet;
       }
     } catch (err) {
@@ -130,7 +131,7 @@ const categoryTableSlice = createSlice({
     builder.addCase(updateCategory.fulfilled, (state, action) => {
   
      // state.categoryData = updateTableData(current(state).categoryData,action.payload)
-     state.categoryData = action.payload.children
+     state.categoryData = action.payload.rows
      state.loading = false;  
     });
     builder.addCase(updateCategory.pending, (state) => {
