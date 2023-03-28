@@ -9,7 +9,7 @@ import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
   // const { selectedCustomer } = useSelector(state => state.customerTable);
-  // const { selectedCategory } = useSelector(state => state.categoryTable);
+   const { selectedCategory } = useSelector(state => state.categoryTable);
   // const { selectedProduct } = useSelector(state => state.productTable);
 
  const dispatch = useDispatch();
@@ -29,17 +29,17 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     //   })
   }
   const deleteCategoryItem = () => {
-    // dispatch(deleteCategory(selectedCategory.id))
-    //   .unwrap()
-    //   .then(res => {
-    //     //show toast here
-    //     let Message_Success = Messag.Delete_Cat_ToastSuccessMessage;
-    //     toast.current.show({ severity: 'success', detail: Message_Success });
-    //   })
-    //   .catch(err => {
-    //     //show toast here
-    //     toast.current.show({ severity: 'error', detail: err.response.data });
-    //   })
+    dispatch(deleteCategory(selectedCategory.id))
+      .unwrap()
+      .then(res => {
+        //show toast here
+        let Message_Success = Messag.Delete_Cat_ToastSuccessMessage;
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        //show toast here
+        toast.current.show({ severity: 'error', detail: err.response.data });
+      })
   }
   const deleteCustomerItem = () => {
     // dispatch(deleteCustomer(selectedCustomer.id))
@@ -62,7 +62,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         //dispatch(resetSelectedProduct())
         break;
       case 'category':
-        //dispatch(resetSelectedCategory())
+        dispatch(resetSelectedCategory())
         break;
       case "customer":
         //dispatch(resetSelectedCustomer())
@@ -72,12 +72,13 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     }
   }
   const handleDelete = () => {
+    console.log('delete',item)
     switch (item) {
       case 'product':
        // deleteProductItem()
         break;
       case 'category':
-       // deleteCategoryItem()
+        deleteCategoryItem()
         break;
       case "customer":
        // deleteCustomerItem()

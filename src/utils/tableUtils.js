@@ -1,4 +1,5 @@
 function updateTableData(currentList, updatedData) {
+  console.log(currentList,updatedData)
   const updatedList = currentList.map((item) => {
     if (item.id === updatedData.id) return updatedData;
     else return item;
@@ -50,6 +51,27 @@ function getCustomersFromSelectedGroup(groupsArr, selectedGroupId){
   return []
 }
 
+function getAlphabeticalSortedArr(dataArr){
+  let sortedArr =  dataArr.sort(function (a, b) {
+   return a.toLowerCase().localeCompare(b.toLowerCase());
+})
+return sortedArr
+}
+
+function sortAlphabeticalObjectArr(data,fieldName){
+ let sortedData = data.sort(function(a,b){
+   return a[fieldName].toLowerCase().localeCompare(b[fieldName].toLowerCase())
+ })
+ return sortedData
+}
+
+function formatText(str){
+ let firstChar = str.charAt(0).toUpperCase();
+ let formatedStr = firstChar + str.slice(1);
+
+ return formatedStr;
+}
+
 export {
   updateTableData,
   removeDeleteData,
@@ -57,5 +79,8 @@ export {
   getCampaignCustomers,
   getUnselectedProducts,
   isProductInList,
-  getCustomersFromSelectedGroup
+  getCustomersFromSelectedGroup,
+  getAlphabeticalSortedArr,
+  formatText,
+  sortAlphabeticalObjectArr
 };

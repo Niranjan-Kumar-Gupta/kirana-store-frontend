@@ -6,11 +6,11 @@ const API_GET_CUSTOMERS = async (pageNo, limit,globalFilterValue) => {
     let resp;
     if (globalFilterValue) {    
      resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}&isActive=1&global=${globalFilterValue}`
+      `/customer?page=${pageNo}&limit=${limit}&global=${globalFilterValue}`
     );
     }else{
      resp = await axiosInstance.get(
-      `/customer?page=${pageNo}&limit=${limit}&isActive=1`
+      `/customer?page=${pageNo}&limit=${limit}`
     );
      }
     return resp.data;
@@ -28,20 +28,9 @@ const API_CREATE_GROUP = async (data) => {
   }
 };
 
-const API_ADD_CUSTOMER = async (data, groupId, selectedGroupCustomers) => {
+const API_ADD_CUSTOMER = async (data) => {
   try {
     const resp = await axiosInstance.post(`/customer`, data);
-    const customerId = resp.data.id;
-
-    if (groupId && customerId) {
-      const updateGroupWithNewCustomer = {
-        customerIds: [...selectedGroupCustomers, customerId],
-      };
-      await axiosInstance.put(
-        `/customer-group/${groupId}`,
-        updateGroupWithNewCustomer
-      );
-    }
     return resp.data;
   } catch (err) {
     throw err;

@@ -4,7 +4,6 @@ import axiosInstance from "./axios.instance";
 
 const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) => {
   let resp;
-  console.log(filterData,globalFilterValue)
   try {
     if (filterData || globalFilterValue) {
       console.log(filterData,globalFilterValue)
@@ -17,14 +16,26 @@ const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) =>
          allFilter += `&global=${globalFilterValue}`
       }
       resp = await axiosInstance.get(
-        `/category?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+        `/category?page=${pageNo}&limit=${limit}&${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/category?page=${pageNo}&limit=${limit}&isActive=1`
+      `/category/treetable`
       );
      }
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_GET_CATEGORIES_Dropdown = async (pageNo, limit) => {
+  let resp;
+  try {
+    resp = await axiosInstance.get(
+    `/category?page=${pageNo}&limit=${limit}`
+    );
     return resp.data;
   } catch (err) {
     throw err;
@@ -65,5 +76,6 @@ export {
   API_ADD_CATEGORY,
   API_DELETE_CATEGORY,
   API_GET_CATEGORIES,
+  API_GET_CATEGORIES_Dropdown,
   API_PUT_CATEGORY,
 };

@@ -1,0 +1,30 @@
+.login-component{
+  background: #1C738E;
+  height: 100vh;
+  color: #ffffff;
+}
+.wrapper-login{
+  height: calc(100vh-80px);
+}
+
+.login-module{
+  min-height: 300px;
+  width: 30vw;
+  margin: auto;
+  min-width: 320px;
+  max-width: 350px;
+}
+
+.login-form{
+  height: auto;
+  background: #F8F8FC;
+  border: 1px solid #EDEDED;
+  border-radius: 4px;
+  color: #1A1A1A;
+  padding: 18px;
+}
+.page-swap{
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
