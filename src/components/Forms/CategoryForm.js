@@ -27,7 +27,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
     desc: '',
   }
 
-  const { mode, selectedCategory } = useSelector((state) => state.categoryTable)
+  const { mode, selectedCategory,page,limit,getCategories } = useSelector((state) => state.categoryTable)
 
   const defaultCategory = { key: null, label: 'Root Category' }
 
@@ -74,13 +74,19 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
       console.log(selectedCategory)
       const categoryId = selectedCategory.id
       console.log(categoryId)
-      dispatch(updateCategory({ categoryId, data }))
+      dispatch(updateCategory({ categoryId, data ,page:page,limit:limit}))
         .unwrap()
         .then((res) => {
           //show toast here
           onHide(reset)
           let Message_Success = Messag.Update_Cat_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
+          dispatch(getCategories({page:page,limit:limit}))
+          .unwrap()
+          .catch(()=>{ 
+           // console.log(categoryData)
+      
+          }) 
         })
         .catch((err) => {
           //show toast here

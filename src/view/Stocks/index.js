@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CustomTable from "../../components/CustomTable";
-
+import { Text } from '../../components/Text'
 export const Stocks = () => {
 
 
@@ -15,7 +15,7 @@ export const Stocks = () => {
         category: 'Accessories',
         avilable: 24,
         inventoryStatus: 'INSTOCK',
-        onHold: 5,
+        onHold: 0,
         date: '2015-09-13',
         url:['https://picsum.photos/320/180','https://picsum.photos/330/190','https://picsum.photos/300/170']
     },
@@ -29,7 +29,7 @@ export const Stocks = () => {
         category: 'Accessories',
         avilable: 61,
         inventoryStatus: 'INSTOCK',
-        onHold: 4,
+        onHold: 0,
         date: '2015-09-07',
         url:'https://picsum.photos/300/180'
     },
@@ -43,7 +43,7 @@ export const Stocks = () => {
         category: 'Fitness',
         avilable: 2,
         inventoryStatus: 'LOWSTOCK',
-        onHold: 3,
+        onHold: 0,
         date: '2015-09-01',
         url:['https://picsum.photos/300/180','https://picsum.photos/300/190','https://picsum.photos/300/170']
     },
@@ -57,7 +57,7 @@ export const Stocks = () => {
         category: 'Clothing',
         avilable: 25,
         inventoryStatus: 'INSTOCK',
-        onHold: 5,
+        onHold: 0,
         date: '2015-09-13',
     },
 ]
@@ -94,12 +94,25 @@ export const Stocks = () => {
   const onClearSearch = (data)=>{
   console.log(data)
   }
+  const onEditNumberInput = (data)=>{
+    console.log(data)
+    products.forEach(ele => {
+       if (data.id===ele.id) {
+         ele.avilable += data.onHold
+       }
+    });
+    }
 
 
     return (
       <div className="w-11 pt-3 m-auto">
-         <h1>Stocks</h1>
-         <div className="">
+         <div className={'flex justify-content-between align-items-center'}>
+        <div>
+          <Text type='heading'>Categories</Text>
+        </div>
+      </div>
+
+         <div className="mt-2">
                <CustomTable 
                   tableName={'productTable'}
                   data={products}
@@ -109,6 +122,7 @@ export const Stocks = () => {
                   onApplySearch={onApplySearch}
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
+                  onEditNumberInput={onEditNumberInput}
                   paginator={{page:0,limit:5,totalRecords:10,changePage:()=>{}}}
                 />       
             </div>

@@ -45,10 +45,10 @@ const Categories = () => {
   // table--------------------------------
 
 
-  let items = ['New','In Progress','Done']
+  let items = ['Available','Unavailable']
   const columns = [
     {field: 'categoryName', header: 'Category Name',expander:true,isFilter:false,filterType:'input',filterPlaceholder:"Search by name"},
-    {field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
+    //{field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
     {field: 'status', header: 'Status',isFilter:false,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by type"},
     {field: 'desc', header: 'Description',isFilter:false,filterType:'input',filterPlaceholder:"Search by type"},
     {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
@@ -56,18 +56,7 @@ const Categories = () => {
   
   ];
 
-  const onApplyFilter = (data)=>{
-    console.log(data)
-  }
-  const onApplySearch = (data)=>{
-  console.log(data)
-  }
-  const onClearFilter = (data)=>{
-    console.log(data)
-  }
-  const onClearSearch = (data)=>{
-  console.log(data)
-  }
+ 
   const handleEdit = (data) => {
     console.log(' edit',data)
     setShowCategoryForm(true)
@@ -80,6 +69,7 @@ const Categories = () => {
       id:data.id
     }
     dispatch(changeSelectedCategory(dataSelected));
+  
   };
 
   const deleteModule = () => {
@@ -144,18 +134,16 @@ const Categories = () => {
         />
       </div>
 
-      <div>
+      <div className='mt-2'>
+
       <CustomTable 
         tableName={'categoryTable'}
         data={categoryData}
         columns={columns} 
         globalSearch={true}
-        onApplyFilter={onApplyFilter}
-        onApplySearch={onApplySearch}
-        onClearFilter={onClearFilter}
-        onClearSearch={onClearSearch}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
+        dispatchFunction={getCategories}
         tableType={'treeTable'}
         paginator={{page:page,limit:limit,totalRecords:totalCategoryCount,changePage:changePage}}
       />  

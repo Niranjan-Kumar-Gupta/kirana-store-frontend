@@ -33,9 +33,10 @@ const initialState = {
 
 export const getCustomers = createAsyncThunk(
   "customerTable/getCustomerList",
-  async ({ page, limit,globalFilterValue }, thunkAPI) => {
+  async ({ page, limit,filterData,globalFilterValue }, thunkAPI) => {
+    console.log(page,limit,filterData,globalFilterValue)
     try {
-      const customers = await API_GET_CUSTOMERS(page, limit,globalFilterValue);
+      const customers = await API_GET_CUSTOMERS(page, limit,filterData,globalFilterValue);
       return customers;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
