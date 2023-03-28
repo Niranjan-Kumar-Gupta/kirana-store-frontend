@@ -12,6 +12,8 @@ import { Text } from '../../components/Text'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { Toast } from 'primereact/toast'
+import style from './style.module.css'
+import { useNavigate } from 'react-router-dom'
 
 const NewOrder = () => {
   const [customers, setCustomers] = useState([])
@@ -94,6 +96,7 @@ const NewOrder = () => {
   ]
 
   const toast = useRef(null)
+  const navigate = useNavigate();
 
   const defaultValues = {
     customerId: '',
@@ -178,31 +181,26 @@ const NewOrder = () => {
     }
   }
   
-  const onCellEditComplete = (e) => {
+  const onCellEditComplete = (e, rowIndex) => {
     let _products = [...tableData];
-    let { newValue, rowIndex } = e;
-    _products[rowIndex].quantity = newValue; 
+    _products[rowIndex].quantity = e.value; 
     setTableData(_products);
   }
  
-  const qtyEditor = (options) => {
+  const qtyEditor = (rowData, colData) => {
     return (
       <InputNumber
-        value={options.value}
+        value={rowData.quantity}
         placeholder="Enter Quantity"
+        id={rowData.key}
+        name={rowData.label}
         showButtons
-        style={{ width: '10rem' }}
+        style={{ width: '12rem' }}
         min={0}
         incrementButtonIcon='pi pi-plus'
         decrementButtonIcon='pi pi-minus'
-        onValueChange={(e) => options.editorCallback(e.value)}
+        onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
       />
-    )
-  }
-
-  const qtyBody = (rowData) => {
-    return (
-      rowData.quantity ? rowData.quantity : <div>Click here to edit</div>
     )
   }
 
@@ -210,7 +208,6 @@ const NewOrder = () => {
     return (
       <DataTable
         value={tableData}
-        editMode='cell'
         dataKey='key'
         responsiveLayout='scroll'
         resizableColumns
@@ -221,19 +218,24 @@ const NewOrder = () => {
           className='qtyCells'
           header='Quantity'
           field='quantity'
-          onCellEditComplete={onCellEditComplete}
-          editor={(options) => qtyEditor(options)}
-          body={qtyBody}
+          body={qtyEditor}
         ></Column>
       </DataTable>
     )
+  }
+
+  const goBack = () => {
+    navigate('/orders')
   }
 
   return (
     <>
       <div className='w-11 pt-3 m-auto'>
         <Toast ref={toast} />
-        <div className='mb-3'>
+        <div className='flex align-items-center mb-3'>
+          <button className={style.customButton} onClick={goBack}>
+            <span className={`pi pi-arrow-circle-left mr-3 ${style.font}`} ></span>
+          </button>
           <Text type={'heading'}>New Order</Text>
         </div>
         <div className={`card`}>
