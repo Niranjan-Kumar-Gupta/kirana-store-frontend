@@ -34,6 +34,18 @@ const API_GET_CATEGORIES = async (pageNo, limit,filterData,globalFilterValue) =>
   }
 };
 
+const API_GET_CATEGORIES_Dropdown = async (pageNo, limit) => {
+  let resp;
+  try {
+    resp = await axiosInstance.get(
+    `/category?page=${pageNo}&limit=${limit}`
+    );
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 const API_ADD_CATEGORY = async (configData) => {
   try {
@@ -68,5 +80,6 @@ export {
   API_ADD_CATEGORY,
   API_DELETE_CATEGORY,
   API_GET_CATEGORIES,
+  API_GET_CATEGORIES_Dropdown,
   API_PUT_CATEGORY,
 };
