@@ -33,6 +33,15 @@ const API_GET_CUSTOMERS = async (pageNo, limit,filterData ,globalFilterValue) =>
   }
 };
 
+const API_GET_CUSTOMER_BY_ID = async (customerId) => {
+  try {
+    const resp = await axiosInstance.get(`/customer/${customerId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const API_CREATE_GROUP = async (data) => {
   try {
     const resp = await axiosInstance.post(`/customer-group`, data);
@@ -118,5 +127,6 @@ export {
   API_GET_GROUP_CUSTOMERS,
   API_GET_GROUPS,
   API_CREATE_GROUP,
-  API_PUT_GROUP
+  API_PUT_GROUP,
+  API_GET_CUSTOMER_BY_ID
 };

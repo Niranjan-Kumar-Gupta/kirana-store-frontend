@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { API_GET_ORDERS, API_PUT_ORDER } from "../api/order.services";
+import { API_GET_ORDERS, API_GET_ORDER_DETAILS, API_PUT_ORDER } from "../api/order.services";
 import { updateTableData, isProductInList, getUnselectedProducts } from "../utils/tableUtils";
 
 const initialState = {
@@ -12,7 +12,8 @@ const initialState = {
   page: 0,
   limit: 10,
   mode: null,
-  selectedOrdersList: []
+  selectedOrdersList: [],
+  orderDetails: {},
 };
 
 export const getOrders = createAsyncThunk(
@@ -26,6 +27,18 @@ export const getOrders = createAsyncThunk(
     }
   }
 );
+
+export const getOrderDetails = createAsyncThunk(
+  "orderTable/getOrderDetails",
+  async ( orderId, thunkAPI) => {
+    try {
+      let orderDetails = await API_GET_ORDER_DETAILS(orderId);
+      return orderDetails;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+)
 
 export const updateOrder = createAsyncThunk(
   "orderTable/updateStatus",
@@ -92,6 +105,9 @@ const orderTableSlice = createSlice({
     },
     resetSelectedOrdersList(state) {
       state.selectedOrdersList = []
+    },
+    resetOrderDetails(state) {
+      state.orderDetails = {}
     }
   },
 
@@ -105,6 +121,17 @@ const orderTableSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getOrders.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getOrderDetails.fulfilled, (state, action) => {
+      state.orderDetails = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getOrderDetails.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getOrderDetails.rejected, (state) => {
       state.loading = false;
     });
 
@@ -125,6 +152,6 @@ const orderTableSlice = createSlice({
   },
 });
 
-export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList } = orderTableSlice.actions;
+export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails } = orderTableSlice.actions;
 
 export default orderTableSlice.reducer;
