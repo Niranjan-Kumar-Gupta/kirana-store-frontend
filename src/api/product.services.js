@@ -4,30 +4,44 @@ import axios from "axios";
 const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
   try {
     var resp;
-    if (filterData || globalFilterValue) {
-      console.log(filterData,globalFilterValue)
-      let allFilter=''
-      filterData.forEach(element => {
-         console.log(element)
-         allFilter += `&${element.key}=${element.value}`
-      });
-      if (globalFilterValue) {
-         allFilter += `&global=${globalFilterValue}`
-      }
-      resp = await axiosInstance.get(
-        `/product?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
-         )
-    }
-    else{
-      resp = await axiosInstance.get(
+    // if (filterData || globalFilterValue) {
+    //   console.log(filterData,globalFilterValue)
+    //   let allFilter=''
+    //   filterData.forEach(element => {
+    //      console.log(element)
+    //      allFilter += `&${element.key}=${element.value}`
+    //   });
+    //   if (globalFilterValue) {
+    //      allFilter += `&global=${globalFilterValue}`
+    //   }
+    //   resp = await axiosInstance.get(
+    //     `/product?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+    //      )
+    // }
+    // else{
+    //   resp = await axiosInstance.get(
+    //   `/product?page=${pageNo}&limit=${limit}&isActive=1`
+    //   );
+    //  }
+    resp = await axiosInstance.get(
       `/product?page=${pageNo}&limit=${limit}&isActive=1`
       );
-     }
     return resp.data;
   } catch (err) {
     throw err;
   }
 };
+
+const API_GET_PRODUCTS_ID=async (id)=>{
+  try{
+  let resp = await axiosInstance.get(
+      `product/${id}`
+      );
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
 
 const API_ADD_PRODUCT = async (configData,image) => {
 
@@ -68,6 +82,7 @@ const API_DELETE_PRODUCT = async (productID) => {
 export {
   API_ADD_PRODUCT,
   API_GET_PRODUCTS,
+  API_GET_PRODUCTS_ID,
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
 };

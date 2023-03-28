@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   API_ADD_PRODUCT,
   API_GET_PRODUCTS,
+  API_GET_PRODUCTS_ID,
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
 } from "../api/product.services";
@@ -17,17 +18,18 @@ const initialState = {
   totalProductCount: 0,
   loading: false,
   selectedProduct: null,
-  page: 0,
-  limit: 2,
+  page: 1,
+  limit: 10,
   mode: null,
   selectedProductsList: [],
 };
 
 export const getProducts = createAsyncThunk(
   "productTable/getProducts",
-  async ({ page, limit,filterData,globalFilterValue }, thunkAPI) => {
+  async ({ page=1, limit=10,filterData,globalFilterValue }, thunkAPI) => {
     try {
-      let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
+      // let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
+      let products = await API_GET_PRODUCTS();
       return products;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);

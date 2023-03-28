@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ProductList = () => {
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const toast = useRef(null)
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
   const [showProductForm, setShowProductForm] = useState(false)
@@ -110,6 +110,17 @@ const ProductList = () => {
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   
   ];
+
+  useEffect(()=>{
+    console.log("Sss")
+    dispatch(getProducts()).unwrap().
+    then((resp) => {
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  },[])
+
 
   const deleteModule = () => {
     return (
@@ -207,7 +218,7 @@ console.log(data)
             <div className="">
                <CustomTable 
                   tableName={'productTable'}
-                  data={products}
+                  data={productData}
                   columns={columns}
                   globalSearch={true}
                   handleEdit={handleEdit}
