@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice , current } from "@reduxjs/toolkit";
 import {
   API_GET_CATEGORIES,
   API_ADD_CATEGORY,
@@ -13,7 +13,7 @@ const initialState = {
   loading: false,
   selectedCategory: null,
   page: 0,
-  limit: 100000,
+  limit: 4,
   mode: null,
 };
 
@@ -45,10 +45,15 @@ export const addCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   "categoryTable/updateCategory",
-  async ({ categoryId, data }, thunkAPI) => {
+  async ({ categoryId, data,page,limit }, thunkAPI) => {
     try {
       const resp = await API_PUT_CATEGORY(categoryId, data);
-      return resp;
+     // let currentState = current(state)
+      if (resp) {
+        
+        const respGet =  await API_GET_CATEGORIES(page,limit);     
+        return respGet;
+      }
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
@@ -91,6 +96,7 @@ const categoryTableSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getCategories.fulfilled, (state, action) => {
+     
       state.totalCategoryCount = action.payload.count;
       state.categoryData = action.payload.rows;
       console.log(state.categoryData)
@@ -123,9 +129,10 @@ const categoryTableSlice = createSlice({
 
     //update category
     builder.addCase(updateCategory.fulfilled, (state, action) => {
-      console.log(state.categoryData,action.payload)
-      state.categoryData = updateTableData(state.categoryData, action.payload)
-      state.loading = false;
+  
+     // state.categoryData = updateTableData(current(state).categoryData,action.payload)
+     state.categoryData = action.payload.rows
+     state.loading = false;  
     });
     builder.addCase(updateCategory.pending, (state) => {
       state.loading = true;
@@ -136,6 +143,7 @@ const categoryTableSlice = createSlice({
 
     //delete category
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
+      console.log(state.categoryData)
       state.categoryData = removeDeleteData(state.categoryData, action.payload)
       state.totalCategoryCount -= 1;
       state.loading = false;
