@@ -10,23 +10,22 @@ import { changeShowNotice } from "../../reducers/appSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
   // const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory } = useSelector(state => state.categoryTable);
-  // const { selectedProduct } = useSelector(state => state.productTable);
+  const { selectedProduct } = useSelector(state => state.productTable);
 
  const dispatch = useDispatch();
 
   const deleteProductItem = () => {
-    // dispatch(deleteProduct(selectedProduct.id))
-    //   .unwrap()
-    //   .then(res => {
-    //     dispatch(changeShowNotice(true))
-    //     //show toast here
-    //     let Message_Success = Messag.Delete_Product_ToastSuccessMessage;
-    //     toast.current.show({ severity: 'success', detail: Message_Success });
-    //   })
-    //   .catch(err => {
-    //     //show toast here
-    //     toast.current.show({ severity: 'error', detail: err.response.data });
-    //   })
+    dispatch(deleteProduct(selectedProduct.id))
+      .unwrap()
+      .then(res => {
+        dispatch(changeShowNotice(true))
+        //show toast here
+        toast.current.show({ severity: 'success', detail: "Succesfully Product Deleted" });
+      })
+      .catch(err => {
+        //show toast here
+        toast.current.show({ severity: 'error', detail: err.response });
+      })
   }
   const deleteCategoryItem = () => {
     dispatch(deleteCategory(selectedCategory.id))
@@ -59,7 +58,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     setDisplayAlertDelete(false)
     switch (item) {
       case 'product':
-        //dispatch(resetSelectedProduct())
+        dispatch(resetSelectedProduct())
         break;
       case 'category':
         dispatch(resetSelectedCategory())
@@ -75,7 +74,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     console.log('delete',item)
     switch (item) {
       case 'product':
-       // deleteProductItem()
+        deleteProductItem()
         break;
       case 'category':
         deleteCategoryItem()

@@ -1,9 +1,10 @@
 import axiosInstance from "./axios.instance";
 import axios from "axios";
 // apies calls for products
-const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
+const API_GET_PRODUCTS = async (pageNo, limit) => {
   try {
     var resp;
+    // pageNo, limit,filterData,globalFilterValue
     // if (filterData || globalFilterValue) {
     //   console.log(filterData,globalFilterValue)
     //   let allFilter=''
@@ -24,7 +25,7 @@ const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
     //   );
     //  }
     resp = await axiosInstance.get(
-      `/product?page=${pageNo}&limit=${limit}&isActive=1`
+      `/product?page=${pageNo-1}&limit=${limit}&isActive=1`
       );
     return resp.data;
   } catch (err) {
@@ -41,6 +42,28 @@ const API_GET_PRODUCTS_ID=async (id)=>{
   } catch (err) {
     throw err;
   }
+}
+
+const API_GET_CAT=async ()=>{
+  try{
+    let resp = await axiosInstance.get(
+        `category/`
+        );
+      return resp.data;
+    } catch (err) {
+      throw err;
+    }
+}
+
+const API_GET_VARIENT_ID=async (id)=>{
+  try{
+    let resp = await axiosInstance.get(
+        `product/${id}/option`
+        );
+      return resp.data;
+    } catch (err) {
+      throw err;
+    }
 }
 
 const API_ADD_PRODUCT = async (configData,image) => {
@@ -60,7 +83,9 @@ const API_ADD_PRODUCT = async (configData,image) => {
 const API_PUT_PRODUCT = async (productId, updatedData,image) => {
   try {
     const {data} = await axiosInstance.put(`/product/${productId}`, updatedData);
-    const imgUploadUrl = await data.src;
+    // const imgUploadUrl = await data.src;
+    console.log("sdsad",updatedData)
+    const imgUploadUrl = await updatedData.src;
     if(imgUploadUrl && typeof image ==='object'){
       var uploded = await  axios.put(imgUploadUrl,image,{headers:{'Content-Type': 'image/png'}})
     }
@@ -85,4 +110,6 @@ export {
   API_GET_PRODUCTS_ID,
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
+  API_GET_CAT,
+  API_GET_VARIENT_ID,
 };

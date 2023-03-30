@@ -3,8 +3,10 @@ import {
   API_ADD_PRODUCT,
   API_GET_PRODUCTS,
   API_GET_PRODUCTS_ID,
+  API_GET_CAT,
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
+  API_GET_VARIENT_ID,
 } from "../api/product.services";
 import {
   removeDeleteData,
@@ -21,16 +23,57 @@ const initialState = {
   page: 1,
   limit: 10,
   mode: null,
+  catagories:[],
+  varient:[],
   selectedProductsList: [],
 };
 
 export const getProducts = createAsyncThunk(
   "productTable/getProducts",
-  async ({ page=1, limit=10,filterData,globalFilterValue }, thunkAPI) => {
+  async ({page, limit}, thunkAPI) => {
     try {
+      // page=1, limit=10,filterData,globalFilterValue
       // let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
-      let products = await API_GET_PRODUCTS();
+      let products = await API_GET_PRODUCTS(page, limit);
       return products;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getProductbyid = createAsyncThunk(
+  "productTable/getProductsbyid",
+  async ({id}, thunkAPI) => {
+    try {
+      let products = await API_GET_PRODUCTS_ID(id);
+      return products;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getVarientbyid = createAsyncThunk(
+  "productTable/getVarientbyid",
+  async ({id}, thunkAPI) => {
+    try {
+      let products = await API_GET_VARIENT_ID(id);
+      return products;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getCategory = createAsyncThunk(
+  "productTable/getCategory",
+  async ( thunkAPI) => {
+    try {
+      // page=1, limit=10,filterData,globalFilterValue
+      // let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
+      let resp = await API_GET_CAT();
+      return resp;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
     }
@@ -140,6 +183,40 @@ const productTableSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getProducts.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getProductbyid.fulfilled, (state, action) => {
+      state.selectedProduct = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getProductbyid.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getProductbyid.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getVarientbyid.fulfilled, (state, action) => {
+      state.varient = action.payload.rows;
+      state.loading = false;
+    });
+    builder.addCase(getVarientbyid.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getVarientbyid.rejected, (state) => {
+      state.loading = false;
+    });
+
+
+    builder.addCase(getCategory.fulfilled, (state, action) => {
+      state.catagories = action.payload.rows;
+      state.loading = false;
+    });
+    builder.addCase(getCategory.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getCategory.rejected, (state) => {
       state.loading = false;
     });
 

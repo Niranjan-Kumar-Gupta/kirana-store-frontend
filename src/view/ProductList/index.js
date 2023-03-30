@@ -32,91 +32,24 @@ const ProductList = () => {
     totalProductCount,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
-  const [products, setProducts] = useState([
-    {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
-        date: '2015-09-13',
-        url:['https://picsum.photos/320/180','https://picsum.photos/330/190','https://picsum.photos/300/170']
-    },
-    {
-        id: '1001',
-        code: 'nvklal433',
-        name: 'Black Watch',
-        description: 'Product Description',
-        image: 'black-watch.jpg',
-        price: 72,
-        category: 'Accessories',
-        quantity: 61,
-        inventoryStatus: 'INSTOCK',
-        rating: 4,
-        date: '2015-09-07',
-        url:'https://picsum.photos/300/180'
-    },
-    {
-        id: '1002',
-        code: 'zz21cz3c1',
-        name: 'Blue Band',
-        description: 'Product Description',
-        image: 'blue-band.jpg',
-        price: 79,
-        category: 'Fitness',
-        quantity: 2,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3,
-        date: '2015-09-01',
-        url:['https://picsum.photos/300/180','https://picsum.photos/300/190','https://picsum.photos/300/170']
-    },
-    {
-        id: '1003',
-        code: '244wgerg2',
-        name: 'Blue T-Shirt',
-        description: 'Product Description',
-        image: 'blue-t-shirt.jpg',
-        price: 29,
-        category: 'Clothing',
-        quantity: 25,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
-        date: '2015-09-13',
-    },
-]
- );
-
+ 
+// console.log(page,limit)
  let items = ['New','In Progress','Done']
  const columns = [
-       {
-        field: 'code',
-        header: 'Code',
-        isFilter:true,
-        filterType:'dropdown',
-        dropdownItems:items,
-        filterPlaceholder:"Search by code"
-      },
-    {field: 'name', header: 'Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-    {field: 'quantity', header: 'Quantity',isFilter:true,filterType:'input',filterPlaceholder:"Search by Quantity"},
-    {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-    //{field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Rating"},
-    {field: 'date', header: 'Date',isFilter:true,filterType:'date',filterPlaceholder:"Search by Date"},
+    {field: 'SKUCode',header: 'SKUCode'},
+    {field: 'productName', header: 'Product Name'},
+    {field: 'categoryId', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
+    {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
+    {field: 'desc', header: 'Description'},  
+    {field: 'createdAt', header: 'Date'},
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
-  
   ];
 
+  
   useEffect(()=>{
-    console.log("Sss")
-    dispatch(getProducts()).unwrap().
-    then((resp) => {
-    })
-    .catch((err) => {
+    dispatch(getProducts({page, limit})).unwrap().then((resp) => {
+      // console.log("Ss")
+    }).catch((err) => {
       console.log(err)
     })
   },[])
@@ -134,16 +67,16 @@ const ProductList = () => {
   };
 
   const handleEdit = (product) => {
-    console.log('prod edit',product)
-    // dispatch(changeMode("update"));
+    // console.log('prod edit',product)
+    dispatch(changeMode("update"));
     // dispatch(changeSelectedProduct(product));
+    navigate(`/products/productDetails/${product.id}`)
     // setDisplayAddProductModule(true);
   };
   const handleDelete = (product) => {
-    console.log('prod del',product)
-    //setMessage(product)
-    // dispatch(changeMode("delete"));
-    // dispatch(changeSelectedProduct(product));
+    // console.log('prod del',product)
+    dispatch(changeMode("delete"));
+    dispatch(changeSelectedProduct(product));
      setDisplayAlertDelete(true);
   };
 
@@ -161,7 +94,9 @@ console.log(data)
 }
 
   const onAddNewClick = () => {
-    setShowProductForm(true)
+    navigate(`/products/productDetails/add`)
+
+    // setShowProductForm(true)
   }
 
   const onHide = () => {
@@ -182,8 +117,6 @@ console.log(data)
     )
   }
 
-  const ids = [1, 2, 3, 4, 5, 6, 7, 8]
-
   return (
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
@@ -201,17 +134,6 @@ console.log(data)
         />
       </div>
 
-      <div className='flex flex-wrap gap-2 mt-2'>
-        {ids.map((id) => (
-          <div
-            onClick={() => navigate(`productDetails/${id}`)}
-            className={'products flex justify-content-center align-items-center'}
-            key={id}
-          >
-            <Text type={'heading'}>Product {id}</Text>
-          </div>
-        ))}
-      </div>
        <Toast ref={toast} />
         <div className="card my-3">
             {displayAlertDelete && deleteModule()}

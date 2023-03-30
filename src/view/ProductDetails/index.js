@@ -14,132 +14,15 @@ import {TreeSelect} from 'primereact/treeselect'
 import { Dropdown } from 'primereact/dropdown';
 import { CustomImageInput } from '../../components/CustomImageInput';
 import VariantField from '../../components/VarientField' 
+import { getProductbyid,getVarientbyid,getCategory,addProduct,updateProduct } from '../../reducers/productTableSlice';
 import './index.css';
 
 
-const categoryData = [
-  {
-    key: '0',
-    label: 'Documents',
-    data: 'Documents Folder',
-    icon: 'pi pi-fw pi-inbox',
-    children: [
-      {
-        key: '0-0',
-        label: 'Work',
-        data: 'Work Folder',
-        icon: 'pi pi-fw pi-cog',
-        children: [
-          {
-            key: '0-0-0',
-            label: 'Expenses.doc',
-            icon: 'pi pi-fw pi-file',
-            data: 'Expenses Document',
-          },
-          {
-            key: '0-0-1',
-            label: 'Resume.doc',
-            icon: 'pi pi-fw pi-file',
-            data: 'Resume Document',
-          },
-        ],
-      },
-      {
-        key: '0-1',
-        label: 'Home',
-        data: 'Home Folder',
-        icon: 'pi pi-fw pi-home',
-        children: [
-          {
-            key: '0-1-0',
-            label: 'Invoices.txt',
-            icon: 'pi pi-fw pi-file',
-            data: 'Invoices for this month',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: '1',
-    label: 'Events',
-    data: 'Events Folder',
-    icon: 'pi pi-fw pi-calendar',
-    children: [
-      {
-        key: '1-0',
-        label: 'Meeting',
-        icon: 'pi pi-fw pi-calendar-plus',
-        data: 'Meeting',
-      },
-      {
-        key: '1-1',
-        label: 'Product Launch',
-        icon: 'pi pi-fw pi-calendar-plus',
-        data: 'Product Launch',
-      },
-      {
-        key: '1-2',
-        label: 'Report Review',
-        icon: 'pi pi-fw pi-calendar-plus',
-        data: 'Report Review',
-      },
-    ],
-  },
-  {
-    key: '2',
-    label: 'Movies',
-    data: 'Movies Folder',
-    icon: 'pi pi-fw pi-star-fill',
-    children: [
-      {
-        key: '2-0',
-        icon: 'pi pi-fw pi-star-fill',
-        label: 'Al Pacino',
-        data: 'Pacino Movies',
-        children: [
-          {
-            key: '2-0-0',
-            label: 'Scarface',
-            icon: 'pi pi-fw pi-video',
-            data: 'Scarface Movie',
-          },
-          {
-            key: '2-0-1',
-            label: 'Serpico',
-            icon: 'pi pi-fw pi-video',
-            data: 'Serpico Movie',
-          },
-        ],
-      },
-      {
-        key: '2-1',
-        label: 'Robert De Niro',
-        icon: 'pi pi-fw pi-star-fill',
-        data: 'De Niro Movies',
-        children: [
-          {
-            key: '2-1-0',
-            label: 'Goodfellas',
-            icon: 'pi pi-fw pi-video',
-            data: 'Goodfellas Movie',
-          },
-          {
-            key: '2-1-1',
-            label: 'Untouchables',
-            icon: 'pi pi-fw pi-video',
-            data: 'Untouchables Movie',
-          },
-        ],
-      },
-    ],
-  },
-]
 
 const ProductDetails = () => {
   const { id } = useParams()
   const toast = useRef(null)
-  const [categories, setCategories] = useState(categoryData)
+  // const [categories, setCategories] = useState(categoryData)
   const [selectedImage, setSeletedImage] = useState(null)
 
 
@@ -147,35 +30,51 @@ const ProductDetails = () => {
   const dispatch = useDispatch()
 
   const { company } = useSelector((state) => state.company)
-
+  const { selectedProduct,varient:varients,catagories } = useSelector((state) => state.productTable)
+ 
+  const [mode,setmode]=useState('add')
+  useEffect(()=>{
+     dispatch(getProductbyid({id})).unwrap()
+    .then().catch()
+    dispatch(getVarientbyid({id})).unwrap()
+    .then().catch()
+    dispatch(getCategory()).unwrap().then().catch()
+  },[])
   const handleImg = (img) => {
     setSeletedImage(img)
   }
-  const [varient,setVarient]=useState([
-    {
-      id:'1',
-      option:'color',
-      value:['black','white'],
-    },
-    {
-      id:'2',
-      option:'Dimenstion',
-      value:['5x10','2x10'],
-    },
-  ])
+  // const [varient,setVarient]=useState([...varients])
+  const [varient,setVarient]=useState(
+    [
+      {
+        id:'1',
+        option:'color',
+        value:['black','white'],
+      },
+      {
+        id:'2',
+        option:'Dimenstion',
+        value:['5x10','2x10'],
+      },
+    ]
+  )
 
+  console.log(mode,selectedProduct)
   const defaultValues = {
-    name: '',
-    description: '',
+    productName: '',
+    categoryId:undefined,
+    quantity: undefined,
+    price: undefined,
     status: '',
-    categories: '',
-    varient,
+    SKUCode: '',
+    desc: '',
   }
+ 
+
   const statusOption = [
     { key: 'Available', value: 'Available' },
     { key: 'Unavailable', value: 'Unavailable' },
   ]
-  const [mode, setmode] = useState(false)
   const {
     control,
     formState: { errors },
@@ -184,26 +83,40 @@ const ProductDetails = () => {
     setValue,
   } = useForm({ defaultValues })
  
-  const handelmode = () => {
-    setmode(!mode)
-  }
+ 
   //function form get error message
   const getFormErrorMessage = (name) => {
-    if (mode)
       return (
         errors[name] && (
           <small className='p-error'>{errors[name].message}</small>
         )
       )
-    return <></>
   }
 
+  useEffect(() => {
+    if (mode == 'update'&& selectedProduct) {
+      setValue('productName', selectedProduct.productName)
+      setValue('categoryId', selectedProduct.categoryId)
+      setValue('quantity', selectedProduct.quantity)
+      setValue('price', selectedProduct.price)
+      setValue('status', selectedProduct.status)
+      setValue('SKUCode', selectedProduct.SKUCode)
+      setValue('desc', selectedProduct.desc)
+      handleImg(selectedProduct.url)
+    }
+    if(selectedProduct===[]){
+      setmode("add");
+    }else{
+      setmode("update");
+    }
+  }, [selectedProduct])
+
+
   const imageBodyTemplate = () => {
-    const d = new Date()
-    if (mode == 'update' && selectedImage && selectedImage.length > 2) {
+    if (mode == 'update'  && selectedImage && selectedImage.length > 2) {
       return (
         <img
-          src={`${selectedImage}?v=${d.getTime()}`}
+          src={`${selectedImage}?v=${selectedImage.updatedAt}`}
           onError={(e) => (e.target.src = './images/ImgPlaceholder.svg')}
           style={{ width: '100px' }}
         />
@@ -221,9 +134,79 @@ const ProductDetails = () => {
       )
   }
 
+  const typechecker = (selectedImage) => {
+    if (
+      selectedImage.type === 'image/png' ||
+      selectedImage.type === 'image/jpeg'
+    ) {
+      return true
+    }
+    return false
+  }
+
 
   const onSubmit = async (data) => {
-    
+    console.log("sss",data,varient)
+    console.log(data)
+
+    if (selectedImage === null) {
+      toast.current.show({
+        severity: 'error',
+        detail: 'Please select an image.',
+      })
+      return
+    }
+    if (typechecker(selectedImage) || typeof selectedImage === 'string') {
+      if (selectedImage.size > 8000000) {
+        toast.current.show({
+          severity: 'error',
+          detail: 'Image size should be less than 8 MB.',
+        })
+        return
+      }
+    } else {
+      toast.current.show({
+        severity: 'error',
+        detail: 'Please select .jpg or .png format image.',
+      })
+      return
+    }
+
+    if (mode === 'update'&&id!=='add') {
+      const productId = selectedProduct.id;
+      data={...data,src:selectedProduct.src}
+      dispatch(updateProduct({ productId, data ,selectedImage}))
+        .unwrap()
+        .then(res => {
+          //show toast here
+          
+          toast.current.show({ severity: 'success', detail: 'Succesfully Product is updated' })
+
+        })
+        .catch(err => {
+          //show toast here
+         // console.log(err.response);
+          toast.current.show({ severity: 'error', detail: err.response.data });
+        })
+    } else {
+      data = { ...data}
+      dispatch(addProduct({data,selectedImage}))
+        .unwrap()
+        .then(() => {
+          // setDisplayAddProductModule(false);
+          // setShowProductForm(false)
+
+          // dispatch(changeShowNotice(true));
+          toast.current.show({ severity: 'success', detail: "Successfully Added Product" });
+        })
+        .catch(err => {
+          toast.current.show({ severity: 'error', detail: err.message});
+        })
+    }
+    console.log(data)
+
+
+
   }
 
 
@@ -244,18 +227,18 @@ const ProductDetails = () => {
               className='p-fluid w-12 '
             >
         <div className={`xl:flex lg:flex w-11 m-auto mb-4`}>
-          
           <div className={`w-12 xl:w-8 lg:w-8`}>
+          
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
                 <label
-                  htmlFor='Name'
+                  htmlFor='productName'
                   className={classNames({ 'p-error': errors.name })}
                 >
                   Product Name*
                 </label>
                 <Controller
-                  name='Name'
+                  name='productName'
                   control={control}
                   rules={{ required: 'Product Name' }}
                   render={({ field, fieldState }) => (
@@ -273,15 +256,14 @@ const ProductDetails = () => {
               </div> 
               <div className='field'>
                 <label
-                  htmlFor='Description'
+                  htmlFor='desc'
                   className={classNames({ 'p-error': errors.name })}
                 >
                   Description*
                 </label>
                 <Controller
-                  name='Description'
+                  name='desc'
                   control={control}
-                  rules={{ required: 'Description' }}
                   render={({ field, fieldState }) => (
                     <InputTextarea
                       id={field.name}
@@ -300,56 +282,83 @@ const ProductDetails = () => {
             </div>
             
             <div className='bg-white p-4 border-round border-50 mb-4'>
-            <div className='field'>
-            <div className='flex justify-content-between  align-items-center'>
-              <div className='flex justify-content-between  align-items-center gap-3'>
-                {imageBodyTemplate()}
-                <div className='flex justify-content-center align-items-center gap-2'>
-                  <span>
-                    {selectedImage ? (
-                      <>
-                        {selectedImage.name}
-                        <span
-                          className='ml-4 cursor-pointer text-3xl'
-                          onClick={() => handleImg(null)}
-                        >
-                          {' '}
-                          <Cross />
-                        </span>
-                      </>
-                    ) : (
-                      'No File Choosen*'
-                    )}
-                  </span>
+              <div className='field'>
+                <label
+                  htmlFor='SKUCode'
+                  className={classNames({ 'p-error': errors.name })}
+                >
+                  SKUCode*
+                </label>
+                <Controller
+                  name='SKUCode'
+                  control={control}
+                  rules={{ required: 'Product SKUCode' }}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      id={field.name}
+                      className={classNames({
+                        'p-invalid': fieldState.invalid,
+                      })}
+                      placeholder='Enter Product SKUCode'
+                      {...field}
+                    />
+                  )}
+                />
+                {getFormErrorMessage('Product SKUCode')}
+              </div> 
+            </div>
+
+            <div className='bg-white p-4 border-round border-50 mb-4'>
+                <div className='field'>
+                <div className='flex justify-content-between  align-items-center'>
+                  <div className='flex justify-content-between  align-items-center gap-3'>
+                    {imageBodyTemplate()}
+                    <div className='flex justify-content-center align-items-center gap-2'>
+                      <span>
+                        {selectedImage ? (
+                          <>
+                            {selectedImage.name}
+                            <span
+                              className='ml-4 cursor-pointer text-3xl'
+                              onClick={() => handleImg(null)}
+                            >
+                              {' '}
+                              <Cross />
+                            </span>
+                          </>
+                        ) : (
+                          'No File Choosen*'
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <CustomImageInput
+                    setSelectedImage={handleImg}
+                    label='Choose File'
+                  />
                 </div>
+                {selectedImage && selectedImage.size > 8000000 ? (
+                  <small className='p-error'>
+                    Image size is more than 8 MB. Please select below than 8 MB.
+                  </small>
+                ) : (
+                  <small>* Image size should be less than 8MB. </small>
+                )}
               </div>
-              <CustomImageInput
-                setSelectedImage={handleImg}
-                label='Choose File'
-              />
             </div>
-            {selectedImage && selectedImage.size > 8000000 ? (
-              <small className='p-error'>
-                Image size is more than 8 MB. Please select below than 8 MB.
-              </small>
-            ) : (
-              <small>* Image size should be less than 8MB. </small>
-            )}
-          </div>
-            </div>
+
 
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
                 <label
-                  htmlFor='Varients'
+                  htmlFor='varient'
                   className={classNames({ 'p-error': errors.name })}
                 >
                   Variants
                 </label>
                 <Controller
-                  name='varients'
+                  name='varient'
                   control={control}
-                  rules={{ required: 'Product Name' }}
                   render={({ field, fieldState }) => (
                     <VariantField
                       className={classNames({
@@ -357,6 +366,7 @@ const ProductDetails = () => {
                       })}
                       placeholder='Enter Product Name'
                       field={field}
+                      pid={id}
                       varient={varient}
                       setVarient={setVarient}
                     />
@@ -373,9 +383,9 @@ const ProductDetails = () => {
           
           <div className='xl:ml-4 lg:ml-4 xl:w-4 lg:w-4'>
              <div className='bg-white p-4 border-round border-50 mb-4'>
-             <div className='field  '>
+             <div className='field'>
                 <label
-                  htmlFor='Status'
+                  htmlFor='status'
                   className={classNames({ 'p-error': errors.name })}
                 >
                   Product Status*
@@ -404,13 +414,13 @@ const ProductDetails = () => {
               <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
                 <label
-                  htmlFor='category'
+                  htmlFor='categoryid'
                   className={classNames({ 'p-error': errors.name })}
                 >
                   Category
                 </label>
                 <Controller
-                  name='category'
+                  name='categoryId'
                   control={control}
                   rules={{ required: 'Product Category Name' }}
                   render={({ field, fieldState }) => (
@@ -420,7 +430,7 @@ const ProductDetails = () => {
                       onChange={(e) => field.onChange(e.value)}
                       filter
                       inputRef={field.ref}
-                      options={categories}
+                      options={catagories}
                       placeholder='Select Item'
                       className={classNames('w-full', {
                         'p-invalid': fieldState.error,
@@ -441,7 +451,7 @@ const ProductDetails = () => {
                   Quantity
                 </label>
                 <Controller
-                  name='Quantity'
+                  name='quantity'
                   control={control}
                   rules={{ required: 'Product Quantity' }}
                   render={({ field, fieldState }) => (
@@ -490,11 +500,11 @@ const ProductDetails = () => {
         </div>
 
         <div className='xl:flex lg:flex w-11 m-auto justify-content-end'>
-        <CustomButton
-                  varient='filled xl:w-2  lg:w-2 m-2'
-                  type={'Cancel'}
-                  label={'Cancel' }
-                />
+        {/* <CustomButton
+                  varient='filled xl:w-2 lg:w-2  m-2'
+                  type={'submit'}
+                  label={'Save' }
+                /> */}
         <CustomButton
                   varient='filled xl:w-2 lg:w-2  m-2'
                   type={'submit'}
