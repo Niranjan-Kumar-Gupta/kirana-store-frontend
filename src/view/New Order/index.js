@@ -20,6 +20,7 @@ const NewOrder = () => {
   const [selectedProdId, setSelectedProdId] = useState([])
   const [tableData, setTableData] = useState()
 
+
   const paymentTypeOptions = [
     { key: 'Full Payment', value: 'Full Payment' },
     { key: 'Half Payment', value: 'Half Payment' },

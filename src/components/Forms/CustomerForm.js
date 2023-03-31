@@ -15,10 +15,14 @@ import { Text } from '../Text'
 import axiosInstance from '../../api/axios.instance'
 import { sortAlphabeticalObjectArr } from '../../utils/tableUtils'
 import { Dropdown } from 'primereact/dropdown'
-
+import { useNavigate, useParams } from 'react-router-dom'
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
 
+  const navigate = useNavigate()
+  const goBack = () => {
+      navigate('/customers')
+    }
   const defaultValues = {
     name: '',
     phone: '',
@@ -46,34 +50,43 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   }
 
   // handle sumbit formdata
-  const onSubmit = (data) => {
+  const onSubmit =  (data) => {
     data = { ...data, phone: data.phone.substring(1) }
 
     if (mode === 'update') {
       const customerId = selectedCustomer.id
-      dispatch(updateCustomer({ customerId, data }))
+       dispatch(updateCustomer({ customerId, data }))
         .unwrap()
         .then((res) => {
           onHide(reset)
+          setTimeout(() => {
+            goBack()
+          }, 1000);
           let Message_Success = Messag.Update_Cust_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
         })
         .catch((err) => {
           toast.current.show({ severity: 'error', detail: err.message })
         })
+        
     } else {
-      dispatch(addCustomer(data))
+       dispatch(addCustomer(data))
         .unwrap()
         .then((res) => {
           onHide(reset)
+          setTimeout(() => {
+            goBack()
+          }, 1000);
           //show toast here
           let Message_Success = Messag.Add_Cust_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
+          
         })
         .catch((err) => {
           //show toast here
           toast.current.show({ severity: 'error', detail: err.message })
         })
+     
     }
   }
 
@@ -88,21 +101,21 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   }, [])
 
   return (
-    <Dialog
-      header={
-        <Text type={'heading'}>
-          <span
-            style={{
-              textDecorationLine: 'underline',
-              textDecorationStyle: 'dashed',
-            }}
-          >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
-        </Text>
-      }
-      visible={showCustomerForm}
-      className='dialog-custom'
-      onHide={() => onHide(reset)}
-    >
+    // <Dialog
+    //   header={
+    //     <Text type={'heading'}>
+    //       <span
+    //         style={{
+    //           textDecorationLine: 'underline',
+    //           textDecorationStyle: 'dashed',
+    //         }}
+    //       >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
+    //     </Text>
+    //   }
+    //   visible={showCustomerForm}
+    //   className='dialog-custom'
+    //   onHide={() => onHide(reset)}
+    // >
       <div className={`card`}>
         <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
           <div className='field'>
@@ -221,6 +234,6 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
           </div>
         </form>
       </div>
-    </Dialog>
+    // </Dialog>
   )
 }

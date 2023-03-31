@@ -43,19 +43,17 @@ const Orders = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate()
-  const ids = [1, 2, 3, 4, 5, 6, 7, 8];
-
-  // const loading = false;
+ 
   const [showOrderForm, setShowOrderForm] = useState(false)
 
   useEffect(()=>{
     dispatch(getOrders({page:page,limit:limit}))
     .unwrap()
     .catch(()=>{ 
-      console.log('kl..............',orderData)
+      //console.log('kl..............',orderData)
 
     }) 
-    console.log('kl..............',orderData)
+    //console.log('kl..............',orderData)
   },[page,limit])
 
   const onAddNewClick = () => {
@@ -91,7 +89,10 @@ const Orders = () => {
     {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'totalAmount', header: 'Total amount',isFilter:false,filterPlaceholder:"Search by Rating"},
+    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
+
     {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+   
     {field: 'viewDetails', header: '',viewDetails:true},
   ];
 

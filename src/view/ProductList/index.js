@@ -103,10 +103,9 @@ const ProductList = () => {
       },
     {field: 'name', header: 'Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
     {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-    {field: 'quantity', header: 'Quantity',isFilter:true,filterType:'input',filterPlaceholder:"Search by Quantity"},
-    {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-    //{field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Rating"},
-    {field: 'date', header: 'Date',isFilter:true,filterType:'date',filterPlaceholder:"Search by Date"},
+     {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
+    {field: 'rating', header: 'Rating',isFilter:true,filterType:'input',filterPlaceholder:"Search by Rating"},
+    //{field: 'date', header: 'Date',isFilter:true,filterType:'date',filterPlaceholder:"Search by Date"},
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   
   ];

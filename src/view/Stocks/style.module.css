@@ -1,0 +1,10 @@
+.customButton {
+    border: none;
+    padding: 0;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .font {
+    font-size: 1.5rem !important;
+  }

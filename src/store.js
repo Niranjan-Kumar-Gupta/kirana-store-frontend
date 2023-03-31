@@ -12,6 +12,7 @@ import campaignSlice from "./reducers/campaignSlice";
 import analyticSlice from "./reducers/analyticSlice";
 import companyslice from "./reducers/companySlice";
 import paymentSlice from "./reducers/paymentSlice";
+import stocksTableSlice from "./reducers/stocksTableSlice";
 
 const store = configureStore({
     reducer : {
@@ -28,6 +29,7 @@ const store = configureStore({
         analytic: analyticSlice,
         company:companyslice,
         payment:paymentSlice,
+        stockTable:stocksTableSlice
     }
 })
 
