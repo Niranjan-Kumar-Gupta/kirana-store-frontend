@@ -2,7 +2,6 @@ import axiosInstance from "./axios.instance";
 
 // apies calls for customers
 const API_GET_CUSTOMERS = async (pageNo, limit,filterData ,globalFilterValue) => {
-  console.log(globalFilterValue,filterData)
   try {
     var resp;
     if (filterData || globalFilterValue) {

@@ -51,6 +51,15 @@ const API_GET_ORDER_DETAILS = async (orderId ) => {
   }
 };
 
+const API_ADD_ORDER = async (data) => {
+  try {
+    const resp = await axiosInstance.post('/order', data);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 const API_PUT_ORDER = async (orderId, updatedData) => {
   try {
@@ -61,4 +70,4 @@ const API_PUT_ORDER = async (orderId, updatedData) => {
   }
 };
 
-export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS };
+export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS, API_ADD_ORDER };
