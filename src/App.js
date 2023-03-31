@@ -17,7 +17,6 @@ import { ProductionCards } from './view/ProductionCards'
 import CustomerList from './view/CustomerList'
 import ProductList from './view/ProductList'
 import ProductDetails from './view/ProductDetails'
-import OrderDetails from './view/OrderDetails'
 import Categories from './view/Categories'
 import PaymentHistory from './view/PaymentHistory'
 import UserProfile from './view/UserProfile'
@@ -58,7 +57,7 @@ function App() {
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='orders' element={<Orders />} />
           <Route path='orders/create' element={<NewOrder />} />
-          <Route path='orders/orderDetails/:id' element={<OrderDetails />} />
+          <Route path='orders/orderDetails/:id' element={<NewOrder />} />
           <Route path='stocks' element={<Stocks />} />
           <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
