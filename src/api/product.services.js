@@ -66,6 +66,17 @@ const API_GET_VARIENT_ID=async (id)=>{
     }
 }
 
+const API_Add_VARIENT=async (id,data)=>{
+  try{
+    let resp = await axiosInstance.post(
+        `product/${id}/option`,data
+        );
+      return resp.data;
+    } catch (err) {
+      throw err;
+    }
+}
+
 const API_ADD_PRODUCT = async (configData,image) => {
 
   try {
@@ -112,4 +123,5 @@ export {
   API_DELETE_PRODUCT,
   API_GET_CAT,
   API_GET_VARIENT_ID,
+  API_Add_VARIENT,
 };

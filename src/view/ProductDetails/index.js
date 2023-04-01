@@ -1,3 +1,4 @@
+"use Strict"
 import React from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import { Text } from '../../components/Text'
@@ -14,7 +15,7 @@ import {TreeSelect} from 'primereact/treeselect'
 import { Dropdown } from 'primereact/dropdown';
 import { CustomImageInput } from '../../components/CustomImageInput';
 import VariantField from '../../components/VarientField' 
-import { getProductbyid,getVarientbyid,getCategory,addProduct,updateProduct } from '../../reducers/productTableSlice';
+import { getProductbyid,getCategory,addProduct,updateProduct } from '../../reducers/productTableSlice';
 import './index.css';
 
 
@@ -30,36 +31,58 @@ const ProductDetails = () => {
   const dispatch = useDispatch()
 
   const { company } = useSelector((state) => state.company)
-  const { selectedProduct,varient:varients,catagories } = useSelector((state) => state.productTable)
+  const { selectedProduct,varient:varients,catagories,vartable} = useSelector((state) => state.productTable)
  
   const [mode,setmode]=useState('add')
   useEffect(()=>{
      dispatch(getProductbyid({id})).unwrap()
-    .then().catch()
-    dispatch(getVarientbyid({id})).unwrap()
     .then().catch()
     dispatch(getCategory()).unwrap().then().catch()
   },[])
   const handleImg = (img) => {
     setSeletedImage(img)
   }
-  // const [varient,setVarient]=useState([...varients])
-  const [varient,setVarient]=useState(
-    [
-      {
-        id:'1',
-        option:'color',
-        value:['black','white'],
-      },
-      {
-        id:'2',
-        option:'Dimenstion',
-        value:['5x10','2x10'],
-      },
-    ]
-  )
 
-  console.log(mode,selectedProduct)
+  
+  const [varient,setVarient]=useState([])
+  const [varienttable,setVarienttable]=useState([
+  
+    {
+      "key":"0-1/1-1",
+      "id": 146,"productId": 38,"categoryId": 8,"price": 100,
+      "option1": "S",
+      "option2": "RED","option3": "","isActive": true,
+      "SKUCode": "SILVERNECK2DEFAULT","companyId": 6,"status": "Available","createdAt": "2023-03-30T12:42:46.000Z","updatedAt": "2023-03-30T12:42:46.000Z",
+      "outletId": null,"productVariantId": null
+  },
+  {
+      "key":"0-1/1-2","id": 147,"productId": 38,
+      "categoryId": 8,"price": 100,
+      "option1": "M","option2": "RED",
+      "option3": "","isActive": false,
+      "SKUCode": "SILVERNECK2DEFAULT2",
+      "companyId": 6,"status": "Available",
+      "createdAt": "2023-03-30T12:42:46.000Z",
+      "updatedAt": "2023-03-30T12:42:46.000Z",
+      "outletId": null,"productVariantId": null
+  }
+])
+
+    useEffect(()=>{
+      let x=varients.map(x=>{
+        return {
+          id:x.id,
+          name:x.name,
+          values:[...x.values],
+        }
+      })
+      setVarient([...x])
+      setVarienttable([...vartable])
+
+    },[varients])
+
+
+  // console.log(mode,selectedProduct)
   const defaultValues = {
     productName: '',
     categoryId:undefined,
@@ -75,6 +98,7 @@ const ProductDetails = () => {
     { key: 'Available', value: 'Available' },
     { key: 'Unavailable', value: 'Unavailable' },
   ]
+  
   const {
     control,
     formState: { errors },
@@ -147,7 +171,7 @@ const ProductDetails = () => {
 
   const onSubmit = async (data) => {
     console.log("sss",data,varient)
-    console.log(data)
+    console.log(data,varient)
 
     if (selectedImage === null) {
       toast.current.show({
@@ -174,7 +198,9 @@ const ProductDetails = () => {
 
     if (mode === 'update'&&id!=='add') {
       const productId = selectedProduct.id;
-      data={...data,src:selectedProduct.src}
+      data={...data,src:selectedProduct.src,product_productoption:varient,
+        product_productvariant:varienttable
+      }
       dispatch(updateProduct({ productId, data ,selectedImage}))
         .unwrap()
         .then(res => {
@@ -189,7 +215,9 @@ const ProductDetails = () => {
           toast.current.show({ severity: 'error', detail: err.response.data });
         })
     } else {
-      data = { ...data}
+      data = { ...data,product_productoption:varient,
+        product_productvariant:varienttable
+      }
       dispatch(addProduct({data,selectedImage}))
         .unwrap()
         .then(() => {
@@ -209,12 +237,11 @@ const ProductDetails = () => {
 
   }
 
-
   return (
     <div className='w-11 pt-3 m-auto '>
       <div>
         <Toast ref={toast} />
-        <div className={`w-11 m-auto py-3  `}>
+        <div className={`w-12 xl:w-8 lg:w-8 m-auto py-3  `}>
           <Text type={'heading'}>ProductDetails for id: {id}</Text>
           <div className='flex align-content-center panel-border py-2'>
             <div className='flex flex-column align-items-start justify-content-between ml-3 sm:flex-column md:flex-column xl:flex-row lg:flex-row  lg:flex-wrap xl:flex-wrap w-12 xl:py-2 lg:py-2 px-2'>
@@ -226,8 +253,8 @@ const ProductDetails = () => {
               onSubmit={handleSubmit(onSubmit)}
               className='p-fluid w-12 '
             >
-        <div className={`xl:flex lg:flex w-11 m-auto mb-4`}>
-          <div className={`w-12 xl:w-8 lg:w-8`}>
+        <div className={`xl:flex lg:flex w-11 m-auto mb-4 justify-content-center`}>
+          <div className={`w-12 xl:w-5 lg:w-6`}>
           
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
@@ -272,7 +299,7 @@ const ProductDetails = () => {
                       })}
                       placeholder='Enter Product Description ...'
                       {...field}
-                      rows={5}
+                      rows={3}
                       autoResize
                     />
                   )}
@@ -369,6 +396,8 @@ const ProductDetails = () => {
                       pid={id}
                       varient={varient}
                       setVarient={setVarient}
+                      varienttable={varienttable}
+                      setVarienttable={setVarienttable}
                     />
                     )}
                 />
@@ -377,11 +406,8 @@ const ProductDetails = () => {
             </div>
           
           </div>
-          
-          
-
-          
-          <div className='xl:ml-4 lg:ml-4 xl:w-4 lg:w-4'>
+ 
+          <div className='xl:ml-4 lg:ml-4 xl:w-3 lg:w-4'>
              <div className='bg-white p-4 border-round border-50 mb-4'>
              <div className='field'>
                 <label
@@ -442,32 +468,7 @@ const ProductDetails = () => {
               </div> 
             </div>
 
-            <div className='bg-white p-4 border-round border-50 mb-4'>
-              <div className='field'>
-                <label
-                  htmlFor='quantity'
-                  className={classNames({ 'p-error': errors.name })}
-                >
-                  Quantity
-                </label>
-                <Controller
-                  name='quantity'
-                  control={control}
-                  rules={{ required: 'Product Quantity' }}
-                  render={({ field, fieldState }) => (
-                    <InputText
-                    id={field.name}
-                    className={classNames({
-                      'p-invalid': fieldState.invalid,
-                    })}
-                    placeholder='Enter Product Quantity'
-                    {...field}
-                  />
-                  )}
-                />
-                {getFormErrorMessage('Product Quantity')}
-              </div> 
-            </div>
+           
 
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
@@ -500,11 +501,6 @@ const ProductDetails = () => {
         </div>
 
         <div className='xl:flex lg:flex w-11 m-auto justify-content-end'>
-        {/* <CustomButton
-                  varient='filled xl:w-2 lg:w-2  m-2'
-                  type={'submit'}
-                  label={'Save' }
-                /> */}
         <CustomButton
                   varient='filled xl:w-2 lg:w-2  m-2'
                   type={'submit'}

@@ -26,6 +26,7 @@ const initialState = {
   catagories:[],
   varient:[],
   selectedProductsList: [],
+  vartable:[],
 };
 
 export const getProducts = createAsyncThunk(
@@ -188,6 +189,8 @@ const productTableSlice = createSlice({
 
     builder.addCase(getProductbyid.fulfilled, (state, action) => {
       state.selectedProduct = action.payload;
+      state.varient=action.payload.product_productoption
+      state.vartable=action.payload.product_productvariant
       state.loading = false;
     });
     builder.addCase(getProductbyid.pending, (state) => {

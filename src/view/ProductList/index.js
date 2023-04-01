@@ -36,12 +36,13 @@ const ProductList = () => {
 // console.log(page,limit)
  let items = ['New','In Progress','Done']
  const columns = [
-    {field: 'SKUCode',header: 'SKUCode'},
+    {field: 'SKUCode',header: 'SKU Id'},
     {field: 'productName', header: 'Product Name'},
     {field: 'categoryId', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
+    {field: 'status', header: 'Stock'},
+    {field: 'price', header: 'Price (₹)'},
     {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
     {field: 'desc', header: 'Description'},  
-    {field: 'createdAt', header: 'Date'},
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];
 
