@@ -4,3 +4,12 @@
 }
 
 
+.customButton-pd {
+    border: none;
+    padding: 0;
+    background-color: #fff;
+  }
+  
+  .font-pd {
+    font-size: 1.5rem !important;
+  }

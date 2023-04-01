@@ -115,6 +115,15 @@ const API_DELETE_PRODUCT = async (productID) => {
   }
 };
 
+const API_GET_PRRODUCTS_WITH_VARIANTS = async () => {
+  try {
+    const resp = await axiosInstance.get('/product/variants');
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export {
   API_ADD_PRODUCT,
   API_GET_PRODUCTS,
@@ -124,4 +133,5 @@ export {
   API_GET_CAT,
   API_GET_VARIENT_ID,
   API_Add_VARIENT,
+  API_GET_PRRODUCTS_WITH_VARIANTS,
 };

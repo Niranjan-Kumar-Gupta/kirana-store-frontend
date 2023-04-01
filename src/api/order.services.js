@@ -2,37 +2,59 @@ import axiosInstance from "./axios.instance";
 
 
 // api calls for ORDERS
-const API_GET_ORDERS = async (pageNo, limit,startDate,endDate,filterData,globalFilterValue) => {
-  try{
-
+const API_GET_ORDERS = async (pageNo, limit,filterData,globalFilterValue) => {
+ 
+ try{
     var resp;
-    if (filterData || globalFilterValue || (startDate && endDate)) {
-
+    console.log(pageNo, limit,filterData,globalFilterValue)
+    if (filterData || globalFilterValue) {
+      console.log(pageNo, limit,filterData,globalFilterValue)
       let allFilter=''
-      if (filterData) {
-        filterData.forEach(element => {
-
-          allFilter += `&${element.key}=${element.value}`
+       if (filterData) {
+        let entries = Object.entries(filterData)
+        entries.map( ([key, val]) => {
+         allFilter += `&${key}=${val}`
        });
-      }
+       }
+      console.log(pageNo, limit,filterData,globalFilterValue)
+      
       if (globalFilterValue) {
          allFilter += `&global=${globalFilterValue}`
+         console.log(pageNo, limit,filterData,globalFilterValue)
+      
       }
-      if (startDate && endDate) {     
-          allFilter += `&startDate=${startDate}&endDate=${endDate}&isActive=1`
-       }
+      console.log(allFilter)
+   
       resp = await axiosInstance.get(
-        `/order?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+        `/order?page=${pageNo}&limit=${limit}${allFilter}`
          )
 
       return resp.data;
     }else{
        resp = await axiosInstance.get(
-        `/order?page=${pageNo}&limit=${limit}&isActive=1`
+        `/order?page=${pageNo}&limit=${limit}`
       );  
       return resp.data;
     }
   
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_GET_ORDER_DETAILS = async (orderId ) => {
+  try {
+    const resp = await axiosInstance.get(`/order/${orderId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_ADD_ORDER = async (data) => {
+  try {
+    const resp = await axiosInstance.post('/order', data);
+    return resp.data;
   } catch (err) {
     throw err;
   }
@@ -48,4 +70,4 @@ const API_PUT_ORDER = async (orderId, updatedData) => {
   }
 };
 
-export { API_GET_ORDERS, API_PUT_ORDER };
+export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS, API_ADD_ORDER };

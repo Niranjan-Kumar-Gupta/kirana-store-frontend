@@ -18,7 +18,6 @@ import { Dropdown } from 'primereact/dropdown'
 
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
-  const [warehouse, setWarehouse] = useState([])
 
   const defaultValues = {
     name: '',
@@ -83,20 +82,9 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
       setValue('name', selectedCustomer.name)
       setValue('phone', '+' + selectedCustomer.phone)
       setValue('email', selectedCustomer.email || '')
-      setValue('warehouseId', selectedCustomer.warehouseId)
       setValue('gstNumber', selectedCustomer.gstNumber || '')
       setValue('panNumber', selectedCustomer.panNumber || '')
     }
-
-    axiosInstance
-      .get(`/company/warehouse?page=0&limit=100000&isActive=1`)
-      .then((resp) => {
-        let sortedWarehouse = sortAlphabeticalObjectArr(resp.data, 'name')
-        setWarehouse(sortedWarehouse)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
   }, [])
 
   return (
@@ -187,29 +175,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             />
             {getFormErrorMessage('email')}
           </div>
-          <div className='field'>
-            <label htmlFor='categoryId'>Warehouse *</label>
-            <Controller
-              name='warehouseId'
-              control={control}
-              rules={{ required: 'Please select a warehouse.' }}
-              render={({ field, fieldState }) => (
-                <Dropdown
-                  id={field.name}
-                  options={warehouse}
-                  value={field.value}
-                  filter
-                  onChange={(e) => field.onChange(e.value)}
-                  optionLabel='name'
-                  optionValue='id'
-                  placeholder='Choose warehouse'
-                  className={classNames({ 'p-invalid': fieldState.invalid })}
-                />
-              )}
-            />
-            {getFormErrorMessage('warehouseId')}
-          </div>
-
+    
           <div className='field'>
             <label htmlFor='gstNumber'>GST No </label>
             <Controller

@@ -19,18 +19,43 @@ import {
   updateSelectedOrdersList,
   resetSelectedOrdersList,
 } from "../../reducers/orderTableSlice";
-import "./style.css";
+import "./style.css"
+import { getDate } from '../../utils/datemaker'
 // import { API_GET_ORDERS } from "../../api/order.services";
 // import { underlineStyle } from "../../utils/commonStyles";
 // import { getCompany, setCompany } from '../../reducers/companySlice'
 
 const Orders = () => {
 
+    
+  const {
+    orderData,
+    loading,
+    mode,
+    page,
+    limit,
+    selectedOrder,
+    totalOrderCount,
+    selectedOrderId,
+    selectedOrderProducts,
+    selectedOrdersList,
+  } = useSelector((state) => state.orderTable);
+
+  const dispatch = useDispatch();
+
   const navigate = useNavigate()
   const ids = [1, 2, 3, 4, 5, 6, 7, 8];
 
   // const loading = false;
   const [showOrderForm, setShowOrderForm] = useState(false)
+
+  useEffect(()=>{
+    dispatch(getOrders({page:page,limit:limit}))
+    .unwrap()
+    .catch((err) => {
+      toast.current.show({ severity: 'error', detail: err.message })
+    })
+  },[page,limit])
 
   const onAddNewClick = () => {
     setShowOrderForm(true)
@@ -56,86 +81,19 @@ const Orders = () => {
     )
   }
 
-
-  
-  const {
-    orderData,
-    loading,
-    mode,
-    page,
-    limit,
-    selectedOrder,
-    totalOrderCount,
-    selectedOrderId,
-    selectedOrderProducts,
-    selectedOrdersList,
-  } = useSelector((state) => state.orderTable);
-
-  const dispatch = useDispatch();
-
   
 
-  const [orders, setOrders] = useState([
-    {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1001',
-        code: 'nvklal433',
-        name: 'Black Watch',
-        description: 'Product Description',
-        image: 'black-watch.jpg',
-        price: 72,
-        category: 'Accessories',
-        quantity: 61,
-        inventoryStatus: 'INSTOCK',
-        rating: 4
-    },
-    {
-        id: '1002',
-        code: 'zz21cz3c1',
-        name: 'Blue Band',
-        description: 'Product Description',
-        image: 'blue-band.jpg',
-        price: 79,
-        category: 'Fitness',
-        quantity: 2,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3
-    },
-    {
-        id: '1003',
-        code: '244wgerg2',
-        name: 'Blue T-Shirt',
-        description: 'Product Description',
-        image: 'blue-t-shirt.jpg',
-        price: 29,
-        category: 'Clothing',
-        quantity: 25,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-]
- );
-
- let items = ['New','In Progress','Done']
+ let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled']
+ let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const columns = [
-    {field: 'id', header: 'id',isFilter:true,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'name', header: 'Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-    {field: 'price', header: 'Price',isFilter:false,filterPlaceholder:"Search by Price"},
-    {field: 'rating', header: 'Rating',isFilter:false,filterPlaceholder:"Search by Rating"},
+    {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
+    {field: 'completedAt', header: 'Date',isFilter:false,filterType:'input'},
+    {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
+    {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
+    {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'itemCount', header: 'Items'},
     {field: 'viewDetails', header: '',viewDetails:true},
-];
+  ];
 
 const handleEdit = (rowData) => {
   console.log(rowData)
@@ -146,6 +104,7 @@ const handleDelete = (rowData) => {
  
 };
 const handleOrderSelect = (rowData)=>{
+  dispatch(updateMode('update'))
   navigate(`orderDetails/${rowData.id}`)
   console.log('order view detail',rowData)
 }
@@ -163,12 +122,16 @@ const onClearSearch = (data)=>{
 console.log(data)
 }
 
+const hanldeCreate = () => {
+  navigate(`./create`)
+  dispatch(updateMode('create'))
+}
+
 
 
   return (
     <div className="w-11 pt-3 m-auto">
       <Toast ref={toast} />
-      <h4>Order List</h4>
       {showOrderForm ? orderModal() : <></>}
       {loader ? loader() : <></>}
       <div className='flex justify-content-between align-items-center'>
@@ -177,10 +140,10 @@ console.log(data)
           varient='filled'
           label={'Create Order'}
           icon={'pi pi-plus'}
-          onClick={() => navigate(`./create`)}
+          onClick={hanldeCreate}
         />
       </div>
-      <div className='flex flex-wrap gap-2 mt-2'>
+      {/* <div className='flex flex-wrap gap-2 mt-2'>
         {ids.map((id) => (
           <div
             onClick={() => navigate(`orderDetails/${id}`)}
@@ -190,12 +153,13 @@ console.log(data)
             <Text type={'heading'}>Order {id}</Text>
           </div>
         ))}
-      </div>
+      </div> */}
+      <div className='mt-2'>
       <CustomTable 
         tableName={'orderTable'}
-        data={orders}
+        data={orderData}
         columns={columns} 
-        globalSearch={false}
+        globalSearch={true}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         handleSelect={handleOrderSelect}
@@ -203,9 +167,11 @@ console.log(data)
         onApplySearch={onApplySearch}
         onClearFilter={onClearFilter}
         onClearSearch={onClearSearch}
+        dispatchFunction={getOrders}
         tableType={'dataTable'}
-        paginator={{page:page,limit:limit,totalRecords:30,changePage:changePage}}
+        paginator={{page:page,limit:limit,totalRecords:totalOrderCount,changePage:changePage}}
       />  
+      </div>
     
     </div>
   );

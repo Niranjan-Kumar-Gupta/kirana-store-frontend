@@ -8,7 +8,7 @@ import { deleteProduct, resetSelectedProduct } from "../../reducers/productTable
 import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
-  // const { selectedCustomer } = useSelector(state => state.customerTable);
+   const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
 
@@ -28,6 +28,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       })
   }
   const deleteCategoryItem = () => {
+    console.log('deleted')
     dispatch(deleteCategory(selectedCategory.id))
       .unwrap()
       .then(res => {
@@ -41,17 +42,17 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       })
   }
   const deleteCustomerItem = () => {
-    // dispatch(deleteCustomer(selectedCustomer.id))
-    //   .unwrap()
-    //   .then(res => {
-    //     //show toast here
-    //     let Message_Success = Messag.Delete_Cust_ToastSuccessMessage;
-    //     toast.current.show({ severity: 'success', detail: Message_Success });
-    //   })
-    //   .catch(err => {
-    //     //show toast here
-    //     toast.current.show({ severity: 'error', detail: err.response.data });
-    //   })
+    dispatch(deleteCustomer(selectedCustomer.id))
+      .unwrap()
+      .then(res => {
+        //show toast here
+        let Message_Success = Messag.Delete_Cust_ToastSuccessMessage;
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        //show toast here
+        toast.current.show({ severity: 'error', detail: err.response.data });
+      })
   }
 
   const onHide = () => {
@@ -64,7 +65,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         dispatch(resetSelectedCategory())
         break;
       case "customer":
-        //dispatch(resetSelectedCustomer())
+        dispatch(resetSelectedCustomer())
         break;
       default:
         break;
@@ -80,7 +81,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         deleteCategoryItem()
         break;
       case "customer":
-       // deleteCustomerItem()
+        deleteCustomerItem()
         break;
     }
     onHide();

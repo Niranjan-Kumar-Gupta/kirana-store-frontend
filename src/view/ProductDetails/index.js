@@ -26,7 +26,7 @@ const ProductDetails = () => {
   // const [categories, setCategories] = useState(categoryData)
   const [selectedImage, setSeletedImage] = useState(null)
 
-
+ const navigate = useNavigate()
   const { user, userSub } = useSelector((state) => state.authenticate)
   const dispatch = useDispatch()
 
@@ -232,17 +232,34 @@ const ProductDetails = () => {
         })
     }
     console.log(data)
-
-
-
   }
+
+  const goBack = () => {
+    // dispatch(resetMode())
+    navigate('/products')
+  }
+
 
   return (
     <div className='w-11 pt-3 m-auto '>
       <div>
         <Toast ref={toast} />
         <div className={`w-12 xl:w-8 lg:w-8 m-auto py-3  `}>
-          <Text type={'heading'}>ProductDetails for id: {id}</Text>
+          <div className='flex'> 
+          <button className={`customButton-pd`} onClick={goBack}>
+                <span
+                  className={`pi pi-arrow-circle-left mr-3 font-pd`}
+                ></span>
+              </button>
+              <div className='mr-3'>
+                <Text type={'heading'}>
+                  {mode === 'update'&&id!=='add'
+                    ? 'Add Product'
+                    : `ProductDetails for id: #${id}`}
+                </Text>
+              </div>
+          </div>
+          <Text type={'heading'}></Text>
           <div className='flex align-content-center panel-border py-2'>
             <div className='flex flex-column align-items-start justify-content-between ml-3 sm:flex-column md:flex-column xl:flex-row lg:flex-row  lg:flex-wrap xl:flex-wrap w-12 xl:py-2 lg:py-2 px-2'>
               <Text type={'heading'}>{company?.companyName}</Text>           
