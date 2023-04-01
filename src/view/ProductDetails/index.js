@@ -46,7 +46,6 @@ const ProductDetails = () => {
   
   const [varient,setVarient]=useState([])
   const [varienttable,setVarienttable]=useState([
-  
     {
       "key":"0-1/1-1",
       "id": 146,"productId": 38,"categoryId": 8,"price": 100,
@@ -198,8 +197,8 @@ const ProductDetails = () => {
 
     if (mode === 'update'&&id!=='add') {
       const productId = selectedProduct.id;
-      data={...data,src:selectedProduct.src,product_productoption:varient,
-        product_productvariant:varienttable
+      data={...data,src:selectedProduct.src,options:[...varient],
+        productvariants:[...varienttable]
       }
       dispatch(updateProduct({ productId, data ,selectedImage}))
         .unwrap()
@@ -215,8 +214,8 @@ const ProductDetails = () => {
           toast.current.show({ severity: 'error', detail: err.response.data });
         })
     } else {
-      data = { ...data,product_productoption:varient,
-        product_productvariant:varienttable
+      data = { product:{...data},options:[...varient],
+        productvariants:[...varienttable]
       }
       dispatch(addProduct({data,selectedImage}))
         .unwrap()
@@ -244,16 +243,16 @@ const ProductDetails = () => {
     <div className='w-11 pt-3 m-auto '>
       <div>
         <Toast ref={toast} />
-        <div className={`w-12 xl:w-8 lg:w-8 m-auto py-3  `}>
+        <div className={`w-12 xl:w-8 lg:w-10 m-auto py-3 align-items-center `}>
           <div className='flex'> 
           <button className={`customButton-pd`} onClick={goBack}>
                 <span
                   className={`pi pi-arrow-circle-left mr-3 font-pd`}
                 ></span>
               </button>
-              <div className='mr-3'>
+              <div className='mr-3 mt-1 align-items-center'>
                 <Text type={'heading'}>
-                  {mode === 'update'&&id!=='add'
+                  {mode === 'add'||id==='add'
                     ? 'Add Product'
                     : `ProductDetails for id: #${id}`}
                 </Text>
@@ -261,9 +260,6 @@ const ProductDetails = () => {
           </div>
           <Text type={'heading'}></Text>
           <div className='flex align-content-center panel-border py-2'>
-            <div className='flex flex-column align-items-start justify-content-between ml-3 sm:flex-column md:flex-column xl:flex-row lg:flex-row  lg:flex-wrap xl:flex-wrap w-12 xl:py-2 lg:py-2 px-2'>
-              <Text type={'heading'}>{company?.companyName}</Text>           
-            </div>
           </div>
         </div>
         <form
@@ -523,7 +519,7 @@ const ProductDetails = () => {
                   type={'submit'}
                   label={'Save' }
                 />
-         
+
         </div>
         </form>
       </div>

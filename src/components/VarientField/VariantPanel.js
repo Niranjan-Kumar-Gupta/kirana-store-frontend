@@ -48,27 +48,25 @@ export default function VariantTable({varienttable, setVarienttable}) {
         setVarienttable(_varienttable);
     };
 
-
-   
     const actionBodyTemplate = (rowData) => {
         if(rowData.isActive){return (
                 <Delete onClick={() => deleteSelectedProducts(rowData)}/>
         );}
-        else { return (
-            <Delete onClick={() => deleteSelectedProducts(rowData)}/>
+        else { 
+            return (
+            <i className="pi pi-refresh" style={{ fontSize: '1rem' }} onClick={() => deleteSelectedProducts(rowData)} ></i>
             );}
     };
   
-      const isSelectable = (data) => {
+    const isSelectable = (data) => {
         const { isActive} = data;
-        return (isActive === true)&&(data.field !== 'delete');
-      
-      };
+        return (isActive === true)&&(data.field !== 'delete');  
+    };
     
-      const isRowSelectable = (e) => {
+    const isRowSelectable = (e) => {
         return isSelectable(e.data);
       };
-        const rowClassName = (data) => (isSelectable(data) ? '' : 'not-selectable');
+    const rowClassName = (data) => (isSelectable(data) ? '' : 'not-selectable');
     
     return (
         <div className="card p-fluid">
@@ -83,7 +81,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
                 <Column editMode field="status" header="Stock"  editor={(options) => statusEditor(options)} style={{ width: '20%' }}></Column>
                 <Column editMode field="price" header="Price" body={priceBodyTemplate} editor={(options) => priceEditor(options)} style={{ width: '25%' }}></Column>
                 <Column rowEditor  headerStyle={{ width: '5%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
-                <Column exportable={false} headerStyle={{ width: '10%', minWidth: '1rem' }} body={actionBodyTemplate} bodyStyle={{ textAlign: 'center' }}></Column>
+                <Column exportable={false} headerStyle={{ width: '5%', minWidth: '1rem' }} body={actionBodyTemplate} bodyStyle={{ textAlign: 'center' }}></Column>
             </DataTable>
         </div>
     );

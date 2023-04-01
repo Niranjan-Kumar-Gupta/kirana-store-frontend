@@ -23,7 +23,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     }  
     const editVarient=(id,value)=>{
         let temp=varient;
-        temp[id].option=value;
+        temp[id].name=value;
         console.log(temp)
         setVarient([...temp])
     }
@@ -53,7 +53,6 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     }
 
     function rec(map,val){
-        // console.log(val)
         let str=[];
         val=val.split("/")
         for(let i=0;i<val.length;i++){str.push(map[val[i]]);}     
@@ -61,7 +60,6 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     }
 
     function getCombn(arr){
-        console.log(arr)
         if (arr.length==0||arr.length == 1) {
             return arr[0];
         } else {
@@ -91,18 +89,18 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             }
             mapper2.push(x);
         }
-        console.log("qu",mapper2)
-
+    
         var finder=(id)=>{
             function check(a){
                 return a.key===id
             }
             return varienttable.filter(check)
         }
-            console.log("as",getCombn(mapper2))
-        temp=getCombn(mapper2)
+    temp=getCombn(mapper2)
     if(temp&&temp.length>0){
         temp=temp.map(x=>{
+            let item=rec(mapper,x);
+            let op=item.split("/")
             return { 
                 key: x,
                 SKUID:"",
@@ -110,7 +108,10 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                 stock:"",
                 isActive:true,
                 ...finder(x)[0],
-                varients: rec(mapper,x),
+                varients: item,
+                option1: op[0]||"",
+                option2: op[1]||"",
+                option3: op[2]||"",
             }
         })
         setVarienttable([...temp])
