@@ -140,6 +140,8 @@ const productTableSlice = createSlice({
 
     resetSelectedProduct(state) {
       state.selectedProduct = null;
+      state.varient=[]
+      state.vartable=[]
     },
 
     changePage(state, action) {

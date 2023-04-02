@@ -15,7 +15,7 @@ import {TreeSelect} from 'primereact/treeselect'
 import { Dropdown } from 'primereact/dropdown';
 import { CustomImageInput } from '../../components/CustomImageInput';
 import VariantField from '../../components/VarientField' 
-import { getProductbyid,getCategory,addProduct,updateProduct } from '../../reducers/productTableSlice';
+import { getProductbyid,getCategory,addProduct,updateProduct,resetSelectedProduct } from '../../reducers/productTableSlice';
 import './index.css';
 import { InputNumber } from 'primereact/inputnumber'
 import Loader from '../../components/Loader';
@@ -71,10 +71,11 @@ const ProductDetails = () => {
 
     useEffect(()=>{
 
-     if(varients&&varients.length>0){ let x=varients.map(x=>{
+     if(varients&&varients.length>0){ let x=varients.map((x,y)=>{
         return {
           id:x.id,
           name:x.name,
+          optionPosition:y,
           values:[...x.values],
         }
       })
@@ -83,10 +84,6 @@ const ProductDetails = () => {
     if(vartable&&vartable.length>0){ 
         setVarienttable([...vartable])
     }
-
-
-
-
     },[varients])
 
 
@@ -175,11 +172,15 @@ const ProductDetails = () => {
     }
     return false
   }
-
+  useEffect(()=>{
+    return  (()=>{
+      dispatch(resetSelectedProduct())
+    })
+  },[])
 
   const onSubmit = async (data) => {
-    console.log("sss",data,varient)
-    console.log(data,varient)
+    // console.log("sss",data,varient)
+    // console.log(data,varient)
 
     if (selectedImage === null) {
       toast.current.show({
@@ -209,6 +210,7 @@ const ProductDetails = () => {
       data={...data,src:selectedProduct.src,options:[...varient],
         productvariants:[...varienttable]
       }
+    console.log("sss",data)
       dispatch(updateProduct({ productId, data ,selectedImage}))
         .unwrap()
         .then(res => {
@@ -226,6 +228,8 @@ const ProductDetails = () => {
       data = { product:{...data},options:[...varient],
         productvariants:[...varienttable]
       }
+    console.log("sss",data)
+
       dispatch(addProduct({data,selectedImage}))
         .unwrap()
         .then(() => {

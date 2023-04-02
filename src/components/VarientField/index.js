@@ -47,7 +47,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             {
                 productId:pid,
                 name:"" ,
-                optionPosition:temp.length+1,
+                optionPosition:varient.length+1,
                 values:['']}
              )
         setVarient([...temp]);
@@ -105,8 +105,8 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             return { 
                 key: x,
                 SKUID:"",
-                price:"",
-                stock:"",
+                price:0,
+                stock:"Available",
                 isActive:true,
                 ...finder(x)[0],
                 label: item,
