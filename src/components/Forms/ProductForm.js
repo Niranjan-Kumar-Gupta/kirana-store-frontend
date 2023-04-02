@@ -20,12 +20,13 @@ import { TreeSelect } from 'primereact/treeselect'
 import axiosInstance from "../../api/axios.instance";
 import { formatText, sortAlphabeticalObjectArr } from "../../utils/tableUtils";
 
-// import {
-//   addProduct,
-//   resetMode,
-//   resetSelectedProduct,
-//   updateProduct,
-// } from "../../reducers/productTableSlice";
+import {
+  addProduct,
+  // resetMode,
+  // resetSelectedProduct,
+  // updateProduct,
+  getCategory
+} from "../../reducers/productTableSlice";
 
 const statusOption = [
   { key: 'Available', value: 'Available' },
@@ -33,7 +34,7 @@ const statusOption = [
 ]
 
 export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
-  const [categories, setCategories] = useState([])
+  const { catagories} = useSelector((state) => state.productTable);
   const [selectedImage, setSeletedImage] = useState(null)
 
   const dispatch = useDispatch()
@@ -54,6 +55,7 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
   const defaultValues = {
     productName: '',
     categories: [],
+    categoryId:[],
     quantity: undefined,
     price: undefined,
     status: '',
@@ -75,6 +77,9 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
       errors[name] && <small className='p-error'>{errors[name].message}</small>
     )
   }
+  useEffect(()=>{
+    dispatch(getCategory()).unwrap().then().catch()
+  },[]);
 
   const typechecker = (selectedImage) => {
     if (
@@ -87,6 +92,8 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
   }
 
   const onSubmit = (data) => {
+    console.log(data)
+
     if (selectedImage === null) {
       toast.current.show({
         severity: 'error',
@@ -128,20 +135,20 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
       //   })
     } else {
       data = { ...data, isActive: 1 }
-      // dispatch(addProduct({data,selectedImage}))
-      //   .unwrap()
-      //   .then(() => {
-      //     setDisplayAddProductModule(false);
-      //     dispatch(changeShowNotice(true));
-      //     let Message_Success = Messag.Add_Product_ToastSuccessMessage;
-      //     toast.current.show({ severity: 'success', detail: Message_Success });
-      //   })
-      //   .catch(err => {
-      //     toast.current.show({ severity: 'error', detail: err.message});
-      //   })
+      dispatch(addProduct({data,selectedImage}))
+        .unwrap()
+        .then(() => {
+          // setDisplayAddProductModule(false);
+          setShowProductForm(false)
+
+          // dispatch(changeShowNotice(true));
+          toast.current.show({ severity: 'success', detail: "Successfully Added Product" });
+        })
+        .catch(err => {
+          toast.current.show({ severity: 'error', detail: err.message});
+        })
     }
-    console.log(data)
-    setShowProductForm(false)
+    // console.log(data)
   }
   const imageBodyTemplate = () => {
     const d = new Date()
@@ -202,17 +209,7 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
       handleImg(selectedProduct.url)
     }
 
-    axiosInstance
-    .get(`/category?page=0&limit=100000&isActive=1`)
-    .then((resp) => {
-      let sortedCateGories = sortAlphabeticalObjectArr(resp.data.children, 'categoryName')
-      modifyAll(sortedCateGories)
-      setCategories(sortedCateGories);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-
+  
   }, [])
 
   return (
@@ -277,9 +274,9 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
             {getFormErrorMessage('SKUCode')}
           </div>
           <div className='field'>
-            <label htmlFor='categories'>Category *</label>
+            <label htmlFor='categoryId'>Category *</label>
             <Controller
-              name='categories'
+              name='categoryId'
               control={control}
               rules={{ required: 'Please select a category.' }}
               render={({ field, fieldState }) => (
@@ -290,7 +287,7 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
                     onChange={(e) => field.onChange(e.value)}
                     filter
                     inputRef={field.ref}
-                    options={categories}
+                    options={catagories}
                     placeholder='Select Category'
                     className={classNames('w-full', {
                       'p-invalid': fieldState.error,
