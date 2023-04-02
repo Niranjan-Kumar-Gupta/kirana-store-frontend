@@ -188,9 +188,9 @@ const productTableSlice = createSlice({
     });
 
     builder.addCase(getProductbyid.fulfilled, (state, action) => {
-      state.selectedProduct = action.payload;
-      state.varient=action.payload.product_productoption
-      state.vartable=action.payload.product_productvariant
+      state.selectedProduct = action.payload.product;
+      state.varient=action.payload.options
+      state.vartable=action.payload.productvariants
       state.loading = false;
     });
     builder.addCase(getProductbyid.pending, (state) => {

@@ -1,10 +1,11 @@
 import { InputText } from "primereact/inputtext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {ReactComponent as Delete} from "../../svg/delete.svg"
 import { CustomButton } from '../../components/CustomButton';
 import VariantPanel from "./VariantPanel";
-
+import { Toast } from "primereact/toast";
 function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable}) {
+    const toast =useRef(null);
     const delete_varient=(id,index=undefined)=>{
       if(index==undefined){
         let temp=varient;
@@ -108,7 +109,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                 stock:"",
                 isActive:true,
                 ...finder(x)[0],
-                varients: item,
+                label: item,
                 option1: op[0]||"",
                 option2: op[1]||"",
                 option3: op[2]||"",
@@ -127,6 +128,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     return (
     <div> 
         <div className="flex flex-column justify-content-end">
+        <Toast ref={toast} />
         {(varient)&&varient.map((x,pkey)=>{
             return (
                 <div>
@@ -169,9 +171,9 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
         </div>
         <div>
             <div className="flex justify-content-between">
-                <div className="p-2 w-4 m-1 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={()=>{addVarient()}}>
+              {varient.length<3&&<div className="p-2 w-4 m-1 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={()=>{addVarient()}}>
                         + Add Variant     
-                </div>
+                </div>}
                 <div className="p-2 w-4 m-1 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={tablesetter} >
                     Done
                     </div>

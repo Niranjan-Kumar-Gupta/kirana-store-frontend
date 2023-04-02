@@ -17,8 +17,8 @@ import { CustomImageInput } from '../../components/CustomImageInput';
 import VariantField from '../../components/VarientField' 
 import { getProductbyid,getCategory,addProduct,updateProduct } from '../../reducers/productTableSlice';
 import './index.css';
-
-
+import { InputNumber } from 'primereact/inputnumber'
+import Loader from '../../components/Loader';
 
 const ProductDetails = () => {
   const { id } = useParams()
@@ -31,7 +31,7 @@ const ProductDetails = () => {
   const dispatch = useDispatch()
 
   const { company } = useSelector((state) => state.company)
-  const { selectedProduct,varient:varients,catagories,vartable} = useSelector((state) => state.productTable)
+  const { selectedProduct,loading,varient:varients,catagories,vartable} = useSelector((state) => state.productTable)
  
   const [mode,setmode]=useState('add')
   useEffect(()=>{
@@ -43,7 +43,9 @@ const ProductDetails = () => {
     setSeletedImage(img)
   }
 
-  
+  const loader = () => {
+    return <Loader visible={loading} />
+  }
   const [varient,setVarient]=useState([])
   const [varienttable,setVarienttable]=useState([
     {
@@ -68,7 +70,8 @@ const ProductDetails = () => {
 ])
 
     useEffect(()=>{
-      let x=varients.map(x=>{
+
+     if(varients&&varients.length>0){ let x=varients.map(x=>{
         return {
           id:x.id,
           name:x.name,
@@ -76,7 +79,13 @@ const ProductDetails = () => {
         }
       })
       setVarient([...x])
-      setVarienttable([...vartable])
+    }
+    if(vartable&&vartable.length>0){ 
+        setVarienttable([...vartable])
+    }
+
+
+
 
     },[varients])
 
@@ -243,6 +252,7 @@ const ProductDetails = () => {
     <div className='w-11 pt-3 m-auto '>
       <div>
         <Toast ref={toast} />
+        {loader()}
         <div className={`w-12 xl:w-8 lg:w-10 m-auto py-3 align-items-center `}>
           <div className='flex'> 
           <button className={`customButton-pd`} onClick={goBack}>
@@ -496,15 +506,19 @@ const ProductDetails = () => {
                   control={control}
                   rules={{ required: 'Product Price' }}
                   render={({ field, fieldState }) => (
-                    <InputText
-                    id={field.name}
-                    className={classNames({
-                      'p-invalid': fieldState.invalid,
-                    })}
-                    placeholder='Enter Product Price'
-                    {...field}
-                  />
-                  )}
+                    <InputNumber
+                  id={field.name}
+                  value={field.value}
+                  onChange={(e) => field.onChange(parseInt(e.value))}
+                  useGrouping={false}
+                  mode='currency'
+                  currency='INR'
+                  currencyDisplay='code'
+                  locale='en-IN'
+                  placeholder='Enter Price'
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                />
+                )}
                 />
                 {getFormErrorMessage('Product Price')}
               </div> 
