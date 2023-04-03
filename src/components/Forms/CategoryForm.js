@@ -112,7 +112,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
     try {
       const allCategories = await API_GET_CATEGORIES_Dropdown(0, 100000)
       let sortedCategories = sortAlphabeticalObjectArr(
-        allCategories.children,
+        allCategories.rows,
         'categoryName'
       )
       sortedCategories.unshift(defaultCategory)

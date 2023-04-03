@@ -1,0 +1,9 @@
+.p-datatable .p-datatable-tbody > tr.not-selectable{
+    background: #f8f7f7;
+    user-select: none;
+  }
+  
+  .p-datatable .p-datatable-tbody > tr.not-selectable .p-checkbox .p-checkbox-box {
+    background: inherit !important;
+    cursor: default;
+  }

@@ -1,3 +1,10 @@
+.stickySubNav {
+  position: sticky;
+  top: 70px;
+  background-color: #F8F8FC;
+  z-index: 100;
+}
+
 .qtyCells {
   background-color: #fff;
   border: 3px solid red;

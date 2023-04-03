@@ -19,7 +19,8 @@ import {
   updateSelectedOrdersList,
   resetSelectedOrdersList,
 } from "../../reducers/orderTableSlice";
-import "./style.css";
+import "./style.css"
+import { getDate } from '../../utils/datemaker'
 // import { API_GET_ORDERS } from "../../api/order.services";
 // import { underlineStyle } from "../../utils/commonStyles";
 // import { getCompany, setCompany } from '../../reducers/companySlice'
@@ -49,11 +50,9 @@ const Orders = () => {
   useEffect(()=>{
     dispatch(getOrders({page:page,limit:limit}))
     .unwrap()
-    .catch(()=>{ 
-      //console.log('kl..............',orderData)
-
-    }) 
-    //console.log('kl..............',orderData)
+    .catch((err) => {
+      toast.current.show({ severity: 'error', detail: err.message })
+    })
   },[page,limit])
 
   const onAddNewClick = () => {
@@ -80,19 +79,17 @@ const Orders = () => {
     )
   }
 
+  
 
- let statusItems = ['New','In Progress','Done']
- let paymentItems = ['Done','Due']
+ let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled']
+ let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const columns = [
-    {field: 'id', header: 'id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'name', header: 'Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},
-    {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
+    {field: 'completedAt', header: 'Date',isFilter:false,filterType:'input'},
+    {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
-    {field: 'totalAmount', header: 'Total amount',isFilter:false,filterPlaceholder:"Search by Rating"},
-    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
-
-    {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
-   
+    {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'itemCount', header: 'Items'},
     {field: 'viewDetails', header: '',viewDetails:true},
   ];
 
@@ -105,6 +102,7 @@ const handleDelete = (rowData) => {
  
 };
 const handleOrderSelect = (rowData)=>{
+  dispatch(updateMode('update'))
   navigate(`orderDetails/${rowData.id}`)
   console.log('order view detail',rowData)
 }
@@ -122,6 +120,11 @@ const onClearSearch = (data)=>{
 console.log(data)
 }
 
+const hanldeCreate = () => {
+  navigate(`./create`)
+  dispatch(updateMode('create'))
+}
+
 
 
   return (
@@ -135,7 +138,7 @@ console.log(data)
           varient='filled'
           label={'Create Order'}
           icon={'pi pi-plus'}
-          onClick={() => navigate(`./create`)}
+          onClick={hanldeCreate}
         />
       </div>
       {/* <div className='flex flex-wrap gap-2 mt-2'>
