@@ -102,7 +102,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
       setValue('email', selectedCustomer.email || '')
       setValue('gstNumber', selectedCustomer.gstNumber || '')
       setValue('panNumber', selectedCustomer.panNumber || '')
-      setValue('address', selectedCustomer.location || '')
+      setValue('location', selectedCustomer.location || '')
       setValue('pincode', selectedCustomer.pincode || '')
       setValue('phoneNumber', selectedCustomer.phoneNumber || '')    
     }
