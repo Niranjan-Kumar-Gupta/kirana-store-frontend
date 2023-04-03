@@ -328,7 +328,7 @@ const CustomTable = (
                     style={{ width: "120px", height: "80px" }}
                 >
                     <img
-                    src={`${rowData.previewUrl}?v=${rowData.updatedAt}`}
+                    src={`${rowData.url}?v=${rowData.updatedAt}`}
                     onError={(e) => (e.target.src = "./images/ImgPlaceholder.svg")}
                     style={{ maxWidth: "100%", height: "100%" }}
                     />
