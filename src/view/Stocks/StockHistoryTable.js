@@ -34,7 +34,7 @@ const StockHistoryTable = () => {
   const deleteModule = () => {
     return (
       <DeleteAlert
-        item="customer"
+        item="stockHistory"
         displayAlertDelete={displayAlertDelete}
         setDisplayAlertDelete={setDisplayAlertDelete}
         toast={toast}
@@ -100,7 +100,7 @@ const StockHistoryTable = () => {
       {field: 'comment', header: 'comment',isFilter:false,filterPlaceholder:"Search by catogery"},     
      
       
-      //{field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
+      {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
  
      ];
 

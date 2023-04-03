@@ -110,11 +110,11 @@ const StockHistoryEdit = () => {
   useEffect(() => {
     console.log(selectedStockHistory)
     if (selectedStockHistory) {
-     setValue('SKUCode', selectedStockHistory.productvariants.SKUCode || '')
+     setValue('SKUCode', selectedStockHistory.SKUCode || '')
         
       setValue('reason', selectedStockHistory.reason || '')
       setValue('comment', selectedStockHistory.comment || '')
-      setValue('product', selectedStockHistory.productvariants.productName || '')
+      setValue('product', selectedStockHistory.product || '')
       setValue('quantity', selectedStockHistory.quantity || '') 
       setValue('stockType', selectedStockHistory.stockType || '') 
       setValue( 'category', selectedStockHistory.category || '') 
