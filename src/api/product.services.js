@@ -81,7 +81,8 @@ const API_ADD_PRODUCT = async (configData,image) => {
 
   try {
     let {data} = await axiosInstance.post(`/product`, configData);
-    const imgUploadUrl = data.src;
+    const imgUploadUrl = data.product.src;
+    // console.log(data)
     if(imgUploadUrl && image){
       const uploded = await  axios.put(imgUploadUrl,image,{headers:{'Content-Type': 'image/png'}})
     }
@@ -96,7 +97,7 @@ const API_PUT_PRODUCT = async (productId, updatedData,image) => {
     const {data} = await axiosInstance.put(`/product/${productId}`, updatedData);
     // const imgUploadUrl = await data.src;
     console.log("sdsad",updatedData)
-    const imgUploadUrl = await updatedData.src;
+    const imgUploadUrl = await updatedData.product.src;
     if(imgUploadUrl && typeof image ==='object'){
       var uploded = await  axios.put(imgUploadUrl,image,{headers:{'Content-Type': 'image/png'}})
     }

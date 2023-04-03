@@ -53,7 +53,7 @@ const ProductList = () => {
     }).catch((err) => {
       console.log(err)
     })
-  },[])
+  },[page,limit])
 
 
   const deleteModule = () => {
@@ -151,7 +151,7 @@ console.log(data)
                   onApplySearch={onApplySearch}
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
-                  paginator={{page:page,limit:limit,totalRecords:10,changePage:changePage}}
+                  paginator={{page:page,limit:limit,totalRecords:totalProductCount,changePage:changePage}}
                 />       
             </div>
         </div>

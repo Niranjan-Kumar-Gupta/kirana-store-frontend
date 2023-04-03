@@ -29,7 +29,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
     };
 
     const statusEditor = (options) => {
-        return  <Dropdown value={options.value} onChange={(e) => options.editorCallback(e.value)} options={statusOptions} optionLabel="key" optionValue="value"
+        return  <Dropdown value={options.value} onChange={(e) => options.editorCallback(e.value)} options={statusOptions} defaultValue={"Available"} optionLabel="key" optionValue="value"
       />    };
 
    

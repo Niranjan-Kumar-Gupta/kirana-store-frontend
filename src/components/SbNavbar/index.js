@@ -6,12 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { changeSelectedTab, changeSidebarOpenStatus } from "../../reducers/appSlice";
 
 const navbarItems = [
-  { label: "Dashboard", icon: "dashboard", route: "/dashboard" },
+  // { label: "Dashboard", icon: "dashboard", route: "/dashboard" },
   { label: "Products", icon: "product", route: "/products" },
   { label: "Orders", icon: "order", route: "/orders" },
   { label: "Categories", icon: "category", route: "/categories" },
   { label: "Stock", icon: "enquiry", route: "/stocks" },
-  { label: "Production Cards", icon: "category", route: "/productionCards" },
+  // { label: "Production Cards", icon: "category", route: "/productionCards" },
   { label: "Customers", icon: "customer", route: "/customers" },
 ];
 Object.freeze(navbarItems);
