@@ -81,9 +81,7 @@ const CustomerList = () => {
      console.log('customer edit',customer)
      dispatch(changeSelectedCustomer(customer));
      dispatch(changeMode("update"));
-    //  setDisplayBasic(true);
-    //  setShowCustomerForm(true)
-     navigate(`create`)
+    navigate(`create`)
    
   };
   const handleDelete = (customer) => {
@@ -135,8 +133,7 @@ const CustomerList = () => {
   return (
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
-      {/* {displayBasic ? customerModal() : <></>}
-      {showCustomerForm ? customerModal() : <></>} */}
+   
       {loading ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
         <Text type='heading'>Customers</Text>

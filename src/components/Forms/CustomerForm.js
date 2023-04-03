@@ -30,6 +30,9 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     warehouseId: '',
     gstNumber: '',
     panNumber: '',
+    address:'',
+    pincode:'',
+    phoneNumber: '',
   }
 
   const dispatch = useDispatch()
@@ -51,6 +54,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
 
   // handle sumbit formdata
   const onSubmit =  (data) => {
+    console.log(data)
     data = { ...data, phone: data.phone.substring(1) }
 
     if (mode === 'update') {
@@ -97,6 +101,9 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
       setValue('email', selectedCustomer.email || '')
       setValue('gstNumber', selectedCustomer.gstNumber || '')
       setValue('panNumber', selectedCustomer.panNumber || '')
+      setValue('address', selectedCustomer.address || '')
+      setValue('pincode', selectedCustomer.pincode || '')
+      setValue('phoneNumber', selectedCustomer.phoneNumber || '')    
     }
   }, [])
 
@@ -223,6 +230,57 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
               )}
             />
             {getFormErrorMessage('panNumber')}
+          </div>
+
+          <div className='field'>
+            <label htmlFor='address'>Address</label>
+            <Controller
+              name='address'
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputText
+                  id={field.address}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter Address'
+                  {...field}
+                />
+              )}
+            />
+            {getFormErrorMessage('address')}
+          </div>
+
+          <div className='field'>
+            <label htmlFor='pincode'>Pincode</label>
+            <Controller
+              name='pincode'
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputText
+                  id={field.pincode}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter Pincode'
+                  {...field}
+                />
+              )}
+            />
+            {getFormErrorMessage('pincode')}
+          </div>
+
+          <div className='field'>
+            <label htmlFor='phoneNumber'>Phone Number</label>
+            <Controller
+              name='phoneNumber'
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputText
+                  id={field.phoneNumber}
+                  className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter Phone Number'
+                  {...field}
+                />
+              )}
+            />
+            {getFormErrorMessage('pincode')}
           </div>
 
           <div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CustomTable from "../../components/CustomTable";
 import { Text } from '../../components/Text';
+import Loader from '../../components/Loader'
 
 import {
   getStocks,
@@ -43,11 +44,11 @@ const StocksTable = () => {
            
           {field: 'desc', header: 'Description',isFilter:false,filterPlaceholder:"Search by catogery"},     
           
-          {field: 'updatedAt', header: 'Date',isFilter:false,filterPlaceholder:"Search by catogery"},     
+          {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
           
-          {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
+          {field: 'quantity', header: 'Available Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
        
-        ];
+         ];
     
       
   const onApplyFilter = (data)=>{
@@ -62,6 +63,11 @@ const StocksTable = () => {
   const onClearSearch = (data)=>{
   console.log(data)
   }
+
+  const loader = () => {
+    return <Loader visible={loading} />
+  }
+
   // const onEditNumberInput = (data)=>{
   //   console.log(data)
   //   products.forEach(ele => {
@@ -74,6 +80,7 @@ const StocksTable = () => {
 
   return (
     <div className='w-full pt-3 m-auto'>
+         {loading ? loader() : <></>}
          <div className="mt-2">
                <CustomTable 
                   tableName={'stockTable'}

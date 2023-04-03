@@ -355,7 +355,7 @@ const CustomTable = (
 };
 
 const dateBodyTemplate = (rowData) => {  
-  console.log(rowData)
+  //console.log(rowData)
   return formatDate(rowData.updatedAt);
 };
 

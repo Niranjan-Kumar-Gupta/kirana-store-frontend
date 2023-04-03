@@ -28,10 +28,24 @@ export const getStocks = createAsyncThunk(
   }
 );
 
+export const updateStocks = createAsyncThunk(
+  "stockTable/putStock",
+  async ( data, thunkAPI) => {
+    console.log(data)
+    try {
+      const stocks = await API_PUT_STOCKS(data);
+      return stocks;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  }
+);
+
+
 
 
 const stockTableSlice = createSlice({
-  name: "customerTable",
+  name: "stockTableTable",
   initialState,
   reducers: {
     changeMode(state, action) {
@@ -64,6 +78,19 @@ const stockTableSlice = createSlice({
       ;
     });
     builder.addCase(getStocks.rejected, (state) => {
+      state.loading = false;
+    });
+
+    //put stocks
+
+    builder.addCase(updateStocks.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(updateStocks.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase(updateStocks.rejected, (state) => {
       state.loading = false;
     });
 

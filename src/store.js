@@ -13,6 +13,12 @@ import analyticSlice from "./reducers/analyticSlice";
 import companyslice from "./reducers/companySlice";
 import paymentSlice from "./reducers/paymentSlice";
 import stocksTableSlice from "./reducers/stocksTableSlice";
+import stocksHistoryTableSlice from "./reducers/stocksHistoryTableSlice";
+import { getDefaultMiddleware } from '@reduxjs/toolkit';
+
+const customizedMiddleware = getDefaultMiddleware({
+    serializableCheck: false
+  })
 
 const store = configureStore({
     reducer : {
@@ -29,8 +35,12 @@ const store = configureStore({
         analytic: analyticSlice,
         company:companyslice,
         payment:paymentSlice,
-        stockTable:stocksTableSlice
-    }
+        stockTable:stocksTableSlice,
+        stocksHistoryTable:stocksHistoryTableSlice,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+      }),
 })
 
 export default store;

@@ -1,93 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CustomTable from "../../components/CustomTable";
 import { Text } from '../../components/Text';
+import { Toast } from 'primereact/toast';
+import Loader from '../../components/Loader';
+
+import {
+  getStocksHistory,
+  changeMode,
+  resetMode,
+  changeSelectedStockHistory,
+  resetSelectedStockHistory,
+  changePage,
+} from "../../reducers/stocksHistoryTableSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { DeleteAlert } from "../../components/Alert/DeleteAlert";
+import { useNavigate, useParams } from 'react-router-dom'
+
 
 const StockHistoryTable = () => {
-
-    const [products, setProducts] = useState([
-        {
-            id: '1000',
-            code: 'f230fh0g3',
-            name: 'Bamboo Watch',
-            description: 'Product Description',
-            image: 'bamboo-watch.jpg',
-            price: 65,
-            category: 'Accessories',
-            avilable: 24,
-            inventoryStatus: 'INSTOCK',
-            onHold: 0,
-            date: '2015-09-13',
-            url:['https://picsum.photos/320/180','https://picsum.photos/330/190','https://picsum.photos/300/170']
-        },
-        {
-            id: '1001',
-            code: 'nvklal433',
-            name: 'Black Watch',
-            description: 'Product Description',
-            image: 'black-watch.jpg',
-            price: 72,
-            category: 'Accessories',
-            avilable: 61,
-            inventoryStatus: 'INSTOCK',
-            onHold: 0,
-            date: '2015-09-07',
-            url:'https://picsum.photos/300/180'
-        },
-        {
-            id: '1002',
-            code: 'zz21cz3c1',
-            name: 'Blue Band',
-            description: 'Product Description',
-            image: 'blue-band.jpg',
-            price: 79,
-            category: 'Fitness',
-            avilable: 2,
-            inventoryStatus: 'LOWSTOCK',
-            onHold: 0,
-            date: '2015-09-01',
-            url:['https://picsum.photos/300/180','https://picsum.photos/300/190','https://picsum.photos/300/170']
-        },
-        {
-            id: '1003',
-            code: '244wgerg2',
-            name: 'Blue T-Shirt',
-            description: 'Product Description',
-            image: 'blue-t-shirt.jpg',
-            price: 29,
-            category: 'Clothing',
-            avilable: 25,
-            inventoryStatus: 'INSTOCK',
-            onHold: 0,
-            date: '2015-09-13',
-        },
-    ]
-     );
-    
-     let items = ['New','In Progress','Done']
-     const columns = [
-          {field: 'date', header: 'Date',isFilter:false,filterType:'date',filterPlaceholder:"Search by Date"},
-   
-          {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-          {field: 'name', header: 'Product',isFilter:true,filterType:'input',filterPlaceholder:"Search by Name"},
-     
-           
-          {
-            field: 'code',
-            header: 'SKU Code',
-           // isFilter:true,
-            filterPlaceholder:"Search by code"
-          },
-          
-        {field: 'category', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-        
-        {field: 'stockType', header: 'Stock Type',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
-       
-        {field: 'avilable', header: 'Quantity',isFilter:false,filterType:'input',filterPlaceholder:"Search by avilable"},
-        {field: 'reason', header: 'Reason',isFilter:false,filterType:'input',filterPlaceholder:"Search by avilable"},
-        {field: 'comment', header: 'Comment',isFilter:false,filterType:'input',filterPlaceholder:"Search by avilable"},
-        {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
+  const navigate = useNavigate()
+  const toast = useRef(null)
   
-      ];
+  const {
+    stockHistoryData,
+    selectedStockHistory,
+    page,
+    limit,
+    loading,
+    totalStockHistoryCount,
+  } = useSelector((state) => state.stocksHistoryTable);
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
+
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item="customer"
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    );
+  };
+
+
+  const [stockHistoryTable,setStockHistoryTable] = useState([])
+  
+  useEffect(()=>{
+    console.log(page,limit)
+    dispatch(getStocksHistory({page:page,limit:limit}))
+    .unwrap()
+    .then(()=>{ 
+
+    }) 
+    console.log(stockHistoryData)
+  },[page,limit])
+
+  useEffect(()=>{
+
+  },[])
+
+  useEffect(()=>{
+
+    console.log(stockHistoryData)
+    let data = []
+    stockHistoryData.forEach(ele => {
+       let _data = {
+           id:ele.id,
+           product:ele.productvariants.productName,
+           SKUCode:ele.productvariants.SKUCode,
+           previewUrl:ele.productvariants.url,
+           quantity:ele.quantity,
+           stockType:ele.stockType,
+           updatedAt:ele.updatedAt,
+           reason:ele.reason,
+           comment:ele.comment
+       }
+       data.push(_data)
+    });
+    setStockHistoryTable(data)
+  },[stockHistoryData])
+
+  const dispatch = useDispatch();
+     
+     const columns = [
+
+      {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
+      {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+     
+      { field: 'product',header: 'Product',isFilter:false,filterPlaceholder:"Search by code"},     
+       
+      {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      
+      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
+      
+      {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      
+      {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      {field: 'comment', header: 'comment',isFilter:false,filterPlaceholder:"Search by catogery"},     
+     
+      
+      //{field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
+ 
+     ];
+
 
       
   const onApplyFilter = (data)=>{
@@ -96,36 +112,60 @@ const StockHistoryTable = () => {
   const onApplySearch = (data)=>{
     console.log(data)
   }
+  
   const onClearFilter = (data)=>{
     console.log(data)
   }
+
   const onClearSearch = (data)=>{
   console.log(data)
   }
-  const onEditNumberInput = (data)=>{
-    console.log(data)
-    products.forEach(ele => {
-       if (data.id===ele.id) {
-         ele.avilable += data.onHold
-       }
-    });
-    }
+
+  const handleEdit = (data) => {
+    console.log('stock history edit',data)
+    navigate('edit') 
+    dispatch(changeSelectedStockHistory(data))
+ };
+
+ const handleDelete = (data) => {
+   console.log('stock history del',data)
+   setDisplayAlertDelete(true);
+
+ };
+
+ const loader = () => {
+  return <Loader visible={loading} />
+}
+
+  // const onEditNumberInput = (data)=>{
+  //   console.log(data)
+  //   products.forEach(ele => {
+  //      if (data.id===ele.id) {
+  //        ele.avilable += data.onHold
+  //      }
+  //   });
+  //   }
 
     
   return (
     <div className='w-full pt-3 m-auto'>
+        {displayAlertDelete && deleteModule()}
+        {loading ? loader() : <></>}
          <div className="mt-2">
                <CustomTable 
                   tableName={'productTable'}
-                  data={products}
+                  data={stockHistoryTable}
                   columns={columns}
                   globalSearch={true}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
                   onApplyFilter={onApplyFilter}
                   onApplySearch={onApplySearch}
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
-                  onEditNumberInput={onEditNumberInput}
-                  paginator={{page:0,limit:5,totalRecords:10,changePage:()=>{}}}
+                  dispatchFunction={getStocksHistory}
+                  //onEditNumberInput={onEditNumberInput}
+                  paginator={{page:page,limit:limit,totalRecords:totalStockHistoryCount,changePage:changePage}}
                 />       
             </div>
       

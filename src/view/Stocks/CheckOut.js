@@ -12,124 +12,111 @@ import { classNames } from 'primereact/utils'
 import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
 import { InputTextarea } from 'primereact/inputtextarea';
+import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
+import Loader from '../../components/Loader'
+import { API_GET_ORDERS } from '../../api/order.services';
+import { useDispatch, useSelector } from "react-redux";
+
+import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+
+
+
         
 const CheckOut = () => {
   const [tableData, setTableData] = useState()
   const toast = useRef(null)
   const [selectedProdId, setSelectedProdId] = useState([])
+  const [prodVar, setprodVar] = useState([])
+
+  const [orderId, setOrderId] = useState([])
+  const dispatch = useDispatch();
+
+  const { 
+    loading,
+  } = useSelector((state) => state.stocksHistoryTable);
+
+  const loader = () => {
+    return <Loader visible={loading} />
+  }
+
+  useEffect(()=>{
+    const getOrderData = async ()=>{
+        const order =  await API_GET_ORDERS(0,100000)
+        console.log(order)
+        let orderIds = []
+        order.rows.forEach(ele => {       
+            let data = {
+                key: ele.id,
+                label: `OrderId ${ele.id} `,
+                data: `OrderId ${ele.id} `,
+            }
+            orderIds.push(data)
+        });
+        setOrderId(orderIds)
+    }
+    getOrderData()
+   
+  },[])
+
+
+
   const [reasons, setReasons] = useState( [
     {
-        key: '0',
+      //  key: 'orderDelivery',
         label: 'Order Delivery',
-        data: 'Order Delivery',
+       // data: 'Order Delivery',
        
-        children: [
-            {
-                key: '0-0',
-                label: 'order 1',
-                data: 'order 1 Folder',
-               
-               
-            },
-            {
-                key: '0-1',
-                label: 'order 2',
-                data: 'order 2 ',
-                
-           }
-        ]
+        children: []
     },
     {
-        key: '1',
+        key: 'damaged',
         label: 'Damaged',
         data: 'Damaged ',
        
     },
     {
-        key: '2',
+        key: 'correction',
         label: 'Correction',
         data: 'Correction ',
        
     
     }
-]);
+ ]);
+    
+useEffect(()=>{
+  console.log(orderId)
+  let _reason = [...reasons]
+  _reason[0].children = orderId
+  setReasons(_reason)
+},[orderId])
+
   const [selectedReasons, setSelectedReasons] = useState(null);
   
+  const getProdVariants = async () => {
+    console.log('ffff')
+    try {
+      const prodVariants = await API_GET_PRRODUCTS_WITH_VARIANTS(0, 100000)
+      console.log(prodVariants)
+      setprodVar(prodVariants.rows)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+useEffect(()=>{
+   getProdVariants()
+},[])
 
 
-  useEffect(() => {
-    const filteredData = getDataByIds(products, selectedProdId)
-    setTableData(filteredData)
-  }, [selectedProdId])
 
-  const products = [
-    {
-      key: '0',
-      label: 'Documents',
-      data: 'Documents Folder',
-      icon: 'pi pi-fw pi-inbox',
-      children: [
-        {
-          key: '0-0',
-          label: 'Work',
-          data: 'Work Folder',
-          icon: 'pi pi-fw pi-cog',
-        },
-        {
-          key: '0-1',
-          label: 'Home',
-          data: 'Home Folder',
-          icon: 'pi pi-fw pi-home',
-        },
-      ],
-    },
-    {
-      key: '1',
-      label: 'Events',
-      data: 'Events Folder',
-      icon: 'pi pi-fw pi-calendar',
-      children: [
-        {
-          key: '1-0',
-          label: 'Meeting',
-          icon: 'pi pi-fw pi-calendar-plus',
-          data: 'Meeting',
-        },
-        {
-          key: '1-1',
-          label: 'Product Launch',
-          icon: 'pi pi-fw pi-calendar-plus',
-          data: 'Product Launch',
-        },
-        {
-          key: '1-2',
-          label: 'Report Review',
-          icon: 'pi pi-fw pi-calendar-plus',
-          data: 'Report Review',
-        },
-      ],
-    },
-    {
-      key: '2',
-      label: 'Movies',
-      data: 'Movies Folder',
-      icon: 'pi pi-fw pi-star-fill',
-      children: [
-        {
-          key: '2-0',
-          icon: 'pi pi-fw pi-star-fill',
-          label: 'Al Pacino',
-          data: 'Pacino Movies',
-        },
-        {
-          key: '2-1',
-          label: 'Robert De Niro',
-          icon: 'pi pi-fw pi-star-fill',
-          data: 'De Niro Movies',
-        },
-      ],
-    },
-  ]
+useEffect(() => {
+  const filteredData = getDataByIds(prodVar, selectedProdId)
+  console.log(filteredData)
+  setTableData(filteredData)
+ 
+}, [selectedProdId, prodVar])
+
+
+
     const navigate = useNavigate()
     const goBack = () => {
         navigate('/stocks')
@@ -150,33 +137,40 @@ const CheckOut = () => {
       } = useForm({ defaultValues })
 
 
-      const flatten = (arr) =>
-    arr.reduce((acc, curr) => {
-      const { children, ...rest } = curr
-      acc.push(rest)
-      if (children) {
-        acc.push(...flatten(children))
-      }
-      return acc
-    }, [])
+     
+  const flatten = (arr) =>
+  arr.reduce((acc, curr) => {
+    const { children, ...rest } = curr
+    acc.push(rest)
+    if (children) {
+      acc.push(...flatten(children))
+    }
+    return acc
+  }, [])
 
-  const getDataByIds = (data, ids) => {
-    const flattenedData = flatten(data)
-    return ids.flatMap((id) => {
-      const foundItem = flattenedData.find((item) => item.key === id)
-      if (foundItem) {
-        return {
-          key: foundItem.key,
-          label: foundItem.label,
-          data: foundItem.data,
-          quantity: '',
-          skuId:'we12',
-          checkInQuantity:''
-        }
+const getDataByIds = (data, ids) => {
+  const flattenedData = flatten(data)
+  return ids.flatMap((id) => {
+    const foundItem = flattenedData.find(
+      (item) => item.key == id && 'option1' in item
+    )
+    if (foundItem) {
+      return {
+        id: foundItem.id,
+        key: foundItem.key,
+        label: foundItem.label,
+        productName: foundItem.productName,
+        productId: foundItem.productId,
+        categoryId: foundItem.categoryId,
+        productVariantId: foundItem.id,
+        SKUCode: foundItem.SKUCode,
+        quantity:foundItem.quantity,
+        orderedQuantity: '',
       }
-      return []
-    })
-  }
+    }
+    return []
+  })
+}
 
   const getFormErrorMessage = (name) => {
     return (
@@ -222,6 +216,7 @@ const CheckOut = () => {
         name={rowData.label}
         showButtons
         style={{ width: '8rem' }}
+        max={rowData.quantity}
         min={0}
         incrementButtonIcon='pi pi-plus'
         decrementButtonIcon='pi pi-minus'
@@ -242,7 +237,7 @@ const CheckOut = () => {
         className='w-full'
       >
         <Column header='Products' field='label'></Column>
-        <Column header='SKU Id' field='SkuId'></Column>
+        <Column header='SKU Code' field='SKUCode'></Column>
        
         <Column
           className='qtyCells'
@@ -260,27 +255,82 @@ const CheckOut = () => {
     )
   }
   const onSubmit = (data) => {
-    console.log(data)
-    let isQtyEmpty = false;
-    tableData.forEach((prod) => {
-      if (!prod.quantity || prod.quantity === "") {
-        toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
-        isQtyEmpty = true
-      }
-    })
-    if (!isQtyEmpty) {
-      data.productOrdered = tableData;
-      setTableData([])
-      reset()
-      console.log(data)
-    }
+    console.log(data,tableData)
+   // let isQtyEmpty = false;
+    // tableData.forEach((prod) => {
+    //   if (!prod.quantity || prod.quantity === "") {
+    //     toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
+    //     isQtyEmpty = true
+    //   }
+    // })
+    // if (!isQtyEmpty) {
+    //   data.productOrdered = tableData;
+    //   setTableData([])
+    //   reset()
+    //   console.log(data)
+    // }
 
+   let __prodVar = []
+   tableData.forEach(ele => {
+     const __data = {
+      productVariantId:ele.productVariantId,
+      quantity:-ele.checkInQuantity
+     }
+     __prodVar.push(__data)
+   });
 
+   if (data.reason == 'damaged' || data.reason == 'correction') {
+    let finalData = {
+      reason:data.reason,  
+      comment:data.comment,
+      productvariants:__prodVar
+     }
+     console.log(finalData)
+     dispatch(updateStocksHistory(finalData))
+     .unwrap()
+        .then((res) => {
+          let Message_Success = 'Check Out Successfully '
+          toast.current.show({ severity: 'success', detail: Message_Success })
+          goBack()
+         
+        })
+        .catch((err)=>{
+          console.log(err)
+          toast.current.show({ severity: 'error', detail: err.message }) 
+       
+        })
+     
+   } else {
+    let finalData = {
+      reason:'order',
+      orderId:data.reason,
+      comment:data.comment,
+      productvariants:__prodVar
+     }
+     console.log(finalData)
+     dispatch(updateStocksHistory(finalData))
+     .unwrap()
+     .then((res) => {
+      let Message_Success = 'Check Out Successfully '
+      toast.current.show({ severity: 'success', detail: Message_Success })
+          goBack()
+          
+        })
+      .catch((err)=>{
+        console.log(err)
+        toast.current.show({ severity: 'error', detail: err.message }) 
+     
+      })
+
+      
+   }
+ 
   }
   
   return (
     <div className='w-11 pt-3 m-auto'>
-   
+       <Toast ref={toast} />
+       {loading ? loader() : <></>}
       <div className={'w-9 m-auto flex justify-content-start align-items-center'}>
       <button className={style.customButton} onClick={goBack}>
           <span
@@ -305,7 +355,7 @@ const CheckOut = () => {
                     <Controller
                       name='products'
                       control={control}
-                      rules={{ required: 'Please select a category.' }}
+                      rules={{ required: 'Please select a product.' }}
                       render={({ field, fieldState }) => (
                         <>
                           <TreeSelect
@@ -322,7 +372,7 @@ const CheckOut = () => {
                             selectionMode='checkbox'
                             display='chip'
                             inputRef={field.ref}
-                            options={products}
+                            options={prodVar}
                             metaKeySelection={false}
                             placeholder='Select Products'
                             className={classNames('w-full', {
@@ -333,7 +383,7 @@ const CheckOut = () => {
                         </>
                       )}
                     />
-                    {getFormErrorMessage('products')}
+
                   </div>
                   {tableData && tableData.length !== 0 ? selectedProdTable() : ''}
                 </div>
@@ -351,6 +401,7 @@ const CheckOut = () => {
                               <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
                                 className="md:w-15rem w-full" placeholder="Select Reason"></TreeSelect>
                             </div>
+
                           </>
                         )}
                       />
@@ -366,7 +417,7 @@ const CheckOut = () => {
                               <InputTextarea
                                 id={field.name}
                                 value={field.value}
-                                onChange={(e) => field.onChange(e.value)}
+                                onChange={(e) => field.onChange(e.target.value)}
                                 rows={5}    
                                 placeholder='Enter Comment'
                                 className={classNames({

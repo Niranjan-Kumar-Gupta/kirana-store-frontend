@@ -29,6 +29,7 @@ import { setUser } from './reducers/authSlice'
 import CreateCustomer from './view/CreateCustomer'
 import CheckIn from './view/Stocks/CheckIn'
 import CheckOut from './view/Stocks/CheckOut'
+import StockHistoryEdit from './view/Stocks/stockHistoryEdit'
 
 
 function App() {
@@ -65,7 +66,7 @@ function App() {
           <Route path='stocks' element={<Stocks />} />
           <Route path='stocks/checkIn' element={<CheckIn />} />
           <Route path='stocks/checkOut' element={<CheckOut />} />
-         
+          <Route path='stocks/edit' element={<StockHistoryEdit />} />      
           <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
           <Route path='customers/create' element={<CreateCustomer />} />
