@@ -130,9 +130,9 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
         <div className="flex flex-column justify-content-end">
         <Toast ref={toast} />
         <div  className="flex my-2 pl-2">
-                <div className="w-7">Variants</div>
+                <div className="w-7">Variant</div>
                  {varient.length<3&&<div className="flex w-4 text-blue-400 justify-content-end" onClick={()=>{addVarient()}}>
-                        +&nbsp;Add&nbsp;Another&nbsp;Option     
+                        +&nbsp;Add&nbsp;Option     
                     </div>}
             </div>
         {(varient)&&varient.map((x,pkey)=>{

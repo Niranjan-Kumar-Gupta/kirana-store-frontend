@@ -76,7 +76,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
              rowClassName={rowClassName}
              scrollable scrollHeight="400px"
              tableStyle={{ minWidth: '50rem' }}>
-                <Column field="label" header="Varients" style={{ width: '20%' }}></Column>
+                <Column field="label" header="Varient" style={{ width: '20%' }}></Column>
                 <Column editMode field="SKUCode" header="SKUID" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                 <Column editMode field="status" header="Stock"  editor={(options) => statusEditor(options)} style={{ width: '20%' }}></Column>
                 <Column editMode field="price" header="Price" body={priceBodyTemplate} editor={(options) => priceEditor(options)} style={{ width: '25%' }}></Column>
