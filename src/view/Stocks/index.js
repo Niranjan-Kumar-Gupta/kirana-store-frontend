@@ -1,9 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CustomTable from "../../components/CustomTable";
-import { Text } from '../../components/Text'
+import { Text } from '../../components/Text';
+import CustomSwitch from "../../components/CustomSwitch";
+import StocksTable from './StocksTable';
+import StockHistoryTable from './StockHistoryTable';
+import { CustomButton } from "../../components/CustomButton";
+import { useNavigate } from 'react-router-dom'
+
 export const Stocks = () => {
 
+  const switchButtons = [
+    { name: "Stocks", value: "stock" },
+    { name: "Stock History", value: "stockHistory" },
+  ];
+  const navigate = useNavigate()
+ 
 
+
+const [table, setTable] = useState('stock')
+  
+  const handleSwitch = (item) => {
+  //  console.log(item);
+    setTable(item)
+  };
+
+  
   const [products, setProducts] = useState([
     {
         id: '1000',
@@ -82,51 +103,54 @@ export const Stocks = () => {
    
   ];
 
-  const onApplyFilter = (data)=>{
-    console.log(data)
-  }
-  const onApplySearch = (data)=>{
-    console.log(data)
-  }
-  const onClearFilter = (data)=>{
-    console.log(data)
-  }
-  const onClearSearch = (data)=>{
-  console.log(data)
-  }
-  const onEditNumberInput = (data)=>{
-    console.log(data)
-    products.forEach(ele => {
-       if (data.id===ele.id) {
-         ele.avilable += data.onHold
-       }
-    });
+  const renderTable = (table) => {
+    switch (table) {
+      case "stock":
+        return <StocksTable />;
+      case "stockHistory":
+        return <StockHistoryTable />;
     }
+  };
 
+  const onClickCheckInAndOut = (page) => {
+   
+    switch (page) {
+      case "checkIn":   
+        navigate("checkIn");
+        break
+      case "checkOut":
+        navigate("checkOut");
+        break
+    }
+  };
+
+
+  
 
     return (
-      <div className="w-11 pt-3 m-auto">
-         <div className={'flex justify-content-between align-items-center'}>
-        <div>
-          <Text type='heading'>Categories</Text>
-        </div>
-      </div>
+      <div className="w-11 pt-3 m-auto"> 
+         <div className="flex mt-4 justify-content-between align-items-center gap-2">
+          <CustomSwitch
+                options={switchButtons}
+                value={table}
+                handleSwitch={handleSwitch}
+              />
+           <div className="flex  justify-content-center align-items-center gap-3" >
+              <CustomButton
+                varient="filled"
+                label={"Check In"}          
+                onClick={()=>{onClickCheckInAndOut('checkIn')}}
+              />
+              <CustomButton
+                varient="filled"
+                label={"Check Out"}
+                onClick={()=>{onClickCheckInAndOut('checkOut')}}   
+              />
+           </div>  
+         
+         </div>
+          {renderTable(table)}
 
-         <div className="mt-2">
-               <CustomTable 
-                  tableName={'productTable'}
-                  data={products}
-                  columns={columns}
-                  globalSearch={true}
-                  onApplyFilter={onApplyFilter}
-                  onApplySearch={onApplySearch}
-                  onClearFilter={onClearFilter}
-                  onClearSearch={onClearSearch}
-                  onEditNumberInput={onEditNumberInput}
-                  paginator={{page:0,limit:5,totalRecords:10,changePage:()=>{}}}
-                />       
-            </div>
-      
       </div>
     );
   };

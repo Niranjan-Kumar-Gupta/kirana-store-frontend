@@ -355,13 +355,14 @@ const CustomTable = (
 };
 
 const dateBodyTemplate = (rowData) => {  
-  return rowData.date;
+  //console.log(rowData)
+  return formatDate(rowData.updatedAt);
 };
 
 const dateBodyTemplateTree = (rowData)=>{
- // console.log(rowData.data)
- // return formatDate(rowData.data.updatedAt);
- return formatDate('2023-03-24T14:37:11.000Z')
+  console.log(rowData.data.updatedAt)
+  return formatDate(rowData.data.updatedAt);
+ //return formatDate('2023-03-24T14:37:11.000Z')
 }
 
   const dateFilterTemplate = (field,placeholder) => {

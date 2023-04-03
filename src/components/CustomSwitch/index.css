@@ -1,0 +1,17 @@
+.custom-switch.p-selectbutton .p-button.p-highlight {
+  background: #1c738e !important;
+  border-color:#1c738e !important;
+  color: #ffffff !important;
+}
+.custom-switch.p-selectbutton .p-button.p-highlight:hover{
+  background: #1c738e !important;
+  border-color:#1c738e !important;
+  color: #ffffff !important;
+}
+.p-button:focus{
+  box-shadow: none !important;
+}
+.custom-switch .p-focus{
+  background: #1c738e !important;
+  color: #ffffff !important;
+}
