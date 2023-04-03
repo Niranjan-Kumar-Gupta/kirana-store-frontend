@@ -93,7 +93,7 @@ const StockHistoryTable = () => {
       
       {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      //{field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
       {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     

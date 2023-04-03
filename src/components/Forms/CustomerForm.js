@@ -30,7 +30,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     warehouseId: '',
     gstNumber: '',
     panNumber: '',
-    address:'',
+    location:'',
     pincode:'',
     phoneNumber: '',
   }
@@ -95,13 +95,14 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   }
 
   useEffect(() => {
+    console.log(selectedCustomer)
     if (mode === 'update' && selectedCustomer) {
       setValue('name', selectedCustomer.name)
       setValue('phone', '+' + selectedCustomer.phone)
       setValue('email', selectedCustomer.email || '')
       setValue('gstNumber', selectedCustomer.gstNumber || '')
       setValue('panNumber', selectedCustomer.panNumber || '')
-      setValue('address', selectedCustomer.address || '')
+      setValue('address', selectedCustomer.location || '')
       setValue('pincode', selectedCustomer.pincode || '')
       setValue('phoneNumber', selectedCustomer.phoneNumber || '')    
     }
@@ -235,18 +236,19 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
           <div className='field'>
             <label htmlFor='address'>Address</label>
             <Controller
-              name='address'
+              name='location'
               control={control}
+              rules={{ required: 'address is required.' }}
               render={({ field, fieldState }) => (
                 <InputText
-                  id={field.address}
+                  id={field.location}
                   className={classNames({ 'p-invalid': fieldState.invalid })}
                   placeholder='Enter Address'
                   {...field}
                 />
               )}
             />
-            {getFormErrorMessage('address')}
+            {getFormErrorMessage('location')}
           </div>
 
           <div className='field'>
@@ -254,6 +256,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             <Controller
               name='pincode'
               control={control}
+              rules={{ required: 'pincode is required.' }}
               render={({ field, fieldState }) => (
                 <InputText
                   id={field.pincode}
@@ -280,7 +283,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                 />
               )}
             />
-            {getFormErrorMessage('pincode')}
+            {getFormErrorMessage('phoneNumber')}
           </div>
 
           <div>
