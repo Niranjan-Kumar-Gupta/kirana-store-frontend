@@ -56,7 +56,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (isLogedIn) {
-      navigate("/dashboard");
+      navigate("/products");
     }
   }, []);
 
@@ -64,7 +64,7 @@ export const Login = () => {
     dispatch(login(data))
       .unwrap()
       .then((res) => {
-        navigate("/dashboard");
+        navigate("/products");
       })
       .catch((err) => {
         showError(err.message);
