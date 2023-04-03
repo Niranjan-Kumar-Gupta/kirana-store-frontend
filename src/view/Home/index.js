@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import AppLogout from "../../utils/AppLogout";
 import { useLocation } from "react-router-dom";
 import { Dashboard } from "../Dashboard";
+import ProductList from "../ProductList";
 
 
 export const Home = () => {
@@ -17,7 +18,7 @@ export const Home = () => {
           <Header />
         </header>
         {
-          currentPath =="/" ? <Dashboard />:
+          currentPath =="/" ? <ProductList />:
         <Outlet />
         }
       </div>

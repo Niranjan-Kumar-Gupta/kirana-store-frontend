@@ -47,28 +47,7 @@ const ProductDetails = () => {
     return <Loader visible={loading} />
   }
   const [varient,setVarient]=useState([])
-  const [varienttable,setVarienttable]=useState([
-    {
-      "key":"0-1/1-1",
-      "id": 146,"productId": 38,"categoryId": 8,"price": 100,
-      "option1": "S",
-      "option2": "RED","option3": "","isActive": true,
-      "SKUCode": "SILVERNECK2DEFAULT","companyId": 6,"status": "Available","createdAt": "2023-03-30T12:42:46.000Z","updatedAt": "2023-03-30T12:42:46.000Z",
-      "outletId": null,"productVariantId": null
-  },
-  {
-      "key":"0-1/1-2","id": 147,"productId": 38,
-      "categoryId": 8,"price": 100,
-      "option1": "M","option2": "RED",
-      "option3": "","isActive": false,
-      "SKUCode": "SILVERNECK2DEFAULT2",
-      "companyId": 6,"status": "Available",
-      "createdAt": "2023-03-30T12:42:46.000Z",
-      "updatedAt": "2023-03-30T12:42:46.000Z",
-      "outletId": null,"productVariantId": null
-  }
-])
-
+  const [varienttable,setVarienttable]=useState([])
     useEffect(()=>{
 
      if(varients&&varients.length>0){ let x=varients.map((x,y)=>{
@@ -207,7 +186,7 @@ const ProductDetails = () => {
 
     if (mode === 'update'&&id!=='add') {
       const productId = selectedProduct.id;
-      data={...data,src:selectedProduct.src,options:[...varient],
+      data={product:{...data,src:selectedProduct.src},options:[...varient],
         productvariants:[...varienttable]
       }
     console.log("sss",data)
@@ -217,7 +196,9 @@ const ProductDetails = () => {
           //show toast here
           
           toast.current.show({ severity: 'success', detail: 'Succesfully Product is updated' })
-
+          // setTimeout(() => {
+          //   {navigate("/products")}
+          // }, 1000);
         })
         .catch(err => {
           //show toast here
@@ -228,7 +209,7 @@ const ProductDetails = () => {
       data = { product:{...data},options:[...varient],
         productvariants:[...varienttable]
       }
-    console.log("sss",data)
+    // console.log("sss",data)
 
       dispatch(addProduct({data,selectedImage}))
         .unwrap()
@@ -238,6 +219,9 @@ const ProductDetails = () => {
 
           // dispatch(changeShowNotice(true));
           toast.current.show({ severity: 'success', detail: "Successfully Added Product" });
+          // setTimeout(() => {
+          //   {navigate("/products")}
+          // }, 1000);
         })
         .catch(err => {
           toast.current.show({ severity: 'error', detail: err.message});
@@ -401,39 +385,8 @@ const ProductDetails = () => {
               </div>
             </div>
 
-
-            <div className='bg-white p-4 border-round border-50 mb-4'>
-              <div className='field'>
-                <label
-                  htmlFor='varient'
-                  className={classNames({ 'p-error': errors.name })}
-                >
-                  Variants
-                </label>
-                <Controller
-                  name='varient'
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <VariantField
-                      className={classNames({
-                        'p-invalid': fieldState.invalid,
-                      })}
-                      placeholder='Enter Product Name'
-                      field={field}
-                      pid={id}
-                      varient={varient}
-                      setVarient={setVarient}
-                      varienttable={varienttable}
-                      setVarienttable={setVarienttable}
-                    />
-                    )}
-                />
-                {getFormErrorMessage('Product Name')}
-              </div> 
-            </div>
           
           </div>
- 
           <div className='xl:ml-4 lg:ml-4 xl:w-3 lg:w-4'>
              <div className='bg-white p-4 border-round border-50 mb-4'>
              <div className='field'>
@@ -527,9 +480,43 @@ const ProductDetails = () => {
                 {getFormErrorMessage('Product Price')}
               </div> 
             </div>
-          </div>
-          
+          </div>     
         </div>
+
+        <div className='xl:flex lg:flex w-11 p-1 m-auto mb-4 justify-content-center '>
+          <div className='w-12 xl:w-10 lg:w-11 '>
+            <div className='bg-white p-4 border-round border-50 mb-4 '>
+              <div className='field'>
+                <label
+                  htmlFor='varient'
+                  className={classNames({ 'p-error': errors.name })}
+                >
+                  {/* Variants */}
+                </label>
+                <Controller
+                  name='varient'
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <VariantField
+                      className={classNames({
+                        'p-invalid': fieldState.invalid,
+                      })}
+                      placeholder='Enter Product Name'
+                      field={field}
+                      pid={id}
+                      varient={varient}
+                      setVarient={setVarient}
+                      varienttable={varienttable}
+                      setVarienttable={setVarienttable}
+                    />
+                    )}
+                />
+                {getFormErrorMessage('Product Name')}
+              </div> 
+            </div>
+          </div>
+        </div>
+
 
         <div className='xl:flex lg:flex w-11 m-auto justify-content-end'>
         <CustomButton

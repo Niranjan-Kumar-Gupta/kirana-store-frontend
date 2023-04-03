@@ -123,12 +123,18 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     }
     useEffect(()=>{
         tablesetter();
-    },[])
+    },[...varient])
 
     return (
     <div> 
         <div className="flex flex-column justify-content-end">
         <Toast ref={toast} />
+        <div  className="flex my-2 pl-2">
+                <div className="w-7">Variant</div>
+                 {varient.length<3&&<div className="flex w-4 text-blue-400 justify-content-end" onClick={()=>{addVarient()}}>
+                        +&nbsp;Add&nbsp;Option     
+                    </div>}
+            </div>
         {(varient)&&varient.map((x,pkey)=>{
             return (
                 <div>
@@ -144,7 +150,12 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                         </div>
 
                     <div className="flex flex-column w-11 align-content-end my-2" style={{marginLeft:"8%"}}>
-                        <div className="mb-2">Options</div>
+                       <div className="flex flex-nowrap mt-2">
+                         <div className="w-7 mb-2">Options</div> 
+                                <div className="flex w-4 text-900 justify-content-end" onClick={()=>{addVarientoption(pkey)}}>
+                                    + Add Option     
+                                </div>
+                        </div>
                      {(x.values) && x.values.map((item,key)=>{
                            return( 
                                 <div className="flex align-items-center w-12 justify-content-end">
@@ -159,9 +170,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                                 </div>
                            )
                         })}
-                                <div className="flex w-4 mt-2 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={()=>{addVarientoption(pkey)}}>
-                                    + Add Option     
-                                </div>
+                               
                         <div>
                         </div>
                     </div>
@@ -170,11 +179,8 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
         })}
         </div>
         <div>
-            <div className="flex justify-content-between">
-              {varient.length<3&&<div className="p-2 w-4 m-1 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={()=>{addVarient()}}>
-                        + Add Variant     
-                </div>}
-                <div className="p-2 w-4 m-1 p-2 border-1 border-300 border-round border-50 hover:border-blue-500" onClick={tablesetter} >
+            <div className="flex ">
+                <div className="flex p-2 m-1 w-11 m-2 justify-content-end" onClick={tablesetter} >
                     Done
                     </div>
                 </div>

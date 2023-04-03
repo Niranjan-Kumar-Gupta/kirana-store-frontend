@@ -39,7 +39,6 @@ function App() {
   useEffect(() => {
     const currentPath = location.pathname
     const token = localStorage.getItem('token')
-
     if (token) {
       const user = parseJwt(token)
       dispatch(setUser(user))
@@ -58,15 +57,12 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path='dashboard' element={<Dashboard />} />
+          {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='orders' element={<Orders />} />
           <Route path='orders/create' element={<NewOrder />} />
           <Route path='orders/orderDetails/:id' element={<NewOrder />} />
           <Route path='stocks' element={<Stocks />} />
-          <Route path='stocks/checkIn' element={<CheckIn />} />
-          <Route path='stocks/checkOut' element={<CheckOut />} />
-          <Route path='stocks/edit' element={<StockHistoryEdit />} />      
-          <Route path='productionCards' element={<ProductionCards />} />
+          {/* <Route path='productionCards' element={<ProductionCards />} /> */}
           <Route path='customers' element={<CustomerList />} />
           <Route path='customers/create' element={<CreateCustomer />} />
           
