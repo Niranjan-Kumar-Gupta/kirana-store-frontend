@@ -17,6 +17,7 @@ import {
   resetSelectedProductsList,
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
+import CustomBreadcrumb from '../../components/CustomBreadcrumb';
 
 const ProductList = () => {
   const navigate = useNavigate()
@@ -46,9 +47,6 @@ const ProductList = () => {
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];
 
-  console.log( page,
-    limit,
-    totalProductCount )
   useEffect(()=>{
     dispatch(getProducts({page, limit})).unwrap().then((resp) => {
       // console.log("Ss")
@@ -120,6 +118,7 @@ console.log(data)
       />
     )
   }
+  const itemslist=[{ label: 'Products List', url: '/products'  }, ];
 
   return (
     <div className='w-11 pt-3 m-auto'>
@@ -128,7 +127,7 @@ console.log(data)
       {loading ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
         <div>
-          <Text type='heading'>Products List</Text>
+          <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
         </div>
         <CustomButton
           varient='filled'

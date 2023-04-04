@@ -24,7 +24,7 @@ import { getDate } from '../../utils/datemaker'
 // import { API_GET_ORDERS } from "../../api/order.services";
 // import { underlineStyle } from "../../utils/commonStyles";
 // import { getCompany, setCompany } from '../../reducers/companySlice'
-
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 const Orders = () => {
 
     
@@ -125,7 +125,7 @@ const hanldeCreate = () => {
   dispatch(updateMode('create'))
 }
 
-
+const itemslist=[{ label: 'Orders', url: '/orders'  }, ];
 
   return (
     <div className="w-11 pt-3 m-auto">
@@ -133,7 +133,7 @@ const hanldeCreate = () => {
       {showOrderForm ? orderModal() : <></>}
       {loader ? loader() : <></>}
       <div className='flex justify-content-between align-items-center'>
-        <Text type='heading'>Orders</Text>
+        <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
         <CustomButton
           varient='filled'
           label={'Create Order'}

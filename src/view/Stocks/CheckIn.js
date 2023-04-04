@@ -18,6 +18,7 @@ import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
 import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
 
 
@@ -294,19 +295,13 @@ useEffect(() => {
      
    
   }
-  
+  const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check In'  }];
+
   return (
     <div className='w-11 pt-3 m-auto'>
      <Toast ref={toast} />
       <div className={'w-9 m-auto flex justify-content-start align-items-center'}>
-      <button className={style.customButton} onClick={goBack}>
-          <span
-          className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-          ></span>
-      </button>
-          <div>             
-              <Text type={'heading'}> Check In</Text>
-          </div>         
+        <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
        </div>
 
        <div className={`card w-9 m-auto mt-4`}>

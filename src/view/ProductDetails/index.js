@@ -19,6 +19,7 @@ import { getProductbyid,getCategory,addProduct,updateProduct,resetSelectedProduc
 import './index.css';
 import { InputNumber } from 'primereact/inputnumber'
 import Loader from '../../components/Loader';
+import CustomBreadcrumb from '../../components/CustomBreadcrumb';
 
 const ProductDetails = () => {
   const { id } = useParams()
@@ -230,11 +231,9 @@ const ProductDetails = () => {
     console.log(data)
   }
 
-  const goBack = () => {
-    // dispatch(resetMode())
-    navigate('/products')
-  }
-
+ 
+  let templabel= (mode === 'add'||id==='add')? 'Add Product': `ProductDetails for id: #${id}`
+  const itemslist=[{ label: 'Products', url: '/'  }, { label: templabel }];
 
   return (
     <div className='w-11 pt-3 m-auto '>
@@ -243,18 +242,7 @@ const ProductDetails = () => {
         {loader()}
         <div className={`w-12 xl:w-8 lg:w-10 m-auto py-3 align-items-center `}>
           <div className='flex'> 
-          <button className={`customButton-pd`} onClick={goBack}>
-                <span
-                  className={`pi pi-arrow-circle-left mr-3 font-pd`}
-                ></span>
-              </button>
-              <div className='mr-3 mt-1 align-items-center'>
-                <Text type={'heading'}>
-                  {mode === 'add'||id==='add'
-                    ? 'Add Product'
-                    : `ProductDetails for id: #${id}`}
-                </Text>
-              </div>
+            <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
           </div>
           <Text type={'heading'}></Text>
           <div className='flex align-content-center panel-border py-2'>
