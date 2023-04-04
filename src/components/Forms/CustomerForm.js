@@ -16,6 +16,8 @@ import axiosInstance from '../../api/axios.instance'
 import { sortAlphabeticalObjectArr } from '../../utils/tableUtils'
 import { Dropdown } from 'primereact/dropdown'
 import { useNavigate, useParams } from 'react-router-dom'
+import style from './style.module.css'
+
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
 
@@ -109,24 +111,41 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   }, [])
 
   return (
-    // <Dialog
-    //   header={
-    //     <Text type={'heading'}>
-    //       <span
-    //         style={{
-    //           textDecorationLine: 'underline',
-    //           textDecorationStyle: 'dashed',
-    //         }}
-    //       >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
-    //     </Text>
-    //   }
-    //   visible={showCustomerForm}
-    //   className='dialog-custom'
-    //   onHide={() => onHide(reset)}
-    // >
+
       <div className={`card`}>
         <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
-          <div className='field'>
+        <div className='w-full mt-2 m-auto flex justify-content-between align-items-center'>
+             <div className={'flex justify-content-between align-items-center'}>
+               <button className={style.customButton} onClick={goBack}>
+                  <span
+                  className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
+                  ></span>
+               </button>
+                <div>             
+                    <Text type={'heading'}>
+                        <span
+                            style={{
+                            // textDecorationLine: 'underline',
+                            // textDecorationStyle: 'dashed',
+                            }}
+                        >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
+                    </Text>
+                </div>         
+             </div>
+             <div className=''>
+            <CustomButton
+                varient='filled'
+                type='submit'
+              
+                label={mode === 'update' ? 'Update' : 'Create'}
+              />
+             </div>
+          </div>
+          <div className='w-full flex justify-content-between mt-3'>
+            
+          <div className='w-7 mr-3'>
+            
+          <div className='field bg-white p-2 border-round border-50 mb-2'>
             <label htmlFor='name'>Name *</label>
             <Controller
               name='name'
@@ -144,7 +163,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             />
             {getFormErrorMessage('name')}
           </div>
-          <div className='field'>
+          <div className='field bg-white p-2 border-round border-50 mb-2'>
             <label htmlFor='phone'>Phone *</label>
             <Controller
               name='phone'
@@ -171,7 +190,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             />
             {getFormErrorMessage('phone')}
           </div>
-          <div className='field'>
+          <div className='field bg-white p-2 border-round border-50 mb-2'>
             <label htmlFor='email'>Email</label>
             <Controller
               name='email'
@@ -197,7 +216,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             {getFormErrorMessage('email')}
           </div>
     
-          <div className='field'>
+          <div className='field bg-white p-2 border-round border-50 mb-2'>
             <label htmlFor='gstNumber'>GST No </label>
             <Controller
               name='gstNumber'
@@ -215,7 +234,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             {getFormErrorMessage('gstNumber')}
           </div>
 
-          <div className='field'>
+          <div className='field bg-white p-2 border-round border-50 mb-2'>
             <label htmlFor='panNumber'>PAN No </label>
             <Controller
               name='panNumber'
@@ -232,69 +251,68 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
             />
             {getFormErrorMessage('panNumber')}
           </div>
-
-          <div className='field'>
-            <label htmlFor='address'>Address</label>
-            <Controller
-              name='location'
-              control={control}
-              rules={{ required: 'address is required.' }}
-              render={({ field, fieldState }) => (
-                <InputText
-                  id={field.location}
-                  className={classNames({ 'p-invalid': fieldState.invalid })}
-                  placeholder='Enter Address'
-                  {...field}
+          </div>
+          <div className='w-5'>
+            <div className='bg-white p-2 border-round border-50 mb-2'>
+                   
+              <div className='field'>
+                <label htmlFor='address'>Address *</label>
+                <Controller
+                  name='location'
+                  control={control}
+                  rules={{ required: 'address is required.' }}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      id={field.location}
+                      className={classNames({ 'p-invalid': fieldState.invalid })}
+                      placeholder='Enter Address'
+                      {...field}
+                    />
+                  )}
                 />
-              )}
-            />
-            {getFormErrorMessage('location')}
-          </div>
+                {getFormErrorMessage('location')}
+              </div>
 
-          <div className='field'>
-            <label htmlFor='pincode'>Pincode</label>
-            <Controller
-              name='pincode'
-              control={control}
-              rules={{ required: 'pincode is required.' }}
-              render={({ field, fieldState }) => (
-                <InputText
-                  id={field.pincode}
-                  className={classNames({ 'p-invalid': fieldState.invalid })}
-                  placeholder='Enter Pincode'
-                  {...field}
-                />
-              )}
-            />
-            {getFormErrorMessage('pincode')}
-          </div>
+                <div className='field'>
+                  <label htmlFor='pincode'>Pincode *</label>
+                  <Controller
+                    name='pincode'
+                    control={control}
+                    rules={{ required: 'pincode is required.' }}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id={field.pincode}
+                        className={classNames({ 'p-invalid': fieldState.invalid })}
+                        placeholder='Enter Pincode'
+                        {...field}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('pincode')}
+                </div>
 
-          <div className='field'>
-            <label htmlFor='phoneNumber'>Phone Number</label>
-            <Controller
-              name='phoneNumber'
-              control={control}
-              render={({ field, fieldState }) => (
-                <InputText
-                  id={field.phoneNumber}
-                  className={classNames({ 'p-invalid': fieldState.invalid })}
-                  placeholder='Enter Phone Number'
-                  {...field}
-                />
-              )}
-            />
-            {getFormErrorMessage('phoneNumber')}
+                <div className='field'>
+                  <label htmlFor='phoneNumber'>Phone Number</label>
+                  <Controller
+                    name='phoneNumber'
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id={field.phoneNumber}
+                        className={classNames({ 'p-invalid': fieldState.invalid })}
+                        placeholder='Enter Phone Number'
+                        {...field}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('phoneNumber')}
+                </div>
+            </div>
           </div>
-
-          <div>
-            <CustomButton
-              varient='filled'
-              type='submit'
-              label={mode === 'update' ? 'Update' : 'Save'}
-            />
           </div>
+         
         </form>
       </div>
-    // </Dialog>
+    
   )
 }

@@ -85,7 +85,7 @@ const Orders = () => {
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'createdAt', header: 'Date',isFilter:false,filterType:'input'},
+    {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input'},
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
