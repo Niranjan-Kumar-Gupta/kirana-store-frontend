@@ -24,6 +24,7 @@ import {
 } from '../../reducers/orderTableSlice'
 import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
 import Loader from '../../components/Loader'
+import { ReactComponent as Delete } from '../../svg/delete.svg'
 
 const NewOrder = () => {
   const [customers, setCustomers] = useState([])
@@ -142,6 +143,15 @@ const NewOrder = () => {
     }
   }, [mode, orderDetails])
 
+  useEffect(() => {
+    if (treeSelectRef.current && tableData?.length === 0) {
+      const parentProd = treeSelectRef.current.props.value
+      Object.keys(parentProd).forEach(function(prop) {
+        delete parentProd[prop];
+      });
+    }
+  },[tableData?.length])
+
   const flatten = (arr) =>
     arr.reduce((acc, curr) => {
       const { children, ...rest } = curr
@@ -226,9 +236,9 @@ const NewOrder = () => {
               severity: 'success',
               detail: 'Order Created Successfully',
             })
+            navigate('/orders')
             setTableData([])
             reset()
-            navigate('/orders');
           })
           .catch((err) => {
             toast.current.show({ severity: 'error', detail: err.message })
@@ -257,6 +267,29 @@ const NewOrder = () => {
         decrementButtonIcon='pi pi-minus'
         onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
       />
+    )
+  }
+
+  const treeSelectRef = useRef(null)
+
+  const handleDelete = (e, rowData) => {
+    e.preventDefault()
+    let newData = selectedProdId.filter((id) => id != rowData.key)
+    setSelectedProdId(newData)
+    const oldSel = treeSelectRef.current.props.value
+    oldSel[rowData.key].checked = false
+    if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
+      delete oldSel[rowData.key]
+  }
+  
+  const actionBody = (rowData, colData) => {
+    return (
+      <button
+        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+        onClick={(e) => handleDelete(e, rowData)}
+      >
+        <Delete />
+      </button>
     )
   }
 
@@ -292,6 +325,10 @@ const NewOrder = () => {
     )
   }
 
+  const slNoBody = (rowData, colData) => {
+    return <Text type={'heading'}>{colData.rowIndex + 1}</Text>
+  }
+
   const selectedProdTable = () => {
     return (mode === 'create' && tableData && tableData.length > 0) ||
       mode === 'update' ? (
@@ -305,16 +342,14 @@ const NewOrder = () => {
         scrollable
         scrollHeight='500px'
       >
+        <Column header='Sl.No' body={slNoBody}></Column>
         <Column header='Image' body={productImgBody}></Column>
         <Column
           header='Products'
           field='productName'
           body={productNameBody}
         ></Column>
-        <Column
-          header='Price'
-          field='price'
-        ></Column>
+        <Column header='Price' field='price'></Column>
         <Column
           className='qtyCells'
           header='Quantity'
@@ -327,7 +362,7 @@ const NewOrder = () => {
             field='deliveredQuantity'
           ></Column>
         ) : (
-          ''
+          <Column header='Actions' body={actionBody}></Column>
         )}
       </DataTable>
     ) : (
@@ -432,14 +467,13 @@ const NewOrder = () => {
                         render={({ field, fieldState }) => (
                           <>
                             <TreeSelect
+                              ref={treeSelectRef}
                               filter
                               id={field.name}
                               value={field.value}
                               onChange={(e) => {
                                 let prodId = Object.keys(e.value).filter(
-                                  (key) =>
-                                    e.value[key].checked &&
-                                    !e.value[key].partiallyChecked
+                                  (key) => e.value[key].checked && !e.value[key].partiallyChecked
                                 )
                                 setSelectedProdId(prodId)
                                 field.onChange(e.value)
