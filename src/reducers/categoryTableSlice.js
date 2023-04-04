@@ -13,7 +13,7 @@ const initialState = {
   loading: false,
   selectedCategory: null,
   page: 0,
-  limit: 4,
+  limit: 10,
   mode: null,
 };
 
@@ -33,10 +33,13 @@ export const getCategories = createAsyncThunk(
 
 export const addCategory = createAsyncThunk(
   "categoryTable/addCategory",
-  async (configData, thunkAPI) => {
+  async ({data, page, limit}, thunkAPI) => {
     try {
-      const resp = await API_ADD_CATEGORY(configData);
-      return resp;
+      const resp = await API_ADD_CATEGORY(data);
+      if (resp) {
+        const respGet =  await API_GET_CATEGORIES(page,limit);     
+        return respGet;
+      }
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
@@ -48,9 +51,7 @@ export const updateCategory = createAsyncThunk(
   async ({ categoryId, data,page,limit }, thunkAPI) => {
     try {
       const resp = await API_PUT_CATEGORY(categoryId, data);
-     // let currentState = current(state)
       if (resp) {
-        
         const respGet =  await API_GET_CATEGORIES(page,limit);     
         return respGet;
       }
@@ -62,10 +63,13 @@ export const updateCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   "categoryTable/deleteCategory",
-  async (categoryId, thunkAPI) => {
+  async ({categoryId, page, limit}, thunkAPI) => {
     try {
       const resp = await API_DELETE_CATEGORY(categoryId);
-      return categoryId;
+      if (resp) {
+        const respGet =  await API_GET_CATEGORIES(page,limit);     
+        return respGet;
+      }
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
@@ -96,10 +100,8 @@ const categoryTableSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getCategories.fulfilled, (state, action) => {
-     
       state.totalCategoryCount = action.payload.count;
       state.categoryData = action.payload.rows;
-      console.log(state.categoryData)
       state.loading = false;
     });
     builder.addCase(getCategories.pending, (state) => {
@@ -112,12 +114,13 @@ const categoryTableSlice = createSlice({
 
     builder.addCase(addCategory.fulfilled, (state, action) => {
       let data = action.payload;
-      if (state.categoryData.length < state.limit) {
-        state.categoryData = [data, ...state.categoryData];
-      }else{
-        state.categoryData = [data, ...state.categoryData.slice(0,state.limit-1)]
-      }
-      state.totalCategoryCount += 1;
+      // if (state.categoryData.length < state.limit) {
+      //   state.categoryData = [data, ...state.categoryData];
+      // }else{
+      //   state.categoryData = [data, ...state.categoryData.slice(0,state.limit-1)]
+      // }
+      state.categoryData = action.payload.rows
+      state.totalCategoryCount = data.count;
       state.loading = false;
     });
     builder.addCase(addCategory.pending, (state) => {
@@ -143,9 +146,7 @@ const categoryTableSlice = createSlice({
 
     //delete category
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
-      console.log(state.categoryData)
-      state.categoryData = removeDeleteData(state.categoryData, action.payload)
-      state.totalCategoryCount -= 1;
+      state.categoryData = action.payload.rows
       state.loading = false;
     });
     builder.addCase(deleteCategory.pending, (state) => {

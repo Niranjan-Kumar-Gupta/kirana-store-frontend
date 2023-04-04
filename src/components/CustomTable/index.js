@@ -360,7 +360,6 @@ const dateBodyTemplate = (rowData) => {
 };
 
 const dateBodyTemplateTree = (rowData)=>{
-  console.log(rowData.data.updatedAt)
   return formatDate(rowData.data.updatedAt);
  //return formatDate('2023-03-24T14:37:11.000Z')
 }
@@ -620,7 +619,6 @@ const dateBodyTemplateTree = (rowData)=>{
                   className="skalebot-table"
                   filters={filters}         
                   header={header} emptyMessage="No data found."
-                  selectionMode="checkbox" 
                   selectionKeys={selectedNodeKeys} 
                   onSelectionChange={(e) => setSelectedNodeKeys(e.value)}
                   >

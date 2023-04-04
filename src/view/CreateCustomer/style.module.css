@@ -1,7 +1,8 @@
 .customButton {
     border: none;
     padding: 0;
-    background-color: #fff;
+    background: none;
+    cursor: pointer;
   }
   
   .font {

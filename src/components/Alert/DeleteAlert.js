@@ -9,7 +9,7 @@ import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
-   const { selectedCategory } = useSelector(state => state.categoryTable);
+   const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
 
  const dispatch = useDispatch();
@@ -28,8 +28,8 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       })
   }
   const deleteCategoryItem = () => {
-    console.log('deleted')
-    dispatch(deleteCategory(selectedCategory.id))
+    const categoryId = selectedCategory.id;
+    dispatch(deleteCategory({categoryId, page, limit}))
       .unwrap()
       .then(res => {
         //show toast here
@@ -75,7 +75,6 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     }
   }
   const handleDelete = () => {
-    console.log('delete',item)
     switch (item) {
       case 'product':
         deleteProductItem()

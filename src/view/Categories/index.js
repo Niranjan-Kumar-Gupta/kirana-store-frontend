@@ -58,7 +58,6 @@ const Categories = () => {
 
  
   const handleEdit = (data) => {
-    console.log(' edit',data)
     setShowCategoryForm(true)
     dispatch(changeMode("update"));
     const dataSelected = {
@@ -84,7 +83,6 @@ const Categories = () => {
   };
 
   const handleDelete = (data) => {
-    console.log(' del',data)
      dispatch(changeMode("delete"));
      dispatch(changeSelectedCategory(data));
      setDisplayAlertDelete(true);
@@ -97,6 +95,8 @@ const Categories = () => {
   }
 
   const onHide = () => {
+    dispatch(resetMode())
+    dispatch(resetSelectedCategory())
     setShowCategoryForm(false)
   }
 
