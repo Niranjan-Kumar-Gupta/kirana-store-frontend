@@ -18,24 +18,7 @@ const CreateCustomer = () => {
   return (
     <div className='w-11 pt-3 m-auto'>
           <Toast ref={toast} />
-            <div className={'w-8 m-auto flex justify-content-start align-items-center'}>
-            <button className={style.customButton} onClick={goBack}>
-                <span
-                className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-                ></span>
-            </button>
-                <div>             
-                    <Text type={'heading'}>
-                        <span
-                            style={{
-                            // textDecorationLine: 'underline',
-                            // textDecorationStyle: 'dashed',
-                            }}
-                        >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
-                    </Text>
-                </div>         
-             </div>
-          <div className='w-8 mt-5 m-auto'>
+          <div className='w-8 mt-0 m-auto'>
                 <CustomerForm
                     onHide={()=>{}}
                     showCustomerForm={null}

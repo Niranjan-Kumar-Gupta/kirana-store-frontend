@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 export const Stocks = () => {
 
   const switchButtons = [
-    { name: "Stocks", value: "stock" },
+    { name: "Current Stock", value: "stock" },
     { name: "Stock History", value: "stockHistory" },
   ];
   const navigate = useNavigate()
