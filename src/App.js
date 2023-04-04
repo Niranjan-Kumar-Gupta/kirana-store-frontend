@@ -63,9 +63,15 @@ function App() {
           <Route path='orders/orderDetails/:id' element={<NewOrder />} />
           <Route path='stocks' element={<Stocks />} />
           {/* <Route path='productionCards' element={<ProductionCards />} /> */}
+          <Route path='stocks/checkIn' element={<CheckIn />} />
+          <Route path='stocks/checkOut' element={<CheckOut />} />
+          <Route path='stocks/edit' element={<StockHistoryEdit />} />      
+          <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
           <Route path='customers/create' element={<CreateCustomer />} />
-          
+          <Route path='stocks/checkIn' element={<CheckIn />} />
+          <Route path='stocks/checkOut' element={<CheckOut />} />
+
           <Route path='products' element={<ProductList />} />
           <Route
             path='products/productDetails/:id'
