@@ -196,9 +196,9 @@ const ProductDetails = () => {
           //show toast here
           
           toast.current.show({ severity: 'success', detail: 'Succesfully Product is updated' })
-          // setTimeout(() => {
-          //   {navigate("/products")}
-          // }, 1000);
+          setTimeout(() => {
+            {navigate("/products")}
+          }, 1000);
         })
         .catch(err => {
           //show toast here
@@ -219,9 +219,9 @@ const ProductDetails = () => {
 
           // dispatch(changeShowNotice(true));
           toast.current.show({ severity: 'success', detail: "Successfully Added Product" });
-          // setTimeout(() => {
-          //   {navigate("/products")}
-          // }, 1000);
+          setTimeout(() => {
+            {navigate("/products")}
+          }, 1000);
         })
         .catch(err => {
           toast.current.show({ severity: 'error', detail: err.message});
