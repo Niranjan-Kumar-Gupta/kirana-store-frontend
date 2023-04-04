@@ -7,6 +7,8 @@ import { CustomButton } from '../../components/CustomButton'
 import CustomTable from "../../components/CustomTable";
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom'
+import { Text } from '../../components/Text'
 
 import {
   changeMode,
@@ -24,6 +26,8 @@ const CustomerList = () => {
   const [displayBasic, setDisplayBasic] = useState(false);
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+ 
 
   const {
     customerData,
@@ -46,44 +50,6 @@ const CustomerList = () => {
 
 
   // customer list table------------------------
-
-
-  const [customer, setCustomer] = useState([
-    {
-        sNo: '1',
-        customerName: 'Niranjan',
-        customerCode: 'f230',
-        district: 'Baagi Ballia',
-        phoneNumber: 2478469547,
-        email: 'niru@gmail.com',
-    },
-    {
-      sNo: '2',
-      customerName: 'Nir',
-      customerCode: 'f230',
-      district: 'kanpur',
-      phoneNumber: 2478469547,
-      email: 'miru@gmail.com',
-  },
-  {
-    sNo: '3',
-    customerName: 'Niranjan',
-    customerCode: 'f230',
-    district: 'amaaa',
-    phoneNumber: 2478469547,
-    email: 'niranjan@gmail.com',
-},
-{
-  sNo: '4',
-  customerName: 'Niranjan kumar',
-  customerCode: 'f230',
-  district: 'Baagi Ballia',
-  phoneNumber: 2478469547,
-  email: 'niru@gmail.com',
-},
-
- ]
- );
 
 
 
@@ -115,8 +81,8 @@ const CustomerList = () => {
      console.log('customer edit',customer)
      dispatch(changeSelectedCustomer(customer));
      dispatch(changeMode("update"));
-     setDisplayBasic(true);
-     setShowCustomerForm(true)
+    navigate(`create`)
+   
   };
   const handleDelete = (customer) => {
     console.log('customer del',customer)
@@ -141,7 +107,9 @@ const CustomerList = () => {
   const [showCustomerForm, setShowCustomerForm] = useState(false)
 
   const onAddNewClick = () => {
-    setShowCustomerForm(true)
+    
+    navigate(`create`)
+    dispatch(changeMode("add"))
   }
 
   const onHide = () => {
@@ -165,11 +133,10 @@ const CustomerList = () => {
   return (
     <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
-      {displayBasic ? customerModal() : <></>}
-      {showCustomerForm ? customerModal() : <></>}
+   
       {loading ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
-        <div></div>
+        <Text type='heading'>Customers</Text>
         <CustomButton
           varient='filled'
           label={'Add New Customer'}

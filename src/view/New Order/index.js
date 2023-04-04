@@ -48,6 +48,7 @@ const NewOrder = () => {
     { key: 'Delivered', value: 'Delivered' },
     { key: 'Cancelled', value: 'Cancelled' },
     { key: 'In Progress', value: 'In Progress' },
+    { key: 'Completed', value: 'Completed' },
   ]
 
   const toast = useRef(null)
@@ -155,7 +156,7 @@ const NewOrder = () => {
     const flattenedData = flatten(data)
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
-        (item) => item.key == id && 'option1' in item
+        (item) => item.key == id && ('option1' in item || item.defaultProduct)
       )
       if (foundItem) {
         return {
@@ -163,9 +164,9 @@ const NewOrder = () => {
           key: foundItem.key,
           label: foundItem.label,
           productName: foundItem.productName,
-          productId: foundItem.productId,
+          productId: foundItem.productId ? foundItem.productId : foundItem.id,
           categoryId: foundItem.categoryId,
-          productVariantId: foundItem.id,
+          productVariantId: foundItem.productId ? foundItem.id : null,
           SKUCode: foundItem.SKUCode,
           orderedQuantity: '',
         }
@@ -216,10 +217,6 @@ const NewOrder = () => {
         delete data.products
         _data.orderDetails = data
 
-        // hard coded addressId, completedAt for now
-        _data.orderDetails.addressId = 5
-        _data.orderDetails.completedAt = Date.now()
-
         _data.productvariants = tableData
         dispatch(addOrder(_data))
           .unwrap()
@@ -262,10 +259,11 @@ const NewOrder = () => {
   }
 
   const productImgBody = (rowData) => {
+    // console.log(rowData.url,rowData.updatedAt)
     return (
       <div className='' style={{ width: '90px', height: '55px' }}>
         <img
-          src={`${rowData.url}`}
+          src={`${rowData.url}?${rowData.updatedAt}`}
           onError={(e) => (e.target.src = './../../images/ImgPlaceholder.svg')}
           style={{ maxWidth: '100%', height: '100%' }}
         />
@@ -467,7 +465,7 @@ const NewOrder = () => {
                   <div className=''>
                     <div className='field sm:w-full md:w-12 flex align-items-center'>
                       <label className='w-6' htmlFor='totalAmount'>
-                        Amount
+                        Amount *
                       </label>
                       <Controller
                         name='totalAmount'

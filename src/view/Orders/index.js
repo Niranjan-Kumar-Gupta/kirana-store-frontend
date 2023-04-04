@@ -44,9 +44,7 @@ const Orders = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate()
-  const ids = [1, 2, 3, 4, 5, 6, 7, 8];
-
-  // const loading = false;
+ 
   const [showOrderForm, setShowOrderForm] = useState(false)
 
   useEffect(()=>{
@@ -83,11 +81,11 @@ const Orders = () => {
 
   
 
- let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled']
+ let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled', 'Completed']
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'completedAt', header: 'Date',isFilter:false,filterType:'input'},
+    {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input'},
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},

@@ -67,6 +67,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       case "customer":
         dispatch(resetSelectedCustomer())
         break;
+      case "stockHistory":
+          
+          break;
       default:
         break;
     }
@@ -82,6 +85,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         break;
       case "customer":
         deleteCustomerItem()
+        break;
+      case "stockHistory":
+         
         break;
     }
     onHide();

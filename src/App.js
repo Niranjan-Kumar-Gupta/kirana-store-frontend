@@ -25,6 +25,10 @@ import { Login } from './view/Login'
 import { ResetPass } from './view/ResetPass'
 import parseJwt from './utils/authUtils'
 import { setUser } from './reducers/authSlice'
+import CreateCustomer from './view/CreateCustomer'
+import CheckIn from './view/Stocks/CheckIn'
+import CheckOut from './view/Stocks/CheckOut'
+import StockHistoryEdit from './view/Stocks/stockHistoryEdit'
 
 
 function App() {
@@ -35,7 +39,6 @@ function App() {
   useEffect(() => {
     const currentPath = location.pathname
     const token = localStorage.getItem('token')
-
     if (token) {
       const user = parseJwt(token)
       dispatch(setUser(user))
@@ -60,7 +63,15 @@ function App() {
           <Route path='orders/orderDetails/:id' element={<NewOrder />} />
           <Route path='stocks' element={<Stocks />} />
           {/* <Route path='productionCards' element={<ProductionCards />} /> */}
+          <Route path='stocks/checkIn' element={<CheckIn />} />
+          <Route path='stocks/checkOut' element={<CheckOut />} />
+          <Route path='stocks/edit' element={<StockHistoryEdit />} />      
+          <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
+          <Route path='customers/create' element={<CreateCustomer />} />
+          <Route path='stocks/checkIn' element={<CheckIn />} />
+          <Route path='stocks/checkOut' element={<CheckOut />} />
+
           <Route path='products' element={<ProductList />} />
           <Route
             path='products/productDetails/:id'

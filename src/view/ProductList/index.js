@@ -46,7 +46,9 @@ const ProductList = () => {
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];
 
-  
+  console.log( page,
+    limit,
+    totalProductCount )
   useEffect(()=>{
     dispatch(getProducts({page, limit})).unwrap().then((resp) => {
       // console.log("Ss")

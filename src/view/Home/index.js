@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import AppLogout from "../../utils/AppLogout";
 import { useLocation } from "react-router-dom";
 import { Dashboard } from "../Dashboard";
-import ProductList from '../ProductList'
+import ProductList from "../ProductList";
 
 
 export const Home = () => {
