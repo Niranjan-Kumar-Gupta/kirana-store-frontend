@@ -25,6 +25,7 @@ import {
 import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
 import Loader from '../../components/Loader'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
 const NewOrder = () => {
   const [customers, setCustomers] = useState([])
@@ -294,10 +295,11 @@ const NewOrder = () => {
   }
 
   const productImgBody = (rowData) => {
+    // console.log(rowData.url,rowData.updatedAt)
     return (
       <div className='' style={{ width: '90px', height: '55px' }}>
         <img
-          src={`${rowData.url}`}
+          src={`${rowData.url}?${rowData.updatedAt}`}
           onError={(e) => (e.target.src = './../../images/ImgPlaceholder.svg')}
           style={{ maxWidth: '100%', height: '100%' }}
         />
@@ -374,6 +376,8 @@ const NewOrder = () => {
     dispatch(resetMode())
     navigate('/orders')
   }
+  let templabel= (mode !== 'update')? 'New Order': `Order #${orderDetails.id}`
+  const itemslist=[{ label: 'Orders', url: '/orders'  }, { label: templabel }];
 
   return (
     <>
@@ -385,18 +389,7 @@ const NewOrder = () => {
         >
           <div className='flex md:w-8 align-items-center justify-content-between mb-3 gap-2'>
             <div className='lg:w-5 flex align-items-center'>
-              <button className={style.customButton} onClick={goBack}>
-                <span
-                  className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-                ></span>
-              </button>
-              <div className='mr-3'>
-                <Text type={'heading'}>
-                  {mode !== 'update'
-                    ? 'New Order'
-                    : `Order #${orderDetails.id}`}
-                </Text>
-              </div>
+              <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
               {mode === 'update' && orderDetails.paymentStatus && (
                 <div className='hidden sm:block'>
                   <Badge

@@ -153,7 +153,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                        <div className="flex flex-nowrap mt-2">
                          <div className="w-7 mb-2">Options</div> 
                                 <div className="flex w-4 text-900 justify-content-end" onClick={()=>{addVarientoption(pkey)}}>
-                                    + Add Option     
+                                    + Add Values     
                                 </div>
                         </div>
                      {(x.values) && x.values.map((item,key)=>{

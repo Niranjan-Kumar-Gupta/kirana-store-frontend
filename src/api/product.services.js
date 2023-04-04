@@ -25,7 +25,7 @@ const API_GET_PRODUCTS = async (pageNo, limit) => {
     //   );
     //  }
     resp = await axiosInstance.get(
-      `/product?page=${pageNo-1}&limit=${limit}&isActive=1`
+      `/product?page=${pageNo}&limit=${limit}&isActive=1`
       );
     return resp.data;
   } catch (err) {

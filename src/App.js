@@ -69,7 +69,9 @@ function App() {
           <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
           <Route path='customers/create' element={<CreateCustomer />} />
-          
+          <Route path='stocks/checkIn' element={<CheckIn />} />
+          <Route path='stocks/checkOut' element={<CheckOut />} />
+
           <Route path='products' element={<ProductList />} />
           <Route
             path='products/productDetails/:id'
