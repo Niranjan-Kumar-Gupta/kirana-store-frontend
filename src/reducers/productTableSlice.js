@@ -21,7 +21,7 @@ const initialState = {
   loading: false,
   selectedProduct: null,
   page: 1,
-  limit: 1000,
+  limit: 10,
   mode: null,
   catagories:[],
   varient:[],
