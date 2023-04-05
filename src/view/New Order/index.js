@@ -166,6 +166,7 @@ const NewOrder = () => {
           productName: foundItem.productName,
           productId: foundItem.productId ? foundItem.productId : foundItem.id,
           categoryId: foundItem.categoryId,
+          price: foundItem.price,
           productVariantId: foundItem.productId ? foundItem.id : null,
           SKUCode: foundItem.SKUCode,
           orderedQuantity: '',
@@ -227,6 +228,7 @@ const NewOrder = () => {
             })
             setTableData([])
             reset()
+            navigate('/orders');
           })
           .catch((err) => {
             toast.current.show({ severity: 'error', detail: err.message })
@@ -310,6 +312,10 @@ const NewOrder = () => {
           body={productNameBody}
         ></Column>
         <Column
+          header='Price'
+          field='price'
+        ></Column>
+        <Column
           className='qtyCells'
           header='Quantity'
           field='orderedQuantity'
@@ -391,7 +397,7 @@ const NewOrder = () => {
             <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-2 md:flex md:flex-column md:align-items-center'>
               <div className='lg:w-5 md:w-8 sm:w-full'>
                 <div className='field bg-white p-2 border-round border-50 mb-2'>
-                  <label htmlFor='customerId'>Cusotmer *</label>
+                  <label htmlFor='customerId'>Customer *</label>
                   <Controller
                     name='customerId'
                     control={control}

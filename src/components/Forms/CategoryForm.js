@@ -8,7 +8,7 @@ import { Dropdown } from 'primereact/dropdown'
 import { InputTextarea } from 'primereact/inputtextarea'
 import './formStyle.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { addCategory, updateCategory } from '../../reducers/categoryTableSlice'
+import { addCategory, resetSelectedCategory, updateCategory } from '../../reducers/categoryTableSlice'
 import * as Messag from '../../config/ToastMessage'
 import { Text } from '../Text'
 import { TreeSelect } from 'primereact/treeselect'
@@ -66,43 +66,30 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
   }
 
   const onSubmit = (data) => {
-    console.log(data)
     if (data.parentId === '') {
       data.parentId = null
     }
     if (mode === 'update') {
-      console.log(selectedCategory)
       const categoryId = selectedCategory.id
-      console.log(categoryId)
       dispatch(updateCategory({ categoryId, data ,page:page,limit:limit}))
         .unwrap()
         .then((res) => {
-          //show toast here
           onHide(reset)
           let Message_Success = Messag.Update_Cat_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
-          dispatch(getCategories({page:page,limit:limit}))
-          .unwrap()
-          .catch(()=>{ 
-           // console.log(categoryData)
-      
-          }) 
         })
         .catch((err) => {
-          //show toast here
-          toast.current.show({ severity: 'error', detail: err.response.data })
+          toast.current.show({ severity: 'error', detail: err.message })
         })
     } else {
-      dispatch(addCategory(data))
+      dispatch(addCategory({data, page, limit}))
         .unwrap()
         .then((res) => {
-          //show toast here
           onHide(reset)
           let Message_Success = Messag.Add_Cat_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
         })
         .catch((err) => {
-          //show toast here
           toast.current.show({ severity: 'error', detail: err.message })
         })
     }
@@ -121,8 +108,6 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
       console.log(error)
     }
   }
-
-  console.log(categories)
 
   useEffect(() => {
     if (mode === 'update' && selectedCategory) {
