@@ -63,7 +63,7 @@ const NewOrder = () => {
     products: [],
     paymentStatus: '',
     status: '',
-    completedAt: '',
+    completedAt: null,
     totalAmount: undefined,
     paidAmount: undefined,
   }
@@ -143,7 +143,7 @@ const NewOrder = () => {
       setValue('status', orderDetails.status)
       setValue('totalAmount', orderDetails.totalAmount)
       setValue('paidAmount', orderDetails.paidAmount)
-      setValue('completedAt', new Date(orderDetails.completedAt))
+      setValue('completedAt', orderDetails.completedAt ? new Date(orderDetails.completedAt) : null)
     }
   }, [mode, orderDetails])
 
