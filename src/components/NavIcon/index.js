@@ -5,6 +5,8 @@ import {ReactComponent as CategoryIcon} from "../../assets/navbarIcons/category.
 import {ReactComponent as CustmerIcon} from "../../assets/navbarIcons/customer.svg";
 import {ReactComponent as EnquiryIcon} from "../../assets/navbarIcons/enquiry.svg";
 import {ReactComponent as CampaignIcon} from "../../assets/navbarIcons/campaign.svg";
+import {ReactComponent as InventoryIcon} from "../../assets/navbarIcons/inventory.svg";
+
 
 export const NavIcon = ({icon}) =>{
     switch(icon){
@@ -14,8 +16,8 @@ export const NavIcon = ({icon}) =>{
             return <ProductIcon />
         case 'order':
             return <OrderIcon />
-        case 'enquiry':
-            return <EnquiryIcon />
+        case 'inventory':
+            return <InventoryIcon />
         case 'category':
             return <CategoryIcon />
         case 'customer':
