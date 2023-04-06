@@ -31,11 +31,11 @@ const initialState = {
 
 export const getProducts = createAsyncThunk(
   "productTable/getProducts",
-  async ({page, limit}, thunkAPI) => {
+  async ({page, limit,filterData,globalFilterValue}, thunkAPI) => {
     try {
       // page=1, limit=10,filterData,globalFilterValue
-      // let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
-      let products = await API_GET_PRODUCTS(page, limit);
+      let products = await API_GET_PRODUCTS(page, limit,filterData,globalFilterValue);
+      // let products = await API_GET_PRODUCTS(page, limit);
       return products;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);

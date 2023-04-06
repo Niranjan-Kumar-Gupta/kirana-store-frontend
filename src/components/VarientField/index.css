@@ -7,3 +7,22 @@
     background: inherit !important;
     cursor: default;
   }
+
+.btn-var{
+  color : #ffff !important;
+  background-color: #1C738E !important ;
+  border:1px solid #EBEBEB;
+  border-radius: 4px;
+  min-width: 10rem !important;
+}
+
+.add-var-btn{
+  color : #1C738E !important; 
+}
+
+.save-btn{
+  background-color: #1C738E;
+  color: #fff;
+  border-radius: 2px;
+  min-width: 79px;
+}
