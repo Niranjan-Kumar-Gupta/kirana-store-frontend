@@ -16,6 +16,7 @@ import {
   resetMode,
   changelimit
 } from "../../reducers/categoryTableSlice";
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
 const Categories = () => {
   
@@ -58,7 +59,6 @@ const Categories = () => {
 
  
   const handleEdit = (data) => {
-    console.log(' edit',data)
     setShowCategoryForm(true)
     dispatch(changeMode("update"));
     const dataSelected = {
@@ -84,7 +84,6 @@ const Categories = () => {
   };
 
   const handleDelete = (data) => {
-    console.log(' del',data)
      dispatch(changeMode("delete"));
      dispatch(changeSelectedCategory(data));
      setDisplayAlertDelete(true);
@@ -97,6 +96,8 @@ const Categories = () => {
   }
 
   const onHide = () => {
+    dispatch(resetMode())
+    dispatch(resetSelectedCategory())
     setShowCategoryForm(false)
   }
 
@@ -115,6 +116,7 @@ const Categories = () => {
       />
     )
   }
+  const itemslist=[{ label: 'Categories', url: '/categories'  }];
 
   return(
     <div className='w-11 pt-3 m-auto'>
@@ -124,7 +126,7 @@ const Categories = () => {
       {loader ? loader() : <></>}
       <div className={'flex justify-content-between align-items-center'}>
         <div>
-          <Text type='heading'>Categories</Text>
+          <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
         </div>
         <CustomButton
           varient='filled'

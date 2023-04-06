@@ -17,6 +17,7 @@ import { sortAlphabeticalObjectArr } from '../../utils/tableUtils'
 import { Dropdown } from 'primereact/dropdown'
 import { useNavigate, useParams } from 'react-router-dom'
 import style from './style.module.css'
+import CustomBreadcrumb from '../CustomBreadcrumb'
 
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
@@ -110,27 +111,15 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     }
   }, [])
 
+  let templabel= `${(mode === 'update' )? 'Update' : 'Add'} Customer`; 
+  const itemslist=[{ label: 'Customers',url: '/customers' },{ label:  templabel }];
   return (
 
       <div className={`card`}>
         <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
         <div className='w-full mt-2 m-auto flex justify-content-between align-items-center'>
              <div className={'flex justify-content-between align-items-center'}>
-               <button className={style.customButton} onClick={goBack}>
-                  <span
-                  className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-                  ></span>
-               </button>
-                <div>             
-                    <Text type={'heading'}>
-                        <span
-                            style={{
-                            // textDecorationLine: 'underline',
-                            // textDecorationStyle: 'dashed',
-                            }}
-                        >{`${mode === 'update' ? 'Update' : 'Add'} Customer`}</span>
-                    </Text>
-                </div>         
+              <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>       
              </div>
              <div className=''>
             <CustomButton

@@ -18,6 +18,7 @@ import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
 import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { Button } from 'primereact/button';
 
 
@@ -327,11 +328,13 @@ const getDataByIds = (data, ids) => {
    }
  
   }
-  
+  const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
     <div className='w-12 pt-3 m-auto'>
        <Toast ref={toast} />
        {loading ? loader() : <></>}
+      
+
        <div className={`card w-9 m-auto mt-4`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -340,11 +343,9 @@ const getDataByIds = (data, ids) => {
           >
               <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
                   <div>
-                      <div className='flex gap-2' > 
-                          <Text type={'heading'}> {"Inventory"} </Text> 
-                          <Text type={'heading'}> {">"} </Text>            
-                          <Text type={''}> Check Out</Text>
-                        </div>  
+                    <div className={'w-full m-auto flex justify-content-start align-items-center'}>
+                      <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>        
+                     </div>
                   </div>
                   <div className='flex gap-2'>
                         <div className='flex '>

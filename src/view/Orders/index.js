@@ -25,7 +25,7 @@ import { getDate } from '../../utils/datemaker'
 // import { API_GET_ORDERS } from "../../api/order.services";
 // import { underlineStyle } from "../../utils/commonStyles";
 // import { getCompany, setCompany } from '../../reducers/companySlice'
-
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 const Orders = () => {
 
     
@@ -90,7 +90,7 @@ const Orders = () => {
 };
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'input'},
+    {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input', isDate: true},
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
@@ -147,7 +147,7 @@ const hanldeCreate = () => {
   dispatch(updateMode('create'))
 }
 
-
+const itemslist=[{ label: 'Orders', url: '/orders'  }, ];
 
   return (
     <div className="w-11 pt-3 m-auto">
@@ -155,7 +155,7 @@ const hanldeCreate = () => {
       {showOrderForm ? orderModal() : <></>}
       {loader ? loader() : <></>}
       <div className='flex justify-content-between align-items-center'>
-        <Text type='heading'>Orders</Text>
+        <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
         <CustomButton
           varient='filled'
           label={'Create Order'}

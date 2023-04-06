@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from 'primereact/button';
 
 import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
 
 
@@ -296,11 +297,14 @@ useEffect(() => {
      
    
   }
-  
+  const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check In'  }];
+
   return (
-    <div className='w-12 pt-3 m-auto'>
-     <Toast ref={toast} />  
-       <div className={`card w-9 m-auto mt-2`}>
+    <div className='w-11 pt-3 m-auto'>
+     <Toast ref={toast} />
+      
+
+       <div className={`card w-9 m-auto mt-4`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='p-fluid'
@@ -308,11 +312,9 @@ useEffect(() => {
           >
            <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
                   <div>
-                      <div className='flex gap-2' > 
-                          <Text type={'heading'}> {"Inventory"} </Text> 
-                          <Text type={'heading'}> {">"} </Text>            
-                          <Text type={''}> Check In</Text>
-                        </div>  
+                  <div className={'w-full m-auto flex justify-content-start align-items-center'}>
+                    <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
+                  </div>
                   </div>
                   <div className='flex gap-2'>
                         <div className='flex '>
