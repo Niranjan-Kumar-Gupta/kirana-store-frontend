@@ -471,8 +471,8 @@ const ProductDetails = () => {
           </div>     
         </div>
 
-        <div className='xl:flex lg:flex w-11 p-1 m-auto mb-4 justify-content-center '>
-          <div className='w-12 xl:w-10 lg:w-11 '>
+        <div className='xl:flex lg:flex w-11 xl:w-9  m-auto mb-4 justify-content-center '>
+          <div className='w-12 xl:w-10 lg:w-11  '>
             <div className='bg-white p-4 border-round border-50 mb-4 '>
               <div className='field'>
                 <label
@@ -505,14 +505,14 @@ const ProductDetails = () => {
           </div>
         </div>
 
-
-        <div className='xl:flex lg:flex w-11 m-auto justify-content-end'>
-        <CustomButton
-                  varient='filled xl:w-2 lg:w-2  m-2'
-                  type={'submit'}
-                  label={'Save' }
-                />
-
+          <div className='w-12 xl:w-10 lg:w-11'>
+            <div className='xl:flex lg:flex w-12 m-auto justify-content-end '>
+            <CustomButton
+                      varient='filled xl:w-2 lg:w-2 m-2 xl:mr-0 lg:mr-0'
+                      type={'submit'}
+                      label={'Save' }
+                    />
+          </div>
         </div>
         </form>
       </div>
