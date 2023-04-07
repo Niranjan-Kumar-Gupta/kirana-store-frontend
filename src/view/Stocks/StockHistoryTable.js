@@ -68,7 +68,7 @@ const StockHistoryTable = () => {
            id:ele.id,
            product:ele.productvariants.productName,
            SKUCode:ele.productvariants.SKUCode,
-           previewUrl:ele.productvariants.url,
+           url:ele.productvariants.url,
            quantity:ele.quantity,
            stockType:ele.stockType,
            updatedAt:ele.updatedAt,
@@ -78,20 +78,21 @@ const StockHistoryTable = () => {
        data.push(_data)
     });
     setStockHistoryTable(data)
+    console.log(data)
   },[stockHistoryData])
 
   const dispatch = useDispatch();
      
      const columns = [
-
+      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
+     
       {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
       {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
      
-      { field: 'product',header: 'Product',isFilter:false,filterPlaceholder:"Search by code"},     
+      { field: 'product',header: 'Product',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
        
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
       
       //{field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
@@ -104,7 +105,22 @@ const StockHistoryTable = () => {
  
      ];
 
-
+     function productBodyTemp(rowData) {
+      console.log(rowData)
+      return (
+        <div className='flex flex-column'>
+          <div className='mb-1'>
+            <Text type={'heading'}>{rowData.product}</Text>
+          </div>        
+            <Text type={'sub-heading'}>
+              {rowData.option1 ? rowData.option1 : ''}
+              {rowData.option2 ? ` / ${rowData.option2}` : ''}
+              {rowData.option3 ? ` / ${rowData.option3}` : ''}
+            </Text>
+        </div>
+      )
+    }
+      
       
   const onApplyFilter = (data)=>{
     console.log(data)

@@ -109,6 +109,16 @@ const CustomTable = (
   
      const onClickFilter=(e)=>{        
         //console.log(e) 
+        console.log(filtersData)
+        for (const key in filtersData)
+        {
+          if (filtersData[key] === null) {
+              console.log(key);
+              delete filtersData[key]
+          }
+           
+        }
+
         onApplyFilter(filtersData)
         const btn = document.querySelectorAll(".p-column-filter");
         let activeFilterIndex = 0
@@ -163,6 +173,17 @@ const CustomTable = (
             activeFilterIndex += 1
           }
        })
+
+       console.log(filtersData)
+       for (const key in filtersData)
+       {
+         if (filtersData[key] === null) {
+             console.log(key);
+             delete filtersData[key]
+         }
+          
+       }
+
        
         onClearFilter(filtersData)
        
@@ -351,7 +372,7 @@ const CustomTable = (
   //----------Date Filter--------------------------------
   const formatDate = (value) => {
     //console.log(value)
-    return new Date(value).toLocaleDateString();
+    return new Date(value).toLocaleDateString('en-GB');
 };
 
 const dateBodyTemplate = (rowData) => {  
@@ -455,40 +476,73 @@ const dateBodyTemplateTree = (rowData)=>{
               }        
         else{
                   if (col.filterType==='dropdown') {
-                    return <Column 
-                    key={col.field} 
-                    columnKey={col.field} 
-                    field={col.field} 
-                    header={col.header} 
-                    showFilterMatchModes={false}
-                    filter={col.isFilter}
-                    filterElement={dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder)}
-                    onFilterApplyClick={(e)=>onClickFilter(e)}
-                    onFilterClear={()=>{onClickClearFilter(col)}}  
-                    body={col.isImageBody?imageBodyTemplate:''}
-                    headerStyle={col.isImageBody?
-                        {
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "5px",
-                        }:
-                        ''
-                    }
-                    bodyStyle={col.isImageBody?
-                    { 
-                        display: "flex",
-                        justifyContent: "center" 
-                    }:
-                    {
-                    width: "auto",
-                    minWidth: "150px",
-                    maxWidth: "350px",
-                    textOverflow: "ellipsis",
-                    }}
-                />
+                    if (col.isBody) {
+                      return <Column 
+                      key={col.field} 
+                      columnKey={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      showFilterMatchModes={false}
+                      filter={col.isFilter}
+                      filterElement={dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder)}
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}}  
+                      body={col.isImageBody?imageBodyTemplate:col.body}
+                      headerStyle={col.isImageBody?
+                          {
+                          display: "flex",
+                          justifyContent: "center",
+                          marginTop: "5px",
+                          }:
+                          ''
+                      }
+                      bodyStyle={col.isImageBody?
+                      { 
+                          display: "flex",
+                          justifyContent: "center" 
+                      }:
+                      {
+                      width: "auto",
+                      minWidth: "150px",
+                      maxWidth: "350px",
+                      textOverflow: "ellipsis",
+                          }}
+                    />
+                    } else {           
+                      return <Column 
+                         key={col.field} 
+                      columnKey={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      showFilterMatchModes={false}
+                      filter={col.isFilter}
+                      filterElement={dropdownFilterTemplate(col.field,col.dropdownItems,col.filterPlaceholder)}
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}}  
+                      body={col.isImageBody?imageBodyTemplate:''}
+                      headerStyle={col.isImageBody?
+                          {
+                          display: "flex",
+                          justifyContent: "center",
+                          marginTop: "5px",
+                          }:
+                          ''
+                      }
+                      bodyStyle={col.isImageBody?
+                      { 
+                          display: "flex",
+                          justifyContent: "center" 
+                      }:
+                      {
+                      width: "auto",
+                      minWidth: "150px",
+                      maxWidth: "350px",
+                      textOverflow: "ellipsis",
+                         }}
+                       />
+                     }
                   }
-                  else if (col.isDate){
-                
+                  else if (col.isDate){               
                    if (col.isFilter) {
                     if (tableType=='dataTable') {
                       <Column
@@ -561,38 +615,73 @@ const dateBodyTemplateTree = (rowData)=>{
                       />
                   }             
                   else{
-                    return  <Column 
-                    key={col.field} 
-                    columnKey={col.field} 
-                    field={col.field} 
-                    header={col.header} 
-                    expander = {col.expander}
-                    showFilterMatchModes={false}
-                    filter={col.isFilter}
-                    filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
-                    onFilterApplyClick={(e)=>onClickFilter(e)}
-                    onFilterClear={()=>{onClickClearFilter(col)}}  
-                    body={col.isImageBody?imageBodyTemplate:''}
-                    headerStyle={col.isImageBody?
-                        {
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "5px",
-                        }:
-                        ''
+                    if (col.isBody) {
+                      return  <Column 
+                      key={col.field} 
+                      columnKey={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      expander = {col.expander}
+                      showFilterMatchModes={false}
+                      filter={col.isFilter}
+                      filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}}  
+                      body={col.isImageBody?imageBodyTemplate:col.body}
+                      headerStyle={col.isImageBody?
+                          {
+                          display: "flex",
+                          justifyContent: "center",
+                          marginTop: "5px",
+                          }:
+                          ''
+                      }
+                      bodyStyle={col.isImageBody?
+                      { 
+                          display: "flex",
+                          justifyContent: "center" 
+                      }:
+                      {
+                      width: "auto",
+                      minWidth: "50px",
+                      maxWidth: "350px",
+                      textOverflow: "ellipsis",
+                      }}
+                  />
+                    } else {
+                      return  <Column 
+                      key={col.field} 
+                      columnKey={col.field} 
+                      field={col.field} 
+                      header={col.header} 
+                      expander = {col.expander}
+                      showFilterMatchModes={false}
+                      filter={col.isFilter}
+                      filterElement={textFilterTemplate(col.field,col.filterPlaceholder)}
+                      onFilterApplyClick={(e)=>onClickFilter(e)}
+                      onFilterClear={()=>{onClickClearFilter(col)}}  
+                      body={col.isImageBody?imageBodyTemplate:''}
+                      headerStyle={col.isImageBody?
+                          {
+                          display: "flex",
+                          justifyContent: "center",
+                          marginTop: "5px",
+                          }:
+                          ''
+                      }
+                      bodyStyle={col.isImageBody?
+                      { 
+                          display: "flex",
+                          justifyContent: "center" 
+                      }:
+                      {
+                      width: "auto",
+                      minWidth: "50px",
+                      maxWidth: "350px",
+                      textOverflow: "ellipsis",
+                      }}
+                  />
                     }
-                    bodyStyle={col.isImageBody?
-                    { 
-                        display: "flex",
-                        justifyContent: "center" 
-                    }:
-                    {
-                    width: "auto",
-                    minWidth: "50px",
-                    maxWidth: "350px",
-                    textOverflow: "ellipsis",
-                    }}
-                />
                   }
                    
                  }

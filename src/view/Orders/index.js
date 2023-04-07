@@ -8,6 +8,7 @@ import { CustomButton } from '../../components/CustomButton'
 import CustomTable from '../../components/CustomTable'
 import { useDispatch, useSelector } from "react-redux";
 import * as Messag from "../../config/ToastMessage";
+import { Tag } from 'primereact/tag';
 import {
   changeSelectedOrder,
   updateMode,
@@ -83,15 +84,36 @@ const Orders = () => {
 
  let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled', 'Completed']
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
+ const statusBodyTemplate = (data) => {
+ // console.log(data)
+  return <Tag value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
+};
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
     {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input', isDate: true},
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
-    {field: 'paymentStatus', header: 'Payment Status',isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
     {field: 'itemCount', header: 'Items'},
     {field: 'viewDetails', header: '',viewDetails:true},
   ];
+
+
+const getSeverity = (data) => {
+  switch (data.paymentStatus) {
+      case 'Fully Paid':
+          return 'success';
+
+      case 'Partially Paid':
+          return 'warning';
+
+      case 'Not Paid':
+          return 'danger';
+
+      default:
+          return null;
+  }
+};
 
 const handleEdit = (rowData) => {
   console.log(rowData)

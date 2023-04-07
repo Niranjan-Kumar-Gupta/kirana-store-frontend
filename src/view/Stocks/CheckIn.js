@@ -17,6 +17,8 @@ import Loader from '../../components/Loader'
 import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
+import { Button } from 'primereact/button';
+
 import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
@@ -300,9 +302,7 @@ useEffect(() => {
   return (
     <div className='w-11 pt-3 m-auto'>
      <Toast ref={toast} />
-      <div className={'w-9 m-auto flex justify-content-start align-items-center'}>
-        <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
-       </div>
+      
 
        <div className={`card w-9 m-auto mt-4`}>
           <form
@@ -310,9 +310,26 @@ useEffect(() => {
             className='p-fluid'
             encType='multipart/form-data'
           >
-            <div className='w-full flex flex-row justify-content-between'>
+           <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
+                  <div>
+                  <div className={'w-full m-auto flex justify-content-start align-items-center'}>
+                    <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
+                  </div>
+                  </div>
+                  <div className='flex gap-2'>
+                        <div className='flex '>
+                          <Button severity="secondary"  label={'Cancel'} onClick={goBack} /> 
+                        </div>
+                        <div className='flex '>
+                          <CustomButton  varient='filled' type='submit' label={'Check In'} /> 
+                        </div>
+                  </div>
+                
+           </div>
+
+            <div className='w-full gap-2 mt-3 flex flex-row justify-content-between'>
                 <div className='w-8'>
-                  <div className='field w-full mb-3'>
+                  <div className='field bg-white p-3 border-solid border-1 border-gray-300 border-round border-50 w-full mb-3'>
                     <label htmlFor='categories'>Products *</label>
                     <Controller
                       name='products'
@@ -349,9 +366,9 @@ useEffect(() => {
                   </div>
                   {tableData && tableData.length !== 0 ? selectedProdTable() : ''}
                 </div>
-                <div className='w-3'>
-                  <div>
-                     <div className='field w-full mb-3'>
+                 <div className='w-4 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
+                    <div>
+                      <div className='field mb-3'>
                       <label htmlFor='Reason'>Reason *</label>
                       <Controller
                         name='reason'
@@ -363,15 +380,15 @@ useEffect(() => {
                             <TreeSelect value={field.value} onChange={(e) => {field.onChange(e.value)
                                                                                
                                                                                }} options={reasons} 
-                              className="md:w-15rem w-full __reason" placeholder="Select Reason"></TreeSelect>
+                              className=" w-full __reason" placeholder="Select Reason"></TreeSelect>
                           </div>
                         </>
                         )}
                       />
-                     </div>
-                  </div>
-                  <div className='mt-5'>
-                      <div className='field'>
+                      </div>
+                    </div>
+                    <div className='mt-5'>
+                       <div className='field'>
                          <label htmlFor='comment'>Comment</label>
                           <Controller
                             name='comment'
@@ -382,7 +399,8 @@ useEffect(() => {
                                
                                 value={field.value}
                                 onChange={(e) => field.onChange(e.target.value)}
-                                rows={5}    
+                                rows={5} 
+                             
                                 placeholder='Enter Comment'
                                 className={classNames({
                                   'p-invalid': fieldState.invalid,
@@ -392,20 +410,19 @@ useEffect(() => {
                           />
                        
                        </div>
-                  </div>
-                </div>
+                   </div>
+                 </div>
             </div>
 
-            <div className='flex justify-content-end gap-2 mt-3 '>
+            {/* <div className='flex justify-content-end gap-2 mt-3 '>
               <div className='flex  '>
                 <CustomButton varient='filled' type='submit' label={'Check In'} />
             
               </div>
-             </div>
+             </div> */}
           </form>
-        </div>
-   
-</div>
+        </div> 
+    </div>
   )
 }
 

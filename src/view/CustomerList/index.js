@@ -56,10 +56,12 @@ const CustomerList = () => {
 
  const columns = [
    // {field: 'id',header: 'S.No.',isFilter:false,filterType:'input'},
+     {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
+    
     {field: 'name', header: 'Customer Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Name"},
-    {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
-    {field: 'email', header: 'Email',isFilter:false},  
     {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
+   
+    {field: 'email', header: 'Email',isFilter:false},  
     //{field: 'gstNumber', header: 'GST Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
     //{field: 'panNumber', header: 'PAN Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},  
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
