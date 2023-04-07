@@ -24,7 +24,10 @@ import {
 } from '../../reducers/orderTableSlice'
 import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
 import Loader from '../../components/Loader'
+import { ReactComponent as Delete } from '../../svg/delete.svg'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
+import { Button } from 'primereact/button'
+import { Calendar } from 'primereact/calendar'
 
 const NewOrder = () => {
   const [customers, setCustomers] = useState([])
@@ -60,6 +63,7 @@ const NewOrder = () => {
     products: [],
     paymentStatus: '',
     status: '',
+    completedAt: null,
     totalAmount: undefined,
     paidAmount: undefined,
   }
@@ -79,8 +83,7 @@ const NewOrder = () => {
   const getAllCustomer = async () => {
     try {
       const allCutomers = await API_GET_CUSTOMERS(0, 100000)
-      let sortedCustomer = sortAlphabeticalObjectArr(allCutomers.rows, 'name')
-      setCustomers(sortedCustomer)
+      setCustomers(allCutomers.rows)
     } catch (error) {
       console.log(error)
     }
@@ -140,6 +143,7 @@ const NewOrder = () => {
       setValue('status', orderDetails.status)
       setValue('totalAmount', orderDetails.totalAmount)
       setValue('paidAmount', orderDetails.paidAmount)
+      setValue('completedAt', orderDetails.completedAt ? new Date(orderDetails.completedAt) : null)
     }
   }, [mode, orderDetails])
 
@@ -160,9 +164,13 @@ const NewOrder = () => {
         (item) => item.key == id && ('option1' in item || item.defaultProduct)
       )
       if (foundItem) {
+        const existingItem = tableData.find(
+          (item) => item.key === foundItem.key
+        )
         return {
           id: foundItem.id,
           key: foundItem.key,
+          url: foundItem.url,
           label: foundItem.label,
           productName: foundItem.productName,
           productId: foundItem.productId ? foundItem.productId : foundItem.id,
@@ -170,7 +178,7 @@ const NewOrder = () => {
           price: foundItem.price,
           productVariantId: foundItem.productId ? foundItem.id : null,
           SKUCode: foundItem.SKUCode,
-          orderedQuantity: '',
+          orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
         }
       }
       return []
@@ -227,9 +235,13 @@ const NewOrder = () => {
               severity: 'success',
               detail: 'Order Created Successfully',
             })
+            setTimeout(() => {
+              {
+                navigate('/orders')
+              }
+            }, 500)
             setTableData([])
             reset()
-            navigate('/orders');
           })
           .catch((err) => {
             toast.current.show({ severity: 'error', detail: err.message })
@@ -241,7 +253,9 @@ const NewOrder = () => {
   const onCellEditComplete = (e, rowIndex) => {
     let _products = [...tableData]
     _products[rowIndex].orderedQuantity = e.value
-    setTableData(_products)
+    if (e.value) {
+      setTableData(_products)
+    }
   }
 
   const qtyEditor = (rowData, colData) => {
@@ -261,8 +275,31 @@ const NewOrder = () => {
     )
   }
 
+  const treeSelectRef = useRef(null)
+
+  const handleDelete = (e, rowData) => {
+    e.preventDefault()
+    let newData = selectedProdId.filter((id) => id != rowData.key)
+    setSelectedProdId(newData)
+    const oldSel = treeSelectRef.current.props.value
+    oldSel[rowData.key].checked = false
+    if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
+      delete oldSel[rowData.key]
+    delete oldSel[rowData?.productId]
+  }
+
+  const actionBody = (rowData) => {
+    return (
+      <button
+        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+        onClick={(e) => handleDelete(e, rowData)}
+      >
+        <Delete />
+      </button>
+    )
+  }
+
   const productImgBody = (rowData) => {
-    // console.log(rowData.url,rowData.updatedAt)
     return (
       <div className='' style={{ width: '90px', height: '55px' }}>
         <img
@@ -294,6 +331,10 @@ const NewOrder = () => {
     )
   }
 
+  const slNoBody = (rowData, colData) => {
+    return <Text type={'heading'}>{colData.rowIndex + 1}</Text>
+  }
+
   const selectedProdTable = () => {
     return (mode === 'create' && tableData && tableData.length > 0) ||
       mode === 'update' ? (
@@ -307,16 +348,14 @@ const NewOrder = () => {
         scrollable
         scrollHeight='500px'
       >
+        <Column header='Sl.No' body={slNoBody}></Column>
         <Column header='Image' body={productImgBody}></Column>
         <Column
           header='Products'
           field='productName'
           body={productNameBody}
         ></Column>
-        <Column
-          header='Price'
-          field='price'
-        ></Column>
+        <Column header='Price' field='price'></Column>
         <Column
           className='qtyCells'
           header='Quantity'
@@ -329,7 +368,7 @@ const NewOrder = () => {
             field='deliveredQuantity'
           ></Column>
         ) : (
-          ''
+          <Column header='Actions' body={actionBody}></Column>
         )}
       </DataTable>
     ) : (
@@ -337,12 +376,9 @@ const NewOrder = () => {
     )
   }
 
-  const goBack = () => {
-    dispatch(resetMode())
-    navigate('/orders')
-  }
-  let templabel= (mode !== 'update')? 'New Order': `Order #${orderDetails.id}`
-  const itemslist=[{ label: 'Orders', url: '/orders'  }, { label: templabel }];
+  let templabel =
+    mode !== 'update' ? 'Create New Order' : `Order #${orderDetails.id}`
+  const itemslist = [{ label: 'Orders', url: '/orders' }, { label: templabel }]
 
   return (
     <>
@@ -352,8 +388,8 @@ const NewOrder = () => {
         <div
           className={`md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
         >
-          <div className='flex md:w-8 align-items-center justify-content-between mb-3 gap-2'>
-            <div className='lg:w-5 flex align-items-center'>
+          <div className='flex flex-column md:flex-row lg:flex-row lg:w-10 md:w-8 md:justify-content-between align-items-center justify-content-center mb-3'>
+            <div className='lg:w-7 md:w-6 flex align-items-center'>
               <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
               {mode === 'update' && orderDetails.paymentStatus && (
                 <div className='hidden sm:block'>
@@ -362,19 +398,27 @@ const NewOrder = () => {
                     severity={
                       orderDetails.paymentStatus === 'Fully Paid'
                         ? 'success'
+                        : orderDetails.paymentStatus === 'Partially Paid'
+                        ? 'warning'
                         : 'danger'
                     }
                   ></Badge>
                 </div>
               )}
             </div>
-            <div className='lg:w-3'>
-              <div className='flex justify-content-end'>
+            <div className='sm:w-12 md:w-5 lg:w-4'>
+              <div className='flex justify-content-end gap-2'>
+                <Button
+                  className={`skalebot-button ${style.colored} w-6rem`}
+                  onClick={() => navigate('/orders')}
+                >
+                  Cancel
+                </Button>
                 <CustomButton
-                  varient='filled'
+                  varient='filled w-6rem pl-3'
                   type='submit'
                   onClick={handleSubmit(onSubmit)}
-                  label={mode === 'create' ? 'Create' : 'Update'}
+                  label={mode === 'create' ? 'Save' : 'Update'}
                 />
               </div>
             </div>
@@ -387,36 +431,38 @@ const NewOrder = () => {
             className='p-fluid'
             encType='multipart/form-data'
           >
-            <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-2 md:flex md:flex-column md:align-items-center'>
-              <div className='lg:w-5 md:w-8 sm:w-full'>
-                <div className='field bg-white p-2 border-round border-50 mb-2'>
-                  <label htmlFor='customerId'>Customer *</label>
-                  <Controller
-                    name='customerId'
-                    control={control}
-                    rules={{ required: 'Customer is required.' }}
-                    render={({ field, fieldState }) => (
-                      <Dropdown
-                        filter
-                        disabled={mode === 'update'}
-                        id={field.name}
-                        options={customers}
-                        optionLabel='name'
-                        optionValue='id'
-                        placeholder='Select Customer'
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.value)}
-                        className={classNames({
-                          'p-invalid': fieldState.invalid,
-                        })}
-                      />
-                    )}
-                  />
-                  {getFormErrorMessage('customerId')}
+            <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
+              <div className='lg:w-7 md:w-8 sm:w-full'>
+                <div className='bg-white p-3 border-round border-50 mb-3'>
+                  <div className='field w-12 lg:w-5'>
+                    <label htmlFor='customerId'>Customer *</label>
+                    <Controller
+                      name='customerId'
+                      control={control}
+                      rules={{ required: 'Customer is required.' }}
+                      render={({ field, fieldState }) => (
+                        <Dropdown
+                          filter
+                          disabled={mode === 'update'}
+                          id={field.name}
+                          options={customers}
+                          optionLabel='name'
+                          optionValue='id'
+                          placeholder='Select Customer'
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.value)}
+                          className={classNames({
+                            'p-invalid': fieldState.invalid,
+                          })}
+                        />
+                      )}
+                    />
+                    {getFormErrorMessage('customerId')}
+                  </div>
                 </div>
-                <div className='field bg-white p-2 border-round border-50 mb-2'>
+                <div className='field bg-white p-3 border-round border-50 mb-3'>
                   {mode === 'create' ? (
-                    <div className='field'>
+                    <div className='field w-12 lg:w-5'>
                       <label htmlFor='categories'>Products *</label>
                       <Controller
                         name='products'
@@ -425,6 +471,7 @@ const NewOrder = () => {
                         render={({ field, fieldState }) => (
                           <>
                             <TreeSelect
+                              ref={treeSelectRef}
                               filter
                               id={field.name}
                               value={field.value}
@@ -459,10 +506,10 @@ const NewOrder = () => {
                   {selectedProdTable()}
                 </div>
 
-                <div className='field bg-white p-2 border-round border-50 mb-2'>
+                <div className='field bg-white p-3 border-round border-50 mb-3'>
                   <div className=''>
-                    <div className='field sm:w-full md:w-12 flex align-items-center'>
-                      <label className='w-6' htmlFor='totalAmount'>
+                    <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                      <label className='w-12 mr-3' htmlFor='totalAmount'>
                         Amount *
                       </label>
                       <Controller
@@ -488,8 +535,8 @@ const NewOrder = () => {
                       />
                       {getFormErrorMessage('totalAmount')}
                     </div>
-                    <div className='field sm:w-full md:w-12 flex align-items-center'>
-                      <label className='w-6' htmlFor='paidAmount'>
+                    <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                      <label className='w-12 mr-3' htmlFor='paidAmount'>
                         Amount Paid (optional)
                       </label>
                       <Controller
@@ -516,7 +563,7 @@ const NewOrder = () => {
                     </div>
                   </div>
                   <div className='flex align-items-center my-4'>
-                    <div className='mr-3 w-4'>Balance: </div>
+                    <div className='mr-3 w-3'>Balance: </div>
                     <Text type={'heading'}>
                       INR{' '}
                       {amtEntered && amtPaid
@@ -529,7 +576,7 @@ const NewOrder = () => {
                 </div>
               </div>
 
-              <div className='lg:w-3 md:w-8 sm:w-full bg-white p-2 border-round border-50 mb-2'>
+              <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
                   <label htmlFor='paymentStatus'>Payment Type *</label>
                   <Controller
@@ -575,6 +622,27 @@ const NewOrder = () => {
                     )}
                   />
                   {getFormErrorMessage('status')}
+                </div>
+                <div className='field'>
+                  <label htmlFor='completedAt'>Reminder Date</label>
+                  <Controller
+                    name='completedAt'
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Calendar
+                        inputId={field.name}
+                        value={field.value}
+                        onChange={field.onChange}
+                        showIcon
+                        placeholder='dd/mm/yyyy'
+                        dateFormat='dd/mm/yy'
+                        className={classNames({
+                          'p-invalid': fieldState.error,
+                        })}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('completedAt')}
                 </div>
               </div>
             </div>

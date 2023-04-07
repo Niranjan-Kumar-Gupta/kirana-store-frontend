@@ -1,33 +1,39 @@
 import axiosInstance from "./axios.instance";
 import axios from "axios";
 // apies calls for products
-const API_GET_PRODUCTS = async (pageNo, limit) => {
+const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
   try {
     var resp;
-    // pageNo, limit,filterData,globalFilterValue
-    // if (filterData || globalFilterValue) {
-    //   console.log(filterData,globalFilterValue)
-    //   let allFilter=''
-    //   filterData.forEach(element => {
-    //      console.log(element)
-    //      allFilter += `&${element.key}=${element.value}`
-    //   });
-    //   if (globalFilterValue) {
-    //      allFilter += `&global=${globalFilterValue}`
-    //   }
-    //   resp = await axiosInstance.get(
-    //     `/product?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
-    //      )
-    // }
-    // else{
-    //   resp = await axiosInstance.get(
-    //   `/product?page=${pageNo}&limit=${limit}&isActive=1`
-    //   );
-    //  }
-    resp = await axiosInstance.get(
-      `/product?page=${pageNo}&limit=${limit}&isActive=1`
-      );
-    return resp.data;
+    console.log(pageNo, limit,filterData,globalFilterValue)
+    if (filterData || globalFilterValue) {
+      console.log(pageNo, limit,filterData,globalFilterValue)
+      let allFilter=''
+       if (filterData) {
+        let entries = Object.entries(filterData)
+        entries.map( ([key, val]) => {
+         allFilter += `&${key}=${val}`
+       });
+       }
+      console.log(pageNo, limit,filterData,globalFilterValue)
+      
+      if (globalFilterValue) {
+         allFilter += `&global=${globalFilterValue}`
+         console.log(pageNo, limit,filterData,globalFilterValue)
+      
+      }
+      console.log(allFilter)
+   
+      resp = await axiosInstance.get(
+        `/product?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+         )
+
+      return resp.data;
+    }else{
+       resp = await axiosInstance.get(
+        `/product?page=${pageNo}&limit=${limit}&isActive=1`
+      );  
+      return resp.data;
+    }
   } catch (err) {
     throw err;
   }

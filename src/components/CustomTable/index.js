@@ -217,7 +217,7 @@ const CustomTable = (
         } else {
           setIsGlobalFilterClick(true)
           
-          //onApplySearch(globalFilterValue) 
+          // onApplySearch(globalFilterValue) 
           let paginationData = {
             page: paginator.page,
             limit: paginator.limit,
