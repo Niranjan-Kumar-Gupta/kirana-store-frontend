@@ -12,8 +12,8 @@ import VersionTag from "../../config/VersionTag";
 import axiosInstance from "../../api/axios.instance";
 
 const slideContentTab = [
-  { label: "User Profile", route: "/userprofile" },
-  { label: "Payment History", route: "/paymenthistory" },
+  // { label: "User Profile", route: "/userprofile" },
+  // { label: "Payment History", route: "/paymenthistory" },
 ];
 
 export const SlideBar = () => {
