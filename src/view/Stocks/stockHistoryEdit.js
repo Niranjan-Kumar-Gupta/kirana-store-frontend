@@ -99,7 +99,7 @@ const StockHistoryEdit = () => {
         }]);
      
     useEffect(()=>{
-        console.log(orderId)
+        // console.log("id",orderId)
         let _reason = [...reasons]
         _reason[0].children = orderId
         setReasons(_reason)
@@ -154,10 +154,9 @@ const StockHistoryEdit = () => {
       }
     
   useEffect(() => {
-    console.log(selectedStockHistory)
+    // console.log(selectedStockHistory)
     if (selectedStockHistory) {
      setValue('SKUCode', selectedStockHistory.SKUCode || '')
-        
       setValue('reason', selectedStockHistory.reason || '')
       setValue('comment', selectedStockHistory.comment || '')
       setValue('product', selectedStockHistory.product || '')
@@ -167,6 +166,15 @@ const StockHistoryEdit = () => {
          
     }
   }, [])
+  let temp="";
+  
+  if(selectedStockHistory&&selectedStockHistory.id){
+    temp=selectedStockHistory.id;
+    }
+
+
+  let templabel= (temp)?`Edit Stock id : #${temp}`: 'Edit Stock'; 
+  const itemslist=[{ label: 'Stocks', url: '/stocks'  }, { label: templabel }];
 
   const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Update'  }];
 
