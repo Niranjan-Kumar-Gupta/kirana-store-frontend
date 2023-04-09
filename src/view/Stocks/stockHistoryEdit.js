@@ -99,7 +99,7 @@ const StockHistoryEdit = () => {
         }]);
      
     useEffect(()=>{
-        console.log(orderId)
+        // console.log("id",orderId)
         let _reason = [...reasons]
         _reason[0].children = orderId
         setReasons(_reason)
@@ -154,10 +154,9 @@ const StockHistoryEdit = () => {
       }
     
   useEffect(() => {
-    console.log(selectedStockHistory)
+    // console.log(selectedStockHistory)
     if (selectedStockHistory) {
      setValue('SKUCode', selectedStockHistory.SKUCode || '')
-        
       setValue('reason', selectedStockHistory.reason || '')
       setValue('comment', selectedStockHistory.comment || '')
       setValue('product', selectedStockHistory.product || '')
@@ -170,6 +169,8 @@ const StockHistoryEdit = () => {
 
   const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Update'  }];
 
+
+    
   return (
         <div className='w-8 pt-3 m-auto'>
              {loading ? loader() : <></>}
