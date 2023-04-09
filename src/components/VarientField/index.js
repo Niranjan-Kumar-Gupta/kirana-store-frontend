@@ -94,7 +94,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     
         var finder=(id)=>{
             function check(a){
-                return a.key===id
+                return a.variantKey===id
             }
             return varienttable.filter(check)
         }
@@ -104,7 +104,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             let item=rec(mapper,x);
             let op=item.split("/")
             return { 
-                key: x,
+                variantKey: x,
                 SKUCode:"",
                 price:0,
                 status:"Available",
