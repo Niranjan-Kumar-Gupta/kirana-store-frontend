@@ -304,7 +304,7 @@ const getDataByIds = (data, ids) => {
      
    } else {
     let finalData = {
-      reason:'order',
+      reason:`order ${data.reason}`,
       orderId:data.reason,
       comment:data.comment,
       productvariants:__prodVar

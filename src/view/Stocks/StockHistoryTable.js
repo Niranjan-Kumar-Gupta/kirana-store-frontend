@@ -6,6 +6,7 @@ import Loader from '../../components/Loader';
 
 import {
   getStocksHistory,
+  deleteStocksHistory,
   changeMode,
   resetMode,
   changeSelectedStockHistory,
@@ -24,6 +25,7 @@ const StockHistoryTable = () => {
   const {
     stockHistoryData,
     selectedStockHistory,
+    
     page,
     limit,
     loading,
@@ -70,6 +72,9 @@ const StockHistoryTable = () => {
            SKUCode:ele.productvariants.SKUCode,
            url:ele.productvariants.url,
            quantity:ele.quantity,
+           option1:ele.productvariants.option1,
+           option2:ele.productvariants.option2,
+           option3:ele.productvariants.option3,
            stockType:ele.stockType,
            updatedAt:ele.updatedAt,
            reason:ele.reason,
@@ -94,9 +99,9 @@ const StockHistoryTable = () => {
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
       
-      //{field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
-      
+      {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
+    
       {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'comment', header: 'comment',isFilter:false,filterPlaceholder:"Search by catogery"},     
      
@@ -141,12 +146,13 @@ const StockHistoryTable = () => {
     console.log('stock history edit',data)
     navigate('edit') 
     dispatch(changeSelectedStockHistory(data))
+   
  };
 
  const handleDelete = (data) => {
    console.log('stock history del',data)
+   dispatch(changeSelectedStockHistory(data))
    setDisplayAlertDelete(true);
-
  };
 
  const loader = () => {

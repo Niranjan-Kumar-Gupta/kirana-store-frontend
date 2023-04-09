@@ -39,6 +39,8 @@ const StocksTable = () => {
 
      const columns = [
           {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
+          {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+     
           { field: 'productName',header: 'Product Name',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
           { field: 'SKUCode',header: 'SKU Code',isFilter:false,filterPlaceholder:"Search by code"},
            

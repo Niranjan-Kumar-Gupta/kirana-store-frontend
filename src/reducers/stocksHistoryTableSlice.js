@@ -4,6 +4,13 @@ import {
     API_PUT_STOCKS_HISTORY,
     API_DELETE_STOCKS_HISTORY,
 } from "../api/stockHistory.service";
+import {
+  removeDeleteData,
+  updateProductTable,
+  getUnselectedProducts,
+  isProductInList,
+} from "../utils/tableUtils";
+
 
 const initialState = {
   loading: false,
@@ -34,6 +41,19 @@ export const updateStocksHistory = createAsyncThunk(
     console.log(data)
     try {
       const stocks = await API_PUT_STOCKS_HISTORY(data);
+      return stocks;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  } 
+);
+
+export const deleteStocksHistory = createAsyncThunk(
+  "stockTable/deleteStock",
+  async ( data, thunkAPI) => {
+    console.log(data)
+    try {
+      const stocks = await API_DELETE_STOCKS_HISTORY(data);
       return stocks;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -92,6 +112,26 @@ const stocksHistoryTableSlice = createSlice({
       ;
     });
     builder.addCase(updateStocksHistory.rejected, (state) => {
+      state.loading = false;
+    });
+
+     //del stocks
+
+     builder.addCase(deleteStocksHistory.fulfilled, (state, action) => {
+      console.log(action.payload)
+      state.stockHistoryData = removeDeleteData(state.stockHistoryData, action.payload.id);
+      state.totalStockHistoryCount -= 1;
+      state.loading = false
+      state.mode =  null
+      state.loading = false;
+     
+    });
+
+    builder.addCase(deleteStocksHistory.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase(deleteStocksHistory.rejected, (state) => {
       state.loading = false;
     });
 

@@ -690,12 +690,12 @@ const dateBodyTemplateTree = (rowData)=>{
 
 
   return ( <>
-        <div>
+        <div className='__customTable '>
             {
               tableType === 'dataTable'?<DataTable 
                 value={data}
                 tableStyle={{ minWidth: '50rem' }} 
-                className="skalebot-table"
+                className="skalebot-table "
                 filters={filters}         
                 header={header} emptyMessage="No data found."
                 >
