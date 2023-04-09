@@ -8,6 +8,7 @@ import { classNames } from 'primereact/utils'
 import style from './style.module.css'
 import { TreeSelect } from 'primereact/treeselect'
 import { API_GET_ORDERS } from '../../api/order.services';
+import CustomBreadcrumb from '../../components/CustomBreadcrumb';
 
 
 const StockHistoryEdit = () => {
@@ -70,7 +71,7 @@ const StockHistoryEdit = () => {
      ]);
      
     useEffect(()=>{
-        console.log(orderId)
+        // console.log("id",orderId)
         let _reason = [...reasons]
         _reason[0].children = orderId
         setReasons(_reason)
@@ -108,10 +109,9 @@ const StockHistoryEdit = () => {
       }
     
   useEffect(() => {
-    console.log(selectedStockHistory)
+    // console.log(selectedStockHistory)
     if (selectedStockHistory) {
      setValue('SKUCode', selectedStockHistory.SKUCode || '')
-        
       setValue('reason', selectedStockHistory.reason || '')
       setValue('comment', selectedStockHistory.comment || '')
       setValue('product', selectedStockHistory.product || '')
@@ -121,15 +121,22 @@ const StockHistoryEdit = () => {
          
     }
   }, [])
+  let temp="";
+  
+  if(selectedStockHistory&&selectedStockHistory.id){
+    temp=selectedStockHistory.id;
+    }
+
+
+  let templabel= (temp)?`Edit Stock id : #${temp}`: 'Edit Stock'; 
+  const itemslist=[{ label: 'Stocks', url: '/stocks'  }, { label: templabel }];
 
     
   return (
         <div className='w-8 pt-3 m-auto'>
-             <button className={style.customButton} onClick={goBack}>
-                <span
-                className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-                ></span>
-               </button>
+                <div>
+                  <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
+                </div>
                <div className={`card`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
                     <div className='field'>
