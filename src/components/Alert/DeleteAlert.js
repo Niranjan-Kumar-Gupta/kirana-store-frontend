@@ -4,6 +4,11 @@ import { useSelector, useDispatch } from "react-redux"
 import { deleteCustomer, resetSelectedCustomer } from "../../reducers/customerTableSlice";
 import { deleteCategory, resetSelectedCategory } from "../../reducers/categoryTableSlice"
 import { deleteProduct, resetSelectedProduct } from "../../reducers/productTableSlice";
+import {
+ 
+  deleteStocksHistory,
+  resetSelectedStockHistory,
+} from "../../reducers/stocksHistoryTableSlice";
 
 import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
@@ -11,6 +16,10 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
+    
+  const {
+    selectedStockHistory,
+  } = useSelector((state) => state.stocksHistoryTable);
 
  const dispatch = useDispatch();
 
@@ -54,6 +63,29 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         toast.current.show({ severity: 'error', detail: err.response.data });
       })
   }
+  const deleteStockHistoryItem = () => {
+
+    console.log(selectedStockHistory)
+    const __data = {
+      id:selectedStockHistory.id,
+      data:selectedStockHistory
+    }
+    console.log(__data)
+    dispatch(deleteStocksHistory(__data))
+      .unwrap()
+      .then(res => {
+        //show toast here
+        //let Message_Success = 'Stock History Successfully Deleted';
+        //toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        //show toast here
+        //toast.current.show({ severity: 'error', detail: err.response.data });
+      })
+  }
+
+  
+
 
   const onHide = () => {
     setDisplayAlertDelete(false)
@@ -69,6 +101,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         break;
       case "stockHistory":
           
+          dispatch(resetSelectedStockHistory())
           break;
       default:
         break;
@@ -86,7 +119,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         deleteCustomerItem()
         break;
       case "stockHistory":
-         
+        deleteStockHistoryItem()
         break;
     }
     onHide();
