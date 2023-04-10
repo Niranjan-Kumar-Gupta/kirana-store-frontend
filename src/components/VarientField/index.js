@@ -4,6 +4,7 @@ import {ReactComponent as Delete} from "../../svg/delete.svg"
 import { CustomButton } from '../../components/CustomButton';
 import VariantPanel from "./VariantPanel";
 import { Toast } from "primereact/toast";
+import "./index.css"
 function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable}) {
     const toast =useRef(null);
     const delete_varient=(id,index=undefined)=>{
@@ -93,7 +94,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     
         var finder=(id)=>{
             function check(a){
-                return a.key===id
+                return a.variantKey===id
             }
             return varienttable.filter(check)
         }
@@ -103,10 +104,10 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             let item=rec(mapper,x);
             let op=item.split("/")
             return { 
-                key: x,
-                SKUID:"",
+                variantKey: x,
+                SKUCode:"",
                 price:0,
-                stock:"Available",
+                status:"Available",
                 isActive:true,
                 ...finder(x)[0],
                 label: item,
@@ -123,22 +124,29 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     }
     useEffect(()=>{
         tablesetter();
-    },[...varient])
-
+    },[])
+    
     return (
     <div> 
         <div className="flex flex-column justify-content-end">
         <Toast ref={toast} />
-        <div  className="flex my-2 pl-2">
-                <div className="w-7">Variant</div>
-                 {varient.length<3&&<div className="flex w-4 text-blue-400 justify-content-end" onClick={()=>{addVarient()}}>
-                        +&nbsp;Add&nbsp;Option     
-                    </div>}
+            
+             <div  className="flex my-2 ">
+                <div className="w-auto p-2 pl-0 justify-content-center">
+                   Products&nbsp;Variants
+                </div>
+                 {varient.length<3&&<div className="flex w-2 justify-content-center p-2  btn-var" onClick={()=>{addVarient()}}>
+                    +&nbsp;Add&nbsp;New&nbsp;Variant     
+                </div>}
             </div>
+        
         {(varient)&&varient.map((x,pkey)=>{
             return (
                 <div>
-                    <div className="flex align-items-center ">
+                    <div className="flex flex-nowrap mt-2">
+                         <div className="w-7 mb-2">Product Variant {pkey+1}</div> 
+                    </div>
+                    <div className="flex align-items-center w-12 xl:w-8 lg:w-8">
                         <InputText
                             id={pkey}
                             className={`w-12`}
@@ -147,18 +155,14 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                             onChange={(e)=>{editVarient(pkey,e.target.value)}}
                         />
                         <Delete className="m-2" onClick={()=>{delete_varient(pkey)}}/>
-                        </div>
-
-                    <div className="flex flex-column w-11 align-content-end my-2" style={{marginLeft:"8%"}}>
-                       <div className="flex flex-nowrap mt-2">
-                         <div className="w-7 mb-2">Options</div> 
-                                <div className="flex w-4 text-900 justify-content-end" onClick={()=>{addVarientoption(pkey)}}>
-                                    + Add Values     
-                                </div>
-                        </div>
+                    </div>
+                    <div className="my-2">
+                        Value
+                    </div>
+                    <div className="flex flex-column w-12 xl:w-8 lg:w-8" style={{}}>
                      {(x.values) && x.values.map((item,key)=>{
                            return( 
-                                <div className="flex align-items-center w-12 justify-content-end">
+                                <div className="flex align-items-center w-12 mt-1 justify-content-end">
                                       <InputText
                                         id={key}
                                         className={`w-12 `}
@@ -170,8 +174,10 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                                 </div>
                            )
                         })}
-                               
-                        <div>
+                        <div className="w-12 flex justify-content-end">
+                        <div className="flex w-4 mr-6 add-var-btn my-2 justify-content-end" onClick={()=>{addVarientoption(pkey)}}>
+                                    Add&nbsp;New&nbsp;Values     
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -179,16 +185,16 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
         })}
         </div>
         <div>
-            <div className="flex ">
-                <div className="flex p-2 m-1 w-11 m-2 justify-content-end" onClick={tablesetter} >
-                    Done
-                    </div>
+            <div className="flex w-12 justify-content-end">
+                <div className="flex p-2 m-2 w-2 save-btn justify-content-center" onClick={tablesetter} >
+                    Save
+                </div>
                 </div>
          <div className="mt-2">
-           <VariantPanel
+          {(varienttable.length>0)?<VariantPanel
                 varienttable={varienttable}
                 setVarienttable={setVarienttable}
-           />
+           />:<></>}
         </div>
         </div>
       </div>

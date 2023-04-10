@@ -38,18 +38,36 @@ const StocksTable = () => {
 
 
      const columns = [
+          {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
+        
           {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
-          { field: 'productName',header: 'Product Name',isFilter:false,filterPlaceholder:"Search by code"},     
+          {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+     
+          { field: 'productName',header: 'Product Name',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
           { field: 'SKUCode',header: 'SKU Code',isFilter:false,filterPlaceholder:"Search by code"},
            
           {field: 'desc', header: 'Description',isFilter:false,filterPlaceholder:"Search by catogery"},     
           
-          {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
-          
+           
           {field: 'quantity', header: 'Available Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
        
          ];
     
+  function productBodyTemp(rowData) {
+      console.log(rowData)
+      return (
+        <div className='flex flex-column'>
+          <div className='mb-1'>
+            <Text type={'heading'}>{rowData.productName}</Text>
+          </div>        
+            <Text type={'sub-heading'}>
+              {rowData.option1 ? rowData.option1 : ''}
+              {rowData.option2 ? ` / ${rowData.option2}` : ''}
+              {rowData.option3 ? ` / ${rowData.option3}` : ''}
+            </Text>
+        </div>
+      )
+    }
       
   const onApplyFilter = (data)=>{
     console.log(data)

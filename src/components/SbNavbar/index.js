@@ -10,7 +10,7 @@ const navbarItems = [
   { label: "Products", icon: "product", route: "/products" },
   { label: "Orders", icon: "order", route: "/orders" },
   { label: "Categories", icon: "category", route: "/categories" },
-  { label: "Stock", icon: "enquiry", route: "/stocks" },
+  { label: "Inventory", icon: "inventory", route: "/stocks" },
   // { label: "Production Cards", icon: "category", route: "/productionCards" },
   { label: "Customers", icon: "customer", route: "/customers" },
 ];

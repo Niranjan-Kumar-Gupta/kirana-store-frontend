@@ -6,6 +6,7 @@ import Loader from '../../components/Loader';
 
 import {
   getStocksHistory,
+  deleteStocksHistory,
   changeMode,
   resetMode,
   changeSelectedStockHistory,
@@ -24,6 +25,7 @@ const StockHistoryTable = () => {
   const {
     stockHistoryData,
     selectedStockHistory,
+    
     page,
     limit,
     loading,
@@ -68,8 +70,11 @@ const StockHistoryTable = () => {
            id:ele.id,
            product:ele.productvariants.productName,
            SKUCode:ele.productvariants.SKUCode,
-           previewUrl:ele.productvariants.url,
+           url:ele.productvariants.url,
            quantity:ele.quantity,
+           option1:ele.productvariants.option1,
+           option2:ele.productvariants.option2,
+           option3:ele.productvariants.option3,
            stockType:ele.stockType,
            updatedAt:ele.updatedAt,
            reason:ele.reason,
@@ -78,24 +83,25 @@ const StockHistoryTable = () => {
        data.push(_data)
     });
     setStockHistoryTable(data)
+    console.log(data)
   },[stockHistoryData])
 
   const dispatch = useDispatch();
      
      const columns = [
-
+      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
+     
       {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
       {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
      
-      { field: 'product',header: 'Product',isFilter:false,filterPlaceholder:"Search by code"},     
+      { field: 'product',header: 'Product',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
        
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      //{field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
-      
+      {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
+    
       {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'comment', header: 'comment',isFilter:false,filterPlaceholder:"Search by catogery"},     
      
@@ -104,7 +110,22 @@ const StockHistoryTable = () => {
  
      ];
 
-
+     function productBodyTemp(rowData) {
+      console.log(rowData)
+      return (
+        <div className='flex flex-column'>
+          <div className='mb-1'>
+            <Text type={'heading'}>{rowData.product}</Text>
+          </div>        
+            <Text type={'sub-heading'}>
+              {rowData.option1 ? rowData.option1 : ''}
+              {rowData.option2 ? ` / ${rowData.option2}` : ''}
+              {rowData.option3 ? ` / ${rowData.option3}` : ''}
+            </Text>
+        </div>
+      )
+    }
+      
       
   const onApplyFilter = (data)=>{
     console.log(data)
@@ -125,12 +146,13 @@ const StockHistoryTable = () => {
     console.log('stock history edit',data)
     navigate('edit') 
     dispatch(changeSelectedStockHistory(data))
+   
  };
 
  const handleDelete = (data) => {
    console.log('stock history del',data)
+   dispatch(changeSelectedStockHistory(data))
    setDisplayAlertDelete(true);
-
  };
 
  const loader = () => {

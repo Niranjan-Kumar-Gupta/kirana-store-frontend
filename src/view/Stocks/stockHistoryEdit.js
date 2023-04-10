@@ -8,12 +8,21 @@ import { classNames } from 'primereact/utils'
 import style from './style.module.css'
 import { TreeSelect } from 'primereact/treeselect'
 import { API_GET_ORDERS } from '../../api/order.services';
+import CustomBreadcrumb from '../../components/CustomBreadcrumb'
+
+import {
+   
+    updateStocksHistory,
+    
+  } from "../../reducers/stocksHistoryTableSlice";
+  import Loader from '../../components/Loader';
 
 
 const StockHistoryEdit = () => {
     const {
         stockHistoryData,
         selectedStockHistory,
+        
         page,
         limit,
         loading,
@@ -24,29 +33,38 @@ const StockHistoryEdit = () => {
     const goBack = () => {
         navigate('/stocks')
       }
+      const dispatch = useDispatch();
+     
     
       const [orderId, setOrderId] = useState([])
 
       useEffect(()=>{
-        const getOrderData = async ()=>{
-            const order =  await API_GET_ORDERS(0,100000)
-            console.log(order)
-            let orderIds = []
-            order.rows.forEach(ele => {       
-                let data = {
-                    key: ele.id,
-                    label: `OrderId ${ele.id} `,
-                    data: `OrderId ${ele.id} `,
-                }
-                orderIds.push(data)
-            });
-            setOrderId(orderIds)
+
+        if ( selectedStockHistory.stockType == "Check Out") {
+            const getOrderData = async ()=>{
+                const order =  await API_GET_ORDERS(0,100000)
+                console.log(order)
+                let orderIds = []
+                order.rows.forEach(ele => {       
+                    let data = {
+                        key: ele.id,
+                        label: `OrderId ${ele.id} `,
+                        data: `OrderId ${ele.id} `,
+                    }
+                    orderIds.push(data)
+                });
+                setOrderId(orderIds)
+            }
+            getOrderData()
         }
-        getOrderData()
+
+      
        
       },[])
 
-      const [reasons, setReasons] = useState( [
+      const [reasons, setReasons] = useState(
+       
+        selectedStockHistory.stockType == "Check Out" ?  [
         {
            // key: 'orderDelivery',
             label: 'Order Delivery',
@@ -67,10 +85,21 @@ const StockHistoryEdit = () => {
            
         
         }
-     ]);
+     ] : [{
+        key: 'damaged',
+        label: 'Damaged',
+        data: 'Damaged ',    
+        },
+        {
+            key: 'correction',
+            label: 'Correction',
+            data: 'Correction ',
+        
+        
+        }]);
      
     useEffect(()=>{
-        console.log(orderId)
+        // console.log("id",orderId)
         let _reason = [...reasons]
         _reason[0].children = orderId
         setReasons(_reason)
@@ -82,7 +111,7 @@ const StockHistoryEdit = () => {
         SKUCode:'',
         product:'',
         quantity: '',
-        category:'',
+       
         stockType:'',
         reason: '',
         comment: '',
@@ -102,34 +131,52 @@ const StockHistoryEdit = () => {
         )
       }
 
+      const loader = () => {
+        return <Loader visible={loading} />
+      }
+
       const onSubmit =  (data) => {
-        console.log(data)
+        const __data = {
+            id:selectedStockHistory.id,
+            data
+        }
+        console.log(__data)
+        dispatch(updateStocksHistory(__data))
+        .unwrap()
+        .then((res) => {
+         goBack()
+          
+        })
+        .catch((err) => {
+            
+                 })
         
       }
     
   useEffect(() => {
-    console.log(selectedStockHistory)
+    // console.log(selectedStockHistory)
     if (selectedStockHistory) {
      setValue('SKUCode', selectedStockHistory.SKUCode || '')
-        
       setValue('reason', selectedStockHistory.reason || '')
       setValue('comment', selectedStockHistory.comment || '')
       setValue('product', selectedStockHistory.product || '')
       setValue('quantity', selectedStockHistory.quantity || '') 
       setValue('stockType', selectedStockHistory.stockType || '') 
-      setValue( 'category', selectedStockHistory.category || '') 
+      //setValue( 'category', selectedStockHistory.category || '') 
          
     }
   }, [])
 
+  const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Update'  }];
+
+
     
   return (
         <div className='w-8 pt-3 m-auto'>
-             <button className={style.customButton} onClick={goBack}>
-                <span
-                className={`pi pi-arrow-circle-left mr-3 ${style.font}`}
-                ></span>
-               </button>
+             {loading ? loader() : <></>}
+             <div className={'w-full mb-2 m-auto flex justify-content-start align-items-center'}>
+                    <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
+                  </div>
                <div className={`card`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
                     <div className='field'>
@@ -168,7 +215,7 @@ const StockHistoryEdit = () => {
                         />
                         {getFormErrorMessage('product')}
                     </div>
-                    <div className='field'>
+                    {/* <div className='field'>
                         <label htmlFor='category'>category</label>
                         <Controller
                         name='category'
@@ -186,7 +233,7 @@ const StockHistoryEdit = () => {
                         )}
                         />
                         {getFormErrorMessage('category')}
-                    </div>
+                    </div> */}
 
                     <div className='field'>
                         <label htmlFor='stockType'>stockType</label>

@@ -39,7 +39,7 @@ const ProductList = () => {
  const columns = [
     {field: 'SKUCode',header: 'SKU Id'},
     {field: 'productName', header: 'Product Name'},
-    {field: 'categoryId', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
+    {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'status', header: 'Stock'},
     {field: 'price', header: 'Price (₹)'},
     {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
@@ -54,6 +54,8 @@ const ProductList = () => {
       console.log(err)
     })
   },[page,limit])
+
+
 
 
   const deleteModule = () => {
@@ -152,6 +154,8 @@ console.log(data)
                   onApplySearch={onApplySearch}
                   onClearFilter={onClearFilter}
                   onClearSearch={onClearSearch}
+                  dispatchFunction={getProducts}
+                  tableType={'dataTable'}
                   paginator={{page:page,limit:limit,totalRecords:totalProductCount,changePage:changePage}}
                 />       
             </div>

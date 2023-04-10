@@ -17,8 +17,9 @@ import Loader from '../../components/Loader'
 import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
-import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
+import { Button } from 'primereact/button';
 
 
 
@@ -287,7 +288,7 @@ const getDataByIds = (data, ids) => {
       productvariants:__prodVar
      }
      console.log(finalData)
-     dispatch(updateStocksHistory(finalData))
+     dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
@@ -303,13 +304,13 @@ const getDataByIds = (data, ids) => {
      
    } else {
     let finalData = {
-      reason:'order',
+      reason:`order ${data.reason}`,
       orderId:data.reason,
       comment:data.comment,
       productvariants:__prodVar
      }
      console.log(finalData)
-     dispatch(updateStocksHistory(finalData))
+     dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
      .then((res) => {
       let Message_Success = 'Check Out Successfully '
@@ -329,12 +330,10 @@ const getDataByIds = (data, ids) => {
   }
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
-    <div className='w-11 pt-3 m-auto'>
+    <div className='w-12 pt-3 m-auto'>
        <Toast ref={toast} />
        {loading ? loader() : <></>}
-      <div className={'w-9 m-auto flex justify-content-start align-items-center'}>
-        <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>        
-       </div>
+      
 
        <div className={`card w-9 m-auto mt-4`}>
           <form
@@ -342,9 +341,25 @@ const getDataByIds = (data, ids) => {
             className='p-fluid'
             encType='multipart/form-data'
           >
-            <div className='w-full flex flex-row justify-content-between'>
-                <div className='w-8'>
-                  <div className='field w-full mb-3'>
+              <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
+                  <div>
+                    <div className={'w-full m-auto flex justify-content-start align-items-center'}>
+                      <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>        
+                     </div>
+                  </div>
+                  <div className='flex gap-2'>
+                        <div className='flex '>
+                          <Button severity="secondary"  label={'Cancel'} onClick={goBack} /> 
+                        </div>
+                        <div className='flex '>
+                          <CustomButton  varient='filled' type='submit' label={'Check Out'} /> 
+                        </div>
+                  </div>
+                
+              </div>
+              <div className='w-full mt-3 gap-2 flex flex-row justify-content-between'>
+                <div className='w-8 '>
+                  <div className='field w-full mb-3 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
                     <label htmlFor='categories'>Products *</label>
                     <Controller
                       name='products'
@@ -381,7 +396,7 @@ const getDataByIds = (data, ids) => {
                   </div>
                   {tableData && tableData.length !== 0 ? selectedProdTable() : ''}
                 </div>
-                <div className='w-3'>
+                <div className='w-4 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
                   <div>
                      <div className='field w-full mb-3'>
                       <label htmlFor='Reason'>Reason *</label>
@@ -393,7 +408,7 @@ const getDataByIds = (data, ids) => {
                           <>
                             <div className="card w-full flex justify-content-center">
                               <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
-                                className="md:w-15rem w-full" placeholder="Select Reason"></TreeSelect>
+                                className="w-full" placeholder="Select Reason"></TreeSelect>
                             </div>
 
                           </>
@@ -424,14 +439,14 @@ const getDataByIds = (data, ids) => {
                        </div>
                   </div>
                 </div>
-            </div>
+              </div>
 
-            <div className='flex justify-content-end gap-2 mt-3 '>
+            {/* <div className='flex justify-content-end gap-2 mt-3 '>
               <div className='flex  '>
                 <CustomButton varient='filled' type='submit' label={'Check Out'} />
             
               </div>
-             </div>
+            </div> */}
           </form>
         </div>
    
