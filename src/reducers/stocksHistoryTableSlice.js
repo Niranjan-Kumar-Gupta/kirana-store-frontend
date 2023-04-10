@@ -3,6 +3,7 @@ import {
     API_GET_STOCKS_HISTORY,
     API_PUT_STOCKS_HISTORY,
     API_DELETE_STOCKS_HISTORY,
+    API_PUT_STOCKS_HISTORY_CHECK,
 } from "../api/stockHistory.service";
 import {
   removeDeleteData,
@@ -41,6 +42,19 @@ export const updateStocksHistory = createAsyncThunk(
     console.log(data)
     try {
       const stocks = await API_PUT_STOCKS_HISTORY(data);
+      return stocks;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  } 
+);
+
+export const updateStocksHistoryCheck = createAsyncThunk(
+  "stockTable/checkStock",
+  async ( data, thunkAPI) => {
+    console.log(data)
+    try {
+      const stocks = await API_PUT_STOCKS_HISTORY_CHECK(data);
       return stocks;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -112,6 +126,21 @@ const stocksHistoryTableSlice = createSlice({
       ;
     });
     builder.addCase(updateStocksHistory.rejected, (state) => {
+      state.loading = false;
+    });
+
+     //put stocks Check
+
+     builder.addCase(updateStocksHistoryCheck.fulfilled, (state, action) => {
+      state.loading = false;
+     
+    });
+
+    builder.addCase(updateStocksHistoryCheck.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase(updateStocksHistoryCheck.rejected, (state) => {
       state.loading = false;
     });
 

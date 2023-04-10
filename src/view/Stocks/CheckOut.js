@@ -17,7 +17,7 @@ import Loader from '../../components/Loader'
 import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
-import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { Button } from 'primereact/button';
 
@@ -288,7 +288,7 @@ const getDataByIds = (data, ids) => {
       productvariants:__prodVar
      }
      console.log(finalData)
-     dispatch(updateStocksHistory(finalData))
+     dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
@@ -310,7 +310,7 @@ const getDataByIds = (data, ids) => {
       productvariants:__prodVar
      }
      console.log(finalData)
-     dispatch(updateStocksHistory(finalData))
+     dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
      .then((res) => {
       let Message_Success = 'Check Out Successfully '
