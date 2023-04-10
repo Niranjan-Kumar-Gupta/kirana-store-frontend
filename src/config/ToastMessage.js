@@ -17,6 +17,7 @@ export const Delivered_Order_ToastSuccessMessage = 'Order Delivered';
 export const Pending_Order_ToastSuccessMessage = 'Order Pending';
 export const Progress_Order_ToastSuccessMessage = 'In Progress';
 export const Cancel_Order_ToastSuccessMessage = 'Order Canceled';
+export const Delete_Order_ToastSuccessMessage = 'Order Successfully Deleted';
 
 export const Delivered_Order_ToastFailMessage = 'Order Failed to Make Changes';
 export const Pending_Order_ToastFailMessage = 'Order Failed to Make Changes';
