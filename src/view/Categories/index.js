@@ -35,12 +35,12 @@ const Categories = () => {
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    dispatch(getCategories({page:page,limit:limit}))
-    .unwrap()
-    .catch(()=>{ 
-      console.log(categoryData)
+    // dispatch(getCategories({page:page,limit:limit}))
+    // .unwrap()
+    // .catch(()=>{ 
+    //   console.log(categoryData)
 
-    }) 
+    // }) 
   },[page,limit])
 
   // table--------------------------------
@@ -48,11 +48,12 @@ const Categories = () => {
 
   let items = ['Available','Unavailable']
   const columns = [
+   // {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
+   
     {field: 'categoryName', header: 'Category Name',expander:true,isFilter:false,filterType:'input',filterPlaceholder:"Search by name"},
     //{field: 'label', header: 'Label',isFilter:false,filterType:'input',filterPlaceholder:"Search by size"},
     {field: 'status', header: 'Status',isFilter:false,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by type"},
     {field: 'desc', header: 'Description',isFilter:false,filterType:'input',filterPlaceholder:"Search by type"},
-    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterType:'date',filterPlaceholder:"Search by type"},
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   
   ];

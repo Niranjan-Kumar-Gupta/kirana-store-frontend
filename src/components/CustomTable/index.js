@@ -209,6 +209,7 @@ const CustomTable = (
             filterData:filtersData,
             globalFilterValue:''
           }; 
+          console.log(paginationData)
           dispatch(dispatchFunction(paginationData))
           .unwrap()
           .catch(()=>{ 
@@ -235,6 +236,22 @@ const CustomTable = (
      // console.log(globalFilterValue)
     
     }
+
+    useEffect(()=>{
+      let paginationData = {
+        page: paginator.page,
+        limit: paginator.limit,
+        filterData:filtersData,
+        globalFilterValue
+      }; 
+      dispatch(dispatchFunction(paginationData))
+      .unwrap()
+      .catch(()=>{ 
+        //console.log(stockData)
+  
+      }) 
+    },[paginator.page,paginator.limit])
+  
 
     function handelKeyDown(e) {
     if (e.key==='Enter') {

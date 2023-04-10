@@ -49,11 +49,11 @@ const Orders = () => {
   const [showOrderForm, setShowOrderForm] = useState(false)
 
   useEffect(()=>{
-    dispatch(getOrders({page:page,limit:limit}))
-    .unwrap()
-    .catch((err) => {
-      toast.current.show({ severity: 'error', detail: err.message })
-    })
+    // dispatch(getOrders({page:page,limit:limit}))
+    // .unwrap()
+    // .catch((err) => {
+    //   toast.current.show({ severity: 'error', detail: err.message })
+    // })
   },[page,limit])
 
   const onAddNewClick = () => {

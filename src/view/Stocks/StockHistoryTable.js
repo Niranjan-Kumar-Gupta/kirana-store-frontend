@@ -48,13 +48,13 @@ const StockHistoryTable = () => {
   const [stockHistoryTable,setStockHistoryTable] = useState([])
   
   useEffect(()=>{
-    console.log(page,limit)
-    dispatch(getStocksHistory({page:page,limit:limit}))
-    .unwrap()
-    .then(()=>{ 
+    // console.log(page,limit)
+    // dispatch(getStocksHistory({page:page,limit:limit}))
+    // .unwrap()
+    // .then(()=>{ 
 
-    }) 
-    console.log(stockHistoryData)
+    // }) 
+    // console.log(stockHistoryData)
   },[page,limit])
 
   useEffect(()=>{
