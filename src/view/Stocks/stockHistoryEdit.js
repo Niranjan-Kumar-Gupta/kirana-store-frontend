@@ -166,18 +166,11 @@ const StockHistoryEdit = () => {
          
     }
   }, [])
-  let temp="";
-  
-  if(selectedStockHistory&&selectedStockHistory.id){
-    temp=selectedStockHistory.id;
-    }
-
-
-  let templabel= (temp)?`Edit Stock id : #${temp}`: 'Edit Stock'; 
-  const itemslist=[{ label: 'Stocks', url: '/stocks'  }, { label: templabel }];
 
   const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Update'  }];
 
+
+    
   return (
         <div className='w-8 pt-3 m-auto'>
              {loading ? loader() : <></>}
