@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from 'primereact/button';
 
-import { updateStocksHistory } from '../../reducers/stocksHistoryTableSlice'
+import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
 
@@ -281,7 +281,7 @@ useEffect(() => {
       productvariants:__prodVar
      }
      console.log(finalData)
-     dispatch( updateStocksHistory (finalData))
+     dispatch( updateStocksHistoryCheck (finalData))
      .unwrap()
      .then((res) => {
           
