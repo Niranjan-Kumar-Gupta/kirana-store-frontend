@@ -474,8 +474,6 @@ const ProductDetails = () => {
               </div> 
             </div>
 
-           
-
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
                 <label
