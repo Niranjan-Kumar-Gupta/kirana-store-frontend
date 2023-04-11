@@ -137,7 +137,7 @@ function VariantField({pid,varientErr,setvarientErr,
     const verifyVar=()=>{
         let ck=false;
         varient.forEach((x=>{
-                    if(x.name===""||x.name==""){
+                    if(x.name===""||x.name==" "){
                       toast.current.show({
                         severity: 'error',
                         detail: 'option value is empty',
@@ -145,7 +145,7 @@ function VariantField({pid,varientErr,setvarientErr,
                       ck=true;
                     }
                   (x.values)&&x.values.forEach(item=>{
-                    if(item===""||item==""){
+                    if(item===""||item==" "){
                       toast.current.show({
                         severity: 'error',
                         detail: 'option value is empty',
@@ -159,7 +159,8 @@ function VariantField({pid,varientErr,setvarientErr,
       }
     const saveVariant=()=>{
         setvarientErr(true);
-        if(verifyVar){
+        let x=verifyVar()
+        if(!x){
             tablesetter();
         }
     }

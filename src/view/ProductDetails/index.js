@@ -350,7 +350,13 @@ const ProductDetails = () => {
                 <Controller
                   name='SKUCode'
                   control={control}
-                  rules={{ required: 'Product SKUCode is required' }}
+                  rules={{ required: 'Product SKUCode is required',
+                  pattern:{
+                    value:/^[a-zA-Z0-9]*$/,
+                    message:"Only alphanumeric characters without white spaces are allowed."
+                    }
+                  }}
+                  
                   render={({ field, fieldState }) => (
                     <InputText
                       id={field.name}
