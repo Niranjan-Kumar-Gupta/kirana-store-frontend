@@ -62,10 +62,15 @@ const ProductDetails = () => {
       setVarient([...x])
     }
     if(vartable&&vartable.length>0){ 
-        setVarienttable([...vartable])
+      const result = vartable.filter(check);
+
+    function check(x) {
+        return !(x.label === " "||x.label === "");
+      }
+        setVarienttable([...result])
     }
     },[varients])
-
+  const [varientErr,setvarientErr]=useState(false)
 
   // console.log(mode,selectedProduct)
   const defaultValues = {
@@ -157,11 +162,38 @@ const ProductDetails = () => {
       dispatch(resetSelectedProduct())
     })
   },[])
+  const verifyVar=()=>{
+    let ck=false;
+    varient.forEach((x=>{
+                if(x.name===""||x.name==""){
+                  toast.current.show({
+                    severity: 'error',
+                    detail: 'option value is empty',
+                  })
+                  ck=true;
+                }
+              (x.values)&&x.values.forEach(item=>{
+                if(item===""||item==""){
+                  toast.current.show({
+                    severity: 'error',
+                    detail: 'option value is empty',
+                  })
+                  ck=true;
+              }
+      })
+    }))  
+    
+    return ck;
+  }
+
+
 
   const onSubmit = async (data) => {
     // console.log("sss",data,varient)
     // console.log(data,varient)
-
+    if(verifyVar()){
+      return;
+    }
     if (selectedImage === null) {
       toast.current.show({
         severity: 'error',
@@ -196,7 +228,7 @@ const ProductDetails = () => {
         .then(res => {
           //show toast here
           
-          toast.current.show({ severity: 'success', detail: 'Succesfully Product is updated' })
+          toast.current.show({ severity: 'success', detail: 'Product is updated successfully' })
           setTimeout(() => {
             {navigate("/products")}
           }, 1000);
@@ -204,7 +236,7 @@ const ProductDetails = () => {
         .catch(err => {
           //show toast here
          // console.log(err.response);
-          toast.current.show({ severity: 'error', detail: err.response.data });
+          toast.current.show({ severity: 'error', detail: err.message });
         })
     } else {
       data = { product:{...data},options:[...varient],
@@ -219,7 +251,7 @@ const ProductDetails = () => {
           // setShowProductForm(false)
 
           // dispatch(changeShowNotice(true));
-          toast.current.show({ severity: 'success', detail: "Successfully Added Product" });
+          toast.current.show({ severity: 'success', detail: "Product is Added successfully" });
           setTimeout(() => {
             {navigate("/products")}
           }, 1000);
@@ -266,7 +298,7 @@ const ProductDetails = () => {
                 <Controller
                   name='productName'
                   control={control}
-                  rules={{ required: 'Product Name' }}
+                  rules={{ required: 'Product Name is required' }}
                   render={({ field, fieldState }) => (
                     <InputText
                       id={field.name}
@@ -278,7 +310,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('Product Name')}
+                {getFormErrorMessage('productName')}
               </div> 
               <div className='field'>
                 <label
@@ -303,7 +335,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('Product Description')}
+                {getFormErrorMessage('desc')}
               </div> 
             </div>
             
@@ -318,7 +350,7 @@ const ProductDetails = () => {
                 <Controller
                   name='SKUCode'
                   control={control}
-                  rules={{ required: 'Product SKUCode' }}
+                  rules={{ required: 'Product SKUCode is required' }}
                   render={({ field, fieldState }) => (
                     <InputText
                       id={field.name}
@@ -330,7 +362,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('Product SKUCode')}
+                {getFormErrorMessage('SKUCode')}
               </div> 
             </div>
 
@@ -401,7 +433,7 @@ const ProductDetails = () => {
                     />
                     )}
                   />
-                {getFormErrorMessage('Product Name')}
+                {getFormErrorMessage('status')}
               </div>
               </div>
 
@@ -416,7 +448,7 @@ const ProductDetails = () => {
                 <Controller
                   name='categoryId'
                   control={control}
-                  rules={{ required: 'Product Category Name' }}
+                  rules={{ required: 'Product Category Name is required' }}
                   render={({ field, fieldState }) => (
                       <TreeSelect
                       id={field.name}
@@ -432,7 +464,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('Product Category Name')}
+                {getFormErrorMessage('categoryid')}
               </div> 
             </div>
 
@@ -449,12 +481,12 @@ const ProductDetails = () => {
                 <Controller
                   name='price'
                   control={control}
-                  rules={{ required: 'Product Price' }}
+                  rules={{ required: 'Product Price is Required' }}
                   render={({ field, fieldState }) => (
                     <InputNumber
                   id={field.name}
                   value={field.value}
-                  onChange={(e) => field.onChange(parseInt(e.value))}
+                  onChange={(e) => field.onChange(parseInt(e.value)||0)}
                   useGrouping={false}
                   mode='currency'
                   currency='INR'
@@ -465,7 +497,7 @@ const ProductDetails = () => {
                 />
                 )}
                 />
-                {getFormErrorMessage('Product Price')}
+                {getFormErrorMessage('price')}
               </div> 
             </div>
           </div>     
@@ -486,20 +518,19 @@ const ProductDetails = () => {
                   control={control}
                   render={({ field, fieldState }) => (
                     <VariantField
-                      className={classNames({
-                        'p-invalid': fieldState.invalid,
-                      })}
                       placeholder='Enter Product Name'
                       field={field}
+                      fieldState={fieldState}
                       pid={id}
                       varient={varient}
                       setVarient={setVarient}
+                      varientErr={varientErr}
+                      setvarientErr={setvarientErr}
                       varienttable={varienttable}
                       setVarienttable={setVarienttable}
                     />
                     )}
                 />
-                {getFormErrorMessage('Product Name')}
               </div> 
             </div>
           </div>

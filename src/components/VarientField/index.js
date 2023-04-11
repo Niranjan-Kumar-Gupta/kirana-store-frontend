@@ -5,7 +5,17 @@ import { CustomButton } from '../../components/CustomButton';
 import VariantPanel from "./VariantPanel";
 import { Toast } from "primereact/toast";
 import "./index.css"
-function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable}) {
+import { classNames } from 'primereact/utils'
+
+function VariantField({pid,varientErr,setvarientErr,
+    field,
+    fieldState,
+    varient,
+    setVarient,
+    varienttable,
+    setVarienttable}
+    ) {
+    
     const toast =useRef(null);
     const delete_varient=(id,index=undefined)=>{
       if(index==undefined){
@@ -26,7 +36,6 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     const editVarient=(id,value)=>{
         let temp=varient;
         temp[id].name=value;
-        console.log(temp)
         setVarient([...temp])
     }
     const editVarientoption=(id,index,value)=>{
@@ -125,7 +134,15 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     useEffect(()=>{
         tablesetter();
     },[])
-    
+
+    const saveVariant=()=>{
+        setvarientErr(true);
+        tablesetter();
+    }
+
+    const errorchecker=(len,i,j=undefined)=>{
+        return (<div>{len&&varientErr&&<><small className='p-error'>Value is Mandatory</small></>} </div>)
+    }
     return (
     <div> 
         <div className="flex flex-column justify-content-end">
@@ -135,7 +152,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                 <div className="w-auto p-2 pl-0 justify-content-center">
                    Products&nbsp;Variants
                 </div>
-                 {varient.length<3&&<div className="flex w-2 justify-content-center p-2  btn-var" onClick={()=>{addVarient()}}>
+                 {varient.length<3&&<div className="flex w-2 justify-content-center p-2 cursor-pointer btn-var" onClick={()=>{addVarient()}}>
                     +&nbsp;Add&nbsp;New&nbsp;Variant     
                 </div>}
             </div>
@@ -149,33 +166,41 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                     <div className="flex align-items-center w-12 xl:w-8 lg:w-8">
                         <InputText
                             id={pkey}
-                            className={`w-12`}
-                            placeholder={'Option'}
+                            className={classNames({
+                                'p-invalid': (varientErr&&x.name.length===0),
+                              })}
+                            placeholder={'please enter option name'}
                             defaultValue={x.name}
                             onChange={(e)=>{editVarient(pkey,e.target.value)}}
                         />
-                        <Delete className="m-2" onClick={()=>{delete_varient(pkey)}}/>
+                        <Delete className="m-2 cursor-pointer" onClick={()=>{delete_varient(pkey)}}/>
                     </div>
+                        {errorchecker(x.name.length==0,pkey)}
                     <div className="my-2">
                         Value
                     </div>
                     <div className="flex flex-column w-12 xl:w-8 lg:w-8" style={{}}>
                      {(x.values) && x.values.map((item,key)=>{
                            return( 
-                                <div className="flex align-items-center w-12 mt-1 justify-content-end">
-                                      <InputText
-                                        id={key}
-                                        className={`w-12 `}
-                                        placeholder={'value'}
-                                        defaultValue={item}
-                                        onChange={(e)=>{editVarientoption(pkey,key,e.target.value)}}
-                                    />
-                                    <Delete className="m-2" onClick={()=>{delete_varient(pkey,key)}}/> 
+                                <div>
+                                    <div className="flex align-items-center w-12 mt-1 justify-content-end">
+                                        <InputText
+                                            id={key}
+                                            className={`w-12 ${classNames({
+                                                'p-invalid':   (varientErr&&item.length===0),
+                                              })} `}
+                                            placeholder={'please enter option value'}
+                                            defaultValue={item}
+                                            onChange={(e)=>{editVarientoption(pkey,key,e.target.value)}}
+                                        />
+                                        <Delete className="m-2 cursor-pointer" onClick={()=>{delete_varient(pkey,key)}}/> 
+                                    </div>
+                                    {errorchecker(item.length==0,pkey,key)}
                                 </div>
                            )
                         })}
                         <div className="w-12 flex justify-content-end">
-                        <div className="flex w-4 mr-6 add-var-btn my-2 justify-content-end" onClick={()=>{addVarientoption(pkey)}}>
+                        <div className="flex w-4 mr-6 add-var-btn my-2 justify-content-end cursor-pointer" onClick={()=>{addVarientoption(pkey)}}>
                                     Add&nbsp;New&nbsp;Values     
                                 </div>
                         </div>
@@ -186,9 +211,9 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
         </div>
         <div>
             <div className="flex w-12 justify-content-end">
-                <div className="flex p-2 m-2 w-2 save-btn justify-content-center" onClick={tablesetter} >
+               {varient.length!==0&&<div className="flex p-2 m-2 w-2 save-btn justify-content-center cursor-pointer" onClick={saveVariant} >
                     Save
-                </div>
+                </div>}
                 </div>
          <div className="mt-2">
           {(varienttable.length>0)?<VariantPanel
