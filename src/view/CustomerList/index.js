@@ -40,12 +40,12 @@ const CustomerList = () => {
   } = useSelector((state) => state.customerTable);
 
   useEffect(()=>{
-    dispatch(getCustomers({page:page,limit:limit}))
-    .unwrap()
-    .catch(()=>{ 
-      console.log(customerData)
+    // dispatch(getCustomers({page:page,limit:limit}))
+    // .unwrap()
+    // .catch(()=>{ 
+    //   console.log(customerData)
 
-    }) 
+    // }) 
   },[page,limit])
 
 

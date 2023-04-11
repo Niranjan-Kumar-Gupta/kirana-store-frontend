@@ -48,11 +48,11 @@ const ProductList = () => {
   ];
 
   useEffect(()=>{
-    dispatch(getProducts({page, limit})).unwrap().then((resp) => {
-      // console.log("Ss")
-    }).catch((err) => {
-      console.log(err)
-    })
+    // dispatch(getProducts({page, limit})).unwrap().then((resp) => {
+    //   // console.log("Ss")
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
   },[page,limit])
 
 

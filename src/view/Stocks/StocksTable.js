@@ -26,12 +26,12 @@ const StocksTable = () => {
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    dispatch(getStocks({page:page,limit:limit}))
-    .unwrap()
-    .catch(()=>{ 
-      //console.log(stockData)
+    // dispatch(getStocks({page:page,limit:limit}))
+    // .unwrap()
+    // .catch(()=>{ 
+    //   //console.log(stockData)
 
-    }) 
+    // }) 
     console.log(stockData)
 
   },[page,limit])
@@ -46,7 +46,7 @@ const StocksTable = () => {
           { field: 'productName',header: 'Product Name',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
           { field: 'SKUCode',header: 'SKU Code',isFilter:false,filterPlaceholder:"Search by code"},
            
-          {field: 'desc', header: 'Description',isFilter:false,filterPlaceholder:"Search by catogery"},     
+         // {field: 'desc', header: 'Description',isFilter:false,filterPlaceholder:"Search by catogery"},     
           
            
           {field: 'quantity', header: 'Available Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
