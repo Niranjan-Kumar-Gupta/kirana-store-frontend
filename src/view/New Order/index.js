@@ -143,7 +143,10 @@ const NewOrder = () => {
       setValue('status', orderDetails.status)
       setValue('totalAmount', orderDetails.totalAmount)
       setValue('paidAmount', orderDetails.paidAmount)
-      setValue('completedAt', orderDetails.completedAt ? new Date(orderDetails.completedAt) : null)
+      setValue(
+        'completedAt',
+        orderDetails.completedAt ? new Date(orderDetails.completedAt) : null
+      )
     }
   }, [mode, orderDetails])
 
@@ -179,6 +182,7 @@ const NewOrder = () => {
           productVariantId: foundItem.productId ? foundItem.id : null,
           SKUCode: foundItem.SKUCode,
           orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+          isDefault: foundItem.defaultProduct ? true : false,
         }
       }
       return []
@@ -317,12 +321,17 @@ const NewOrder = () => {
         <div className='mb-1'>
           <Text type={'heading'}>{rowData.productName}</Text>
         </div>
-        {mode === 'update' ? (
+        {mode === 'update' && !rowData.isDefault ? (
           <Text type={'sub-heading'}>
             {rowData.option1 ? rowData.option1 : ''}
             {rowData.option2 ? ` / ${rowData.option2}` : ''}
             {rowData.option3 ? ` / ${rowData.option3}` : ''}
           </Text>
+        ) : (
+          ''
+        )}
+        {mode === 'create' && rowData.isDefault ? (
+          ''
         ) : (
           <Text type={'sub-heading'}> {rowData.label} </Text>
         )}
@@ -507,11 +516,11 @@ const NewOrder = () => {
                 </div>
 
                 <div className='field bg-white p-3 border-round border-50 mb-3'>
-                  <div className=''>
-                    <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                      <label className='w-12 mr-3' htmlFor='totalAmount'>
-                        Amount *
-                      </label>
+                  <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                    <label className='w-12 mr-3' htmlFor='totalAmount'>
+                      Amount *
+                    </label>
+                    <div className='w-12'>
                       <Controller
                         name='totalAmount'
                         control={control}
@@ -535,35 +544,34 @@ const NewOrder = () => {
                       />
                       {getFormErrorMessage('totalAmount')}
                     </div>
-                    <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                      <label className='w-12 mr-3' htmlFor='paidAmount'>
-                        Amount Paid (optional)
-                      </label>
-                      <Controller
-                        name='paidAmount'
-                        control={control}
-                        render={({ field, fieldState }) => (
-                          <InputNumber
-                            id={field.name}
-                            value={field.value}
-                            onChange={(e) => field.onChange(e.value)}
-                            useGrouping={false}
-                            mode='currency'
-                            currency='INR'
-                            currencyDisplay='code'
-                            locale='en-IN'
-                            placeholder='Enter Amount Paid'
-                            className={classNames({
-                              'p-invalid': fieldState.invalid,
-                            })}
-                          />
-                        )}
-                      />
-                      {getFormErrorMessage('paidAmount')}
-                    </div>
+                  </div>
+                  <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                    <label className='w-12 mr-3' htmlFor='paidAmount'>
+                      Amount Paid (optional)
+                    </label>
+                    <Controller
+                      name='paidAmount'
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <InputNumber
+                          id={field.name}
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.value)}
+                          useGrouping={false}
+                          mode='currency'
+                          currency='INR'
+                          currencyDisplay='code'
+                          locale='en-IN'
+                          placeholder='Enter Amount Paid'
+                          className={classNames({
+                            'p-invalid': fieldState.invalid,
+                          })}
+                        />
+                      )}
+                    />
                   </div>
                   <div className='flex align-items-center my-4'>
-                    <div className='mr-3 w-3'>Balance: </div>
+                    <div className='mr-3 w-6 lg:w-3'>Balance: </div>
                     <Text type={'heading'}>
                       INR{' '}
                       {amtEntered && amtPaid

@@ -70,4 +70,13 @@ const API_PUT_ORDER = async (orderId, updatedData) => {
   }
 };
 
-export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS, API_ADD_ORDER };
+const API_DELETE_ORDER = async (orderId) => {
+  try {
+    const resp = await axiosInstance.delete(`/order/${orderId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export { API_GET_ORDERS, API_PUT_ORDER, API_GET_ORDER_DETAILS, API_ADD_ORDER, API_DELETE_ORDER };
