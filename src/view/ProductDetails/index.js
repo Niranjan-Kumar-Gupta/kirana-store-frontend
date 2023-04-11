@@ -265,7 +265,7 @@ const ProductDetails = () => {
 
  
   let templabel= (mode === 'add'||id==='add')? 'Add Product': `ProductDetails for id: #${id}`
-  const itemslist=[{ label: 'Products', url: '/'  }, { label: templabel }];
+  const itemslist=[{ label: 'Products', url: '/products'  }, { label: templabel }];
 
   return (
     <div className='w-11 pt-3 m-auto '>
@@ -317,7 +317,7 @@ const ProductDetails = () => {
                   htmlFor='desc'
                   className={classNames({ 'p-error': errors.name })}
                 >
-                  Description*
+                  Description
                 </label>
                 <Controller
                   name='desc'
@@ -464,7 +464,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('categoryid')}
+                {getFormErrorMessage('categoryId')}
               </div> 
             </div>
 
