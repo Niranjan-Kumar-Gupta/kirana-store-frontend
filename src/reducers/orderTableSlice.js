@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { API_ADD_ORDER, API_GET_ORDERS, API_GET_ORDER_DETAILS, API_PUT_ORDER } from "../api/order.services";
-import { updateTableData, isProductInList, getUnselectedProducts } from "../utils/tableUtils";
+import { API_ADD_ORDER, API_GET_ORDERS, API_GET_ORDER_DETAILS, API_PUT_ORDER, API_DELETE_ORDER } from "../api/order.services";
+import { updateTableData, isProductInList, getUnselectedProducts, removeDeleteData } from "../utils/tableUtils";
 
 const initialState = {
   orderData: [],
   totalOrderCount: 0,
   loading: false,
-  selectedOrderId:"",
+  selectedOrderId: null,
   selectedOrder:{},
   page: 0,
   limit: 10,
@@ -64,6 +64,18 @@ export const updateOrder = createAsyncThunk(
   }
 )
 
+export const deleteOrder = createAsyncThunk(
+  "orderTable/deleteOrder",
+  async (orderId, thunkAPI) => {
+    try {
+      const resp = await API_DELETE_ORDER(orderId);
+      return resp;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+)
+
 const orderTableSlice = createSlice({
   name: "orderTable",
   initialState,
@@ -84,29 +96,11 @@ const orderTableSlice = createSlice({
       state.page = action.payload
     },
     resetSelectedOrder(state) {
-      state.selectedOrderId = "all";
-      state.selectedOrder = {id:"all", orderLabel:"All Orders"};
+      state.selectedOrderId = null;
+      state.selectedOrder = {}
     },
     updateSelectedOrdersList(state, action) {
-      const { selectedOrders, currOrders} = action.payload
-      if (!state.selectedOrdersList?.length) {
-        state.selectedOrdersList = selectedOrders
-      } else {
-        const newSelection = selectedOrders.filter((order) => {
-          if (!isProductInList(state.selectedOrdersList, order))
-            return order
-        });
-        const unselectedOrders = getUnselectedProducts(
-          currOrders,
-          selectedOrders
-        );
-        const onlySelectedItems = state.selectedOrdersList.filter(
-          (order) => {
-            if (!isProductInList(unselectedOrders, order)) return order;
-          }
-        );
-        state.selectedOrdersList = [...onlySelectedItems, ...newSelection];
-      }
+      state.selectedOrder = action.payload
     },
     resetSelectedOrdersList(state) {
       state.selectedOrdersList = []
@@ -170,6 +164,18 @@ const orderTableSlice = createSlice({
       state.loading = true
     });
     builder.addCase(updateOrder.rejected, (state) => {
+      state.loading = false
+    })
+    
+    builder.addCase(deleteOrder.fulfilled, (state, action) => {
+      state.orderData = removeDeleteData(state.orderData, action.payload.id);
+      state.totalOrderCount -= 1;
+      state.loading = false;
+    });
+    builder.addCase(deleteOrder.pending, (state) => {
+      state.loading = true
+    });
+    builder.addCase(deleteOrder.rejected, (state) => {
       state.loading = false
     })
 

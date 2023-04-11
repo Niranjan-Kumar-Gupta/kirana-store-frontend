@@ -12,10 +12,12 @@ import {
 
 import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
+import { deleteOrder, resetSelectedOrder } from "../../reducers/orderTableSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
+  const { selectedOrder } = useSelector(state => state.orderTable);
     
   const {
     selectedStockHistory,
@@ -63,6 +65,21 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         toast.current.show({ severity: 'error', detail: err.response.data });
       })
   }
+
+  const deleteOrderItem = () => {
+    dispatch(deleteOrder(selectedOrder.id))
+      .unwrap()
+      .then(res => {
+        //show toast here
+        let Message_Success = Messag.Delete_Order_ToastSuccessMessage;
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        //show toast here
+        toast.current.show({ severity: 'error', detail: err.response.data });
+      })
+  }
+
   const deleteStockHistoryItem = () => {
 
     console.log(selectedStockHistory)
@@ -93,6 +110,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       case 'product':
         dispatch(resetSelectedProduct())
         break;
+      case 'order':
+        dispatch(resetSelectedOrder())
+        break;
       case 'category':
         dispatch(resetSelectedCategory())
         break;
@@ -100,9 +120,8 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         dispatch(resetSelectedCustomer())
         break;
       case "stockHistory":
-          
-          dispatch(resetSelectedStockHistory())
-          break;
+        dispatch(resetSelectedStockHistory())
+        break;
       default:
         break;
     }
@@ -111,6 +130,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     switch (item) {
       case 'product':
         deleteProductItem()
+        break;
+      case 'order':
+        deleteOrderItem()
         break;
       case 'category':
         deleteCategoryItem()

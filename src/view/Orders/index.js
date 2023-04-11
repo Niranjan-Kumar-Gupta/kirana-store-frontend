@@ -14,17 +14,12 @@ import {
   updateMode,
   getOrders,
   resetMode,
-  updateOrder,
   changePage,
   resetSelectedOrder,
-  updateSelectedOrdersList,
-  resetSelectedOrdersList,
 } from "../../reducers/orderTableSlice";
 import "./style.css"
-import { getDate } from '../../utils/datemaker'
-// import { API_GET_ORDERS } from "../../api/order.services";
-// import { underlineStyle } from "../../utils/commonStyles";
-// import { getCompany, setCompany } from '../../reducers/companySlice'
+import { DeleteAlert } from "../../components/Alert/DeleteAlert";
+
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 const Orders = () => {
 
@@ -38,15 +33,13 @@ const Orders = () => {
     selectedOrder,
     totalOrderCount,
     selectedOrderId,
-    selectedOrderProducts,
-    selectedOrdersList,
   } = useSelector((state) => state.orderTable);
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate()
  
-  const [showOrderForm, setShowOrderForm] = useState(false)
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
   useEffect(()=>{
     // dispatch(getOrders({page:page,limit:limit}))
@@ -56,31 +49,11 @@ const Orders = () => {
     // })
   },[page,limit])
 
-  const onAddNewClick = () => {
-    setShowOrderForm(true)
-  }
-
-  const onHide = () => {
-    setShowOrderForm(false)
-  }
-
   const loader = () => {
     return <Loader visible={loading} />
   }
 
   const toast = useRef(null)
-
-  const orderModal = () => {
-    return (
-      <OrderForm
-        onHide = {onHide}
-        showOrderForm={showOrderForm}
-        toast={toast}
-      />
-    )
-  }
-
-  
 
  let statusItems = ['New', 'In Progress', 'Delivered', 'Cancelled', 'Completed']
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
@@ -96,6 +69,7 @@ const Orders = () => {
     {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
     {field: 'itemCount', header: 'Items'},
     {field: 'viewDetails', header: '',viewDetails:true},
+    {field: 'actions', header: 'Actions',isActions:true,actionType:['delete']}, 
   ];
 
 
@@ -119,9 +93,23 @@ const handleEdit = (rowData) => {
   console.log(rowData)
  
 };
+
+const deleteModule = () => {
+  return (
+    <DeleteAlert
+      item="order"
+      displayAlertDelete={displayAlertDelete}
+      setDisplayAlertDelete={setDisplayAlertDelete}
+      toast={toast}
+    />
+  );
+};
+
+
 const handleDelete = (rowData) => {
-  console.log('order edit',rowData)
- 
+  setDisplayAlertDelete(true)
+  dispatch(changeSelectedOrder(rowData))
+  
 };
 const handleOrderSelect = (rowData)=>{
   dispatch(updateMode('update'))
@@ -152,7 +140,7 @@ const itemslist=[{ label: 'Orders', url: '/orders'  }, ];
   return (
     <div className="w-11 pt-3 m-auto">
       <Toast ref={toast} />
-      {showOrderForm ? orderModal() : <></>}
+      {displayAlertDelete && deleteModule()}
       {loader ? loader() : <></>}
       <div className='flex justify-content-between align-items-center'>
         <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
