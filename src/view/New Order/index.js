@@ -586,7 +586,7 @@ const NewOrder = () => {
 
               <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
-                  <label htmlFor='paymentStatus'>Payment Type *</label>
+                  <label htmlFor='paymentStatus'>Payment Status *</label>
                   <Controller
                     name='paymentStatus'
                     control={control}
