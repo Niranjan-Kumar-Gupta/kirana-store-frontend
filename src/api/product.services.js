@@ -4,9 +4,9 @@ import axios from "axios";
 const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
   try {
     var resp;
-    console.log(pageNo, limit,filterData,globalFilterValue)
+    // console.log(pageNo, limit,filterData,globalFilterValue)
     if (filterData || globalFilterValue) {
-      console.log(pageNo, limit,filterData,globalFilterValue)
+      // console.log(pageNo, limit,filterData,globalFilterValue)
       let allFilter=''
        if (filterData) {
         let entries = Object.entries(filterData)
@@ -14,14 +14,12 @@ const API_GET_PRODUCTS = async (pageNo, limit,filterData,globalFilterValue) => {
          allFilter += `&${key}=${val}`
        });
        }
-      console.log(pageNo, limit,filterData,globalFilterValue)
+      
       
       if (globalFilterValue) {
          allFilter += `&global=${globalFilterValue}`
-         console.log(pageNo, limit,filterData,globalFilterValue)
       
       }
-      console.log(allFilter)
    
       resp = await axiosInstance.get(
         `/product?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
