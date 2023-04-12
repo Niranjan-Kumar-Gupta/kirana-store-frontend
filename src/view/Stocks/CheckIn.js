@@ -294,11 +294,7 @@ useEffect(() => {
           
           let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          setTimeout(() => {
-            {
-              navigate('/stocks')
-            }
-          }, 500)
+         
         })
         .catch((err)=>{
           console.log(err)
@@ -339,7 +335,7 @@ useEffect(() => {
 
   return (
     <div className='w-11 pt-3 m-auto'>
-     <Toast ref={toast} />
+     <Toast ref={toast} onRemove={goBack}/>
       
 
        <div className={`card w-9 m-auto mt-4`}>

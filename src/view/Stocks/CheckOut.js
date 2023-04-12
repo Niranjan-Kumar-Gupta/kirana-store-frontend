@@ -339,11 +339,7 @@ const productNameBody = (rowData) => {
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          setTimeout(() => {
-            {
-              navigate('/stocks')
-            }
-          }, 500)
+ 
         })
         .catch((err)=>{
           console.log(err)
@@ -380,7 +376,7 @@ const productNameBody = (rowData) => {
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
     <div className='w-12 pt-3 m-auto'>
-       <Toast ref={toast} />
+       <Toast ref={toast} onRemove={goBack}/>
        {loading ? loader() : <></>}
       
 
