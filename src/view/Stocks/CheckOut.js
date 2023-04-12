@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { Button } from 'primereact/button';
+import { ReactComponent as Delete } from '../../svg/delete.svg'
 
 
 
@@ -138,40 +139,79 @@ useEffect(() => {
         setValue,
       } = useForm({ defaultValues })
 
-
-     
-  const flatten = (arr) =>
-  arr.reduce((acc, curr) => {
-    const { children, ...rest } = curr
-    acc.push(rest)
-    if (children) {
-      acc.push(...flatten(children))
+      const flatten = (arr) =>
+      arr.reduce((acc, curr) => {
+        const { children, ...rest } = curr
+        acc.push(rest)
+        if (children) {
+          acc.push(...flatten(children))
+        }
+        return acc
+      }, [])
+  
+    const getDataByIds = (data, ids) => {
+      const flattenedData = flatten(data)
+      return ids.flatMap((id) => {
+        const foundItem = flattenedData.find(
+          (item) => item.key == id && ('option1' in item || item.defaultProduct)
+        )
+        if (foundItem) {
+          const existingItem = tableData.find(
+            (item) => item.key === foundItem.key
+          )
+          return {
+            id: foundItem.id,
+            key: foundItem.key,
+            url: foundItem.url,
+            label: foundItem.label,
+            productName: foundItem.productName,
+            productId: foundItem.productId ? foundItem.productId : foundItem.id,
+            categoryId: foundItem.categoryId,
+            price: foundItem.price,
+            productVariantId: foundItem.productId ? foundItem.id : null,
+            SKUCode: foundItem.SKUCode,
+            orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            isDefault: foundItem.defaultProduct ? true : false,
+          }
+        }
+        return []
+      })
     }
-    return acc
-  }, [])
+    const treeSelectRef = useRef(null)
 
-const getDataByIds = (data, ids) => {
-  const flattenedData = flatten(data)
-  return ids.flatMap((id) => {
-    const foundItem = flattenedData.find(
-      (item) => item.key == id && 'option1' in item
-    )
-    if (foundItem) {
-      return {
-        id: foundItem.id,
-        key: foundItem.key,
-        label: foundItem.label,
-        productName: foundItem.productName,
-        productId: foundItem.productId,
-        categoryId: foundItem.categoryId,
-        productVariantId: foundItem.id,
-        SKUCode: foundItem.SKUCode,
-        quantity:foundItem.quantity,
-        orderedQuantity: '',
-      }
-    }
-    return []
-  })
+const handleDelete = (e, rowData) => {
+  e.preventDefault()
+  let newData = selectedProdId.filter((id) => id != rowData.key)
+  setSelectedProdId(newData)
+  const oldSel = treeSelectRef.current.props.value
+  oldSel[rowData.key].checked = false
+  if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
+    delete oldSel[rowData.key]
+    delete oldSel[rowData?.productId]
+}
+
+const actionBody = (rowData) => {
+  return (
+    <button
+      style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+      onClick={(e) => handleDelete(e, rowData)}
+    >
+      <Delete />
+    </button>
+  )
+}
+
+  
+const productNameBody = (rowData) => {
+  return (
+    <div className='flex flex-column'>
+      <div className='mb-1'>
+        <Text type={'heading'}>{rowData.productName}</Text>
+      </div>
+      <Text type={'sub-heading'}> {rowData.label} </Text>
+    
+    </div>
+  )
 }
 
   const getFormErrorMessage = (name) => {
@@ -238,7 +278,7 @@ const getDataByIds = (data, ids) => {
         columnResizeMode='expand'
         className='w-full'
       >
-        <Column header='Products' field='label'></Column>
+        <Column header='Products' field='label' body={productNameBody}></Column>
         <Column header='SKU Code' field='SKUCode'></Column>
        
         <Column
@@ -253,32 +293,25 @@ const getDataByIds = (data, ids) => {
           field='quantity'
           body={checkInQuantityEditor}
         ></Column>
+        <Column header='Actions' body={actionBody}></Column>
       </DataTable>
     )
   }
   const onSubmit = (data) => {
     console.log(data,tableData)
-   // let isQtyEmpty = false;
-    // tableData.forEach((prod) => {
-    //   if (!prod.quantity || prod.quantity === "") {
-    //     toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
-    //     isQtyEmpty = true
-    //   }
-    // })
-    // if (!isQtyEmpty) {
-    //   data.productOrdered = tableData;
-    //   setTableData([])
-    //   reset()
-    //   console.log(data)
-    // }
 
    let __prodVar = []
    tableData.forEach(ele => {
-     const __data = {
-      productVariantId:ele.productVariantId,
+    var __data={
       quantity:-ele.checkInQuantity
      }
+     if (ele.productVariantId) {
+        __data['productVariantId']=ele.productVariantId;
+     } else {
+      __data['productId']=ele.productId;
+     }
      __prodVar.push(__data)
+    
    });
 
    if (data.reason == 'damaged' || data.reason == 'correction') {
@@ -357,7 +390,7 @@ const getDataByIds = (data, ids) => {
                   </div>
                 
               </div>
-              <div className='w-full mt-3 gap-2 flex flex-row justify-content-between'>
+              <div className='w-full mt-3 gap-2 flex flex-row lg:align-items-start justify-content-between'>
                 <div className='w-8 '>
                   <div className='field w-full mb-3 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
                     <label htmlFor='categories'>Products *</label>
@@ -368,6 +401,7 @@ const getDataByIds = (data, ids) => {
                       render={({ field, fieldState }) => (
                         <>
                           <TreeSelect
+                            ref={treeSelectRef}
                             filter
                             id={field.name}
                             value={field.value}
