@@ -150,6 +150,7 @@ useEffect(() => {
           const existingItem = tableData.find(
             (item) => item.key === foundItem.key
           )
+          console.log(foundItem)
           return {
             id: foundItem.id,
             key: foundItem.key,
@@ -161,7 +162,7 @@ useEffect(() => {
             price: foundItem.price,
             productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
-            orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            orderedQuantity: foundItem ? foundItem.quantity : '',
             isDefault: foundItem.defaultProduct ? true : false,
           }
         }
@@ -182,8 +183,21 @@ useEffect(() => {
         <div className='mb-1'>
           <Text type={'heading'}>{rowData.productName}</Text>
         </div>
-        <Text type={'sub-heading'}> {rowData.label} </Text>
-      
+        {!rowData.isDefault ? (
+          <Text type={'sub-heading'}>
+            {rowData.option1 ? rowData.option1 : ''}
+            {rowData.option2 ? ` / ${rowData.option2}` : ''}
+            {rowData.option3 ? ` / ${rowData.option3}` : ''}
+          </Text>
+        ) : (
+          ''
+        )}
+        {rowData.isDefault ? (
+          ''
+        ) : (
+          <Text type={'sub-heading'}> {rowData.label} </Text>
+        )}
+        
       </div>
     )
   }
@@ -237,7 +251,7 @@ useEffect(() => {
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='quantity'
+          field='orderedQuantity'
           //body={qtyEditor}
         ></Column>
         <Column
@@ -256,7 +270,7 @@ useEffect(() => {
    tableData.forEach(ele => {
   
     var __data={
-      quantity:-ele.checkInQuantity
+      quantity:ele.checkInQuantity
      }
 
      if (ele.productVariantId) {
@@ -278,9 +292,9 @@ useEffect(() => {
      .unwrap()
      .then((res) => {
           
-          let Message_Success = 'Check Out Successfully '
+          let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          goBack()
+         // goBack()
         })
         .catch((err)=>{
           console.log(err)

@@ -170,7 +170,7 @@ useEffect(() => {
             price: foundItem.price,
             productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
-            orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            orderedQuantity: foundItem ? foundItem.quantity: '',
             isDefault: foundItem.defaultProduct ? true : false,
           }
         }
@@ -208,8 +208,21 @@ const productNameBody = (rowData) => {
       <div className='mb-1'>
         <Text type={'heading'}>{rowData.productName}</Text>
       </div>
-      <Text type={'sub-heading'}> {rowData.label} </Text>
-    
+      { !rowData.isDefault ? (
+        <Text type={'sub-heading'}>
+          {rowData.option1 ? rowData.option1 : ''}
+          {rowData.option2 ? ` / ${rowData.option2}` : ''}
+          {rowData.option3 ? ` / ${rowData.option3}` : ''}
+        </Text>
+      ) : (
+        ''
+      )}
+      { rowData.isDefault ? (
+        ''
+      ) : (
+        <Text type={'sub-heading'}> {rowData.label} </Text>
+      )}
+     
     </div>
   )
 }
@@ -284,7 +297,7 @@ const productNameBody = (rowData) => {
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='quantity'
+          field='orderedQuantity'
          // body={qtyEditor}
         ></Column>
         <Column
