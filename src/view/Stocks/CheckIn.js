@@ -294,7 +294,11 @@ useEffect(() => {
           
           let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-         // goBack()
+          setTimeout(() => {
+            {
+              navigate('/stocks')
+            }
+          }, 500)
         })
         .catch((err)=>{
           console.log(err)

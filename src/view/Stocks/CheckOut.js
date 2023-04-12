@@ -339,8 +339,11 @@ const productNameBody = (rowData) => {
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          goBack()
-         
+          setTimeout(() => {
+            {
+              navigate('/stocks')
+            }
+          }, 500)
         })
         .catch((err)=>{
           console.log(err)
