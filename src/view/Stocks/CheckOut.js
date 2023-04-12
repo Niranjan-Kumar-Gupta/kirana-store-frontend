@@ -171,6 +171,7 @@ useEffect(() => {
             productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
             orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            isDefault: foundItem.defaultProduct ? true : false,
           }
         }
         return []
@@ -298,27 +299,19 @@ const productNameBody = (rowData) => {
   }
   const onSubmit = (data) => {
     console.log(data,tableData)
-   // let isQtyEmpty = false;
-    // tableData.forEach((prod) => {
-    //   if (!prod.quantity || prod.quantity === "") {
-    //     toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
-    //     isQtyEmpty = true
-    //   }
-    // })
-    // if (!isQtyEmpty) {
-    //   data.productOrdered = tableData;
-    //   setTableData([])
-    //   reset()
-    //   console.log(data)
-    // }
 
    let __prodVar = []
    tableData.forEach(ele => {
-     const __data = {
-      productVariantId:ele.productVariantId,
+    var __data={
       quantity:-ele.checkInQuantity
      }
+     if (ele.productVariantId) {
+        __data['productVariantId']=ele.productVariantId;
+     } else {
+      __data['productId']=ele.productId;
+     }
      __prodVar.push(__data)
+    
    });
 
    if (data.reason == 'damaged' || data.reason == 'correction') {

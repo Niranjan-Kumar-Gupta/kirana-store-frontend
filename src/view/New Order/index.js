@@ -194,6 +194,7 @@ const NewOrder = () => {
   }
 
   const onSubmit = (data) => {
+    console.log(data)
     if (mode === 'update') {
       let updatedData = {
         orderDetails: {},
@@ -316,6 +317,7 @@ const NewOrder = () => {
   }
 
   const productNameBody = (rowData) => {
+    console.log(rowData)
     return (
       <div className='flex flex-column'>
         <div className='mb-1'>

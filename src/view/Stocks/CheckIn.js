@@ -162,6 +162,7 @@ useEffect(() => {
             productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
             orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            isDefault: foundItem.defaultProduct ? true : false,
           }
         }
         return []
@@ -250,33 +251,23 @@ useEffect(() => {
     )
   }
   const onSubmit = (data) => {
-    console.log(data,tableData)
-   // let isQtyEmpty = false;
-    // tableData.forEach((prod) => {
-    //   if (!prod.quantity || prod.quantity === "") {
-    //     toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
-    //     isQtyEmpty = true
-    //   }
-    // })
-    // if (!isQtyEmpty) {
-    //   data.productOrdered = tableData;
-    //   setTableData([])
-    //   reset()
-    //   console.log(data)
-    // }
 
-
-    
    let __prodVar = []
    tableData.forEach(ele => {
-     const __data = {
-      productVariantId:ele.productVariantId,
-      quantity:ele.checkInQuantity
+  
+    var __data={
+      quantity:-ele.checkInQuantity
      }
-     __prodVar.push(__data)
+
+     if (ele.productVariantId) {
+        __data['productVariantId']=ele.productVariantId;
+     } else {
+      __data['productId']=ele.productId;
+     }
+     __prodVar.push(__data);
+
    });
 
-    
     let finalData = {
       reason:data.reason,  
       comment:data.comment,
@@ -311,8 +302,10 @@ useEffect(() => {
     if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
       delete oldSel[rowData.key]
       delete oldSel[rowData?.productId]
+  
   }
 
+  
   const actionBody = (rowData) => {
     return (
       <button
