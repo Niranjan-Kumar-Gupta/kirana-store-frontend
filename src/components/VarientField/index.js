@@ -134,10 +134,35 @@ function VariantField({pid,varientErr,setvarientErr,
     useEffect(()=>{
         tablesetter();
     },[])
-
+    const verifyVar=()=>{
+        let ck=false;
+        varient.forEach((x=>{
+                    if(x.name===""||x.name==" "){
+                      toast.current.show({
+                        severity: 'error',
+                        detail: 'option value is empty',
+                      })
+                      ck=true;
+                    }
+                  (x.values)&&x.values.forEach(item=>{
+                    if(item===""||item==" "){
+                      toast.current.show({
+                        severity: 'error',
+                        detail: 'option value is empty',
+                      })
+                      ck=true;
+                  }
+          })
+        }))  
+        
+        return ck;
+      }
     const saveVariant=()=>{
         setvarientErr(true);
-        tablesetter();
+        let x=verifyVar()
+        if(!x){
+            tablesetter();
+        }
     }
 
     const errorchecker=(len,i,j=undefined)=>{

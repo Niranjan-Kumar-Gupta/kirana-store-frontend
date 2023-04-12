@@ -265,7 +265,7 @@ const ProductDetails = () => {
 
  
   let templabel= (mode === 'add'||id==='add')? 'Add Product': `ProductDetails for id: #${id}`
-  const itemslist=[{ label: 'Products', url: '/'  }, { label: templabel }];
+  const itemslist=[{ label: 'Products', url: '/products'  }, { label: templabel }];
 
   return (
     <div className='w-11 pt-3 m-auto '>
@@ -317,7 +317,7 @@ const ProductDetails = () => {
                   htmlFor='desc'
                   className={classNames({ 'p-error': errors.name })}
                 >
-                  Description*
+                  Description
                 </label>
                 <Controller
                   name='desc'
@@ -350,7 +350,13 @@ const ProductDetails = () => {
                 <Controller
                   name='SKUCode'
                   control={control}
-                  rules={{ required: 'Product SKUCode is required' }}
+                  rules={{ required: 'Product SKUCode is required',
+                  pattern:{
+                    value:/^[a-zA-Z0-9]*$/,
+                    message:"Only alphanumeric characters without white spaces are allowed."
+                    }
+                  }}
+                  
                   render={({ field, fieldState }) => (
                     <InputText
                       id={field.name}
@@ -464,11 +470,9 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('categoryid')}
+                {getFormErrorMessage('categoryId')}
               </div> 
             </div>
-
-           
 
             <div className='bg-white p-4 border-round border-50 mb-4'>
               <div className='field'>
