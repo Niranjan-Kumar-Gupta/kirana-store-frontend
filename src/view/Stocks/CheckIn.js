@@ -294,6 +294,11 @@ useEffect(() => {
           
           let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
+          setTimeout(() => {
+            {
+              goBack()
+            }
+          }, 500)
          
         })
         .catch((err)=>{
@@ -335,7 +340,7 @@ useEffect(() => {
 
   return (
     <div className='w-11 pt-3 m-auto'>
-     <Toast ref={toast} onRemove={goBack}/>
+     <Toast ref={toast} />
       
 
        <div className={`card w-9 m-auto mt-4`}>
@@ -417,6 +422,7 @@ useEffect(() => {
                                                                                }} options={reasons} 
                               className=" w-full __reason" placeholder="Select Reason"></TreeSelect>
                           </div>
+                          {getFormErrorMessage(field.name)} 
                         </>
                         )}
                       />

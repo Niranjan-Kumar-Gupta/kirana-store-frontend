@@ -339,6 +339,11 @@ const productNameBody = (rowData) => {
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
+          setTimeout(() => {
+            {
+              goBack()
+            }
+          }, 500)
  
         })
         .catch((err)=>{
@@ -360,7 +365,11 @@ const productNameBody = (rowData) => {
      .then((res) => {
       let Message_Success = 'Check Out Successfully '
       toast.current.show({ severity: 'success', detail: Message_Success })
+      setTimeout(() => {
+        {
           goBack()
+        }
+      }, 500)
           
         })
       .catch((err)=>{
@@ -376,7 +385,7 @@ const productNameBody = (rowData) => {
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
     <div className='w-12 pt-3 m-auto'>
-       <Toast ref={toast} onRemove={goBack}/>
+       <Toast ref={toast} />
        {loading ? loader() : <></>}
       
 
@@ -455,8 +464,9 @@ const productNameBody = (rowData) => {
                             <div className="card w-full flex justify-content-center">
                               <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
                                 className="w-full" placeholder="Select Reason"></TreeSelect>
+                              
                             </div>
-
+                            {getFormErrorMessage(field.name)} 
                           </>
                         )}
                       />
