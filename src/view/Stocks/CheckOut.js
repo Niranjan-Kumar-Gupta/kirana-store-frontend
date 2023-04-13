@@ -170,7 +170,7 @@ useEffect(() => {
             price: foundItem.price,
             productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
-            orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
+            orderedQuantity: foundItem ? foundItem.quantity: '',
             isDefault: foundItem.defaultProduct ? true : false,
           }
         }
@@ -208,8 +208,21 @@ const productNameBody = (rowData) => {
       <div className='mb-1'>
         <Text type={'heading'}>{rowData.productName}</Text>
       </div>
-      <Text type={'sub-heading'}> {rowData.label} </Text>
-    
+      { !rowData.isDefault ? (
+        <Text type={'sub-heading'}>
+          {rowData.option1 ? rowData.option1 : ''}
+          {rowData.option2 ? ` / ${rowData.option2}` : ''}
+          {rowData.option3 ? ` / ${rowData.option3}` : ''}
+        </Text>
+      ) : (
+        ''
+      )}
+      { rowData.isDefault ? (
+        ''
+      ) : (
+        <Text type={'sub-heading'}> {rowData.label} </Text>
+      )}
+     
     </div>
   )
 }
@@ -284,7 +297,7 @@ const productNameBody = (rowData) => {
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='quantity'
+          field='orderedQuantity'
          // body={qtyEditor}
         ></Column>
         <Column
@@ -326,8 +339,12 @@ const productNameBody = (rowData) => {
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          goBack()
-         
+          setTimeout(() => {
+            {
+              goBack()
+            }
+          }, 500)
+ 
         })
         .catch((err)=>{
           console.log(err)
@@ -348,7 +365,11 @@ const productNameBody = (rowData) => {
      .then((res) => {
       let Message_Success = 'Check Out Successfully '
       toast.current.show({ severity: 'success', detail: Message_Success })
+      setTimeout(() => {
+        {
           goBack()
+        }
+      }, 500)
           
         })
       .catch((err)=>{
@@ -443,8 +464,9 @@ const productNameBody = (rowData) => {
                             <div className="card w-full flex justify-content-center">
                               <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
                                 className="w-full" placeholder="Select Reason"></TreeSelect>
+                              
                             </div>
-
+                            {getFormErrorMessage(field.name)} 
                           </>
                         )}
                       />
@@ -452,7 +474,7 @@ const productNameBody = (rowData) => {
                   </div>
                   <div className='mt-5'>
                       <div className='field'>
-                         <label htmlFor='comment'>Comment *</label>
+                         <label htmlFor='comment'>Comment </label>
                           <Controller
                             name='comment'
                             control={control}
