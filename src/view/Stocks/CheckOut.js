@@ -474,7 +474,7 @@ const productNameBody = (rowData) => {
                   </div>
                   <div className='mt-5'>
                       <div className='field'>
-                         <label htmlFor='comment'>Comment *</label>
+                         <label htmlFor='comment'>Comment </label>
                           <Controller
                             name='comment'
                             control={control}
