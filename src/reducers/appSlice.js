@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading:false,
-  selectedTab:"/dashboard",
+  selectedTab:"/products",
   slidebarOpen:false,
   showNotice:false,
   showGroupShareDialog:false

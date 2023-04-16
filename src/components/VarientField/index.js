@@ -5,7 +5,7 @@ import { CustomButton } from '../../components/CustomButton';
 import VariantPanel from "./VariantPanel";
 import { Toast } from "primereact/toast";
 import "./index.css"
-function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable}) {
+function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable, edit, mode}) {
     const toast =useRef(null);
     const delete_varient=(id,index=undefined)=>{
       if(index==undefined){
@@ -128,7 +128,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
     
     return (
     <div> 
-        <div className="flex flex-column justify-content-end">
+        <div className="flex flex-column justify-content-end bg-white p-3 border-round border-50 mb-3">
         <Toast ref={toast} />
             
              <div  className="flex my-2 ">
@@ -150,6 +150,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                         <InputText
                             id={pkey}
                             className={`w-12`}
+                            disabled={!edit && mode === 'update'}
                             placeholder={'Option'}
                             defaultValue={x.name}
                             onChange={(e)=>{editVarient(pkey,e.target.value)}}
@@ -165,6 +166,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
                                 <div className="flex align-items-center w-12 mt-1 justify-content-end">
                                       <InputText
                                         id={key}
+                                        disabled={!edit && mode === 'update'}
                                         className={`w-12 `}
                                         placeholder={'value'}
                                         defaultValue={item}
@@ -184,7 +186,7 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
             );
         })}
         </div>
-        <div>
+        <div className="mt-3 bg-white p-3 border-round border-50 mb-3">
             <div className="flex w-12 justify-content-end">
                 <div className="flex p-2 m-2 w-2 save-btn justify-content-center" onClick={tablesetter} >
                     Save
@@ -194,6 +196,8 @@ function VariantField({pid,field,className,placeholder,varient,setVarient,varien
           {(varienttable.length>0)?<VariantPanel
                 varienttable={varienttable}
                 setVarienttable={setVarienttable}
+                mode={mode}
+                edit={edit}
            />:<></>}
         </div>
         </div>

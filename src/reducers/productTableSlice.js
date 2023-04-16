@@ -20,7 +20,7 @@ const initialState = {
   totalProductCount: 0,
   loading: false,
   selectedProduct: null,
-  page: 1,
+  page: 0,
   limit: 10,
   mode: null,
   catagories:[],
