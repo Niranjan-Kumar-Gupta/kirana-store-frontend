@@ -14,7 +14,23 @@
     height: 0px;
     
 }
+.__tag{
+    border-radius: 50px !important;
+    width: 100px !important;
+}
+.p-tag.p-tag-success {
+    background-color: #8ae7ac !important;
+    color: #373636 !important;
+}
+.p-tag.p-tag-warning {
+    background-color: #f8cc82 !important;
+    color: #373636 !important;
+}
 
+.p-tag.p-tag-danger {
+    background-color: #f8adadda !important;
+    color: #373636 !important;
+}
 .__leftDivDrop button{
     height: 40px !important;
     min-width: 160px !important;

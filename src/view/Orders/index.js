@@ -59,8 +59,9 @@ const Orders = () => {
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const statusBodyTemplate = (data) => {
  // console.log(data)
-  return <Tag value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
+  return <Tag className='__tag' value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
 };
+
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
     {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input', isDate: true},

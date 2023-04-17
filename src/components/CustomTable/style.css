@@ -6,6 +6,10 @@
     border-radius: 2px !important;
 }
 
+.__action button{
+   width: 5rem !important;
+}
+
 .skalebot-table .p-checkbox .p-checkbox-box.p-highlight{
     background:#FFFFFF !important;
 }

@@ -1,4 +1,4 @@
-.customButton {
+/* .customButton {
     border: none;
     padding: 0;
     background-color: #fff;
@@ -6,4 +6,33 @@
   
   .font {
     font-size: 1.5rem !important;
+  } */
+
+  .stickySubNav {
+    position: sticky;
+    top: 70px;
+    background-color: #F8F8FC;
+    z-index: 100;
   }
+  
+  .qtyCells {
+    background-color: #fff;
+    border: 3px solid red;
+  }
+  
+  .customButton {
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .font {
+    font-size: 1.5rem !important;
+  }
+  
+  .colored {
+    background-color: #868686 !important;
+  }
+  
+  
