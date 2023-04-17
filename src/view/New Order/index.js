@@ -114,7 +114,7 @@ const NewOrder = () => {
         console.log(error)
       }
     }
-    if (mode === 'create') {
+    if (mode !== 'update') {
       getProdVariants()
     }
     getAllCustomer()
@@ -481,33 +481,30 @@ const NewOrder = () => {
                         control={control}
                         rules={{ required: 'Please select products.' }}
                         render={({ field, fieldState }) => (
-                          <>
-                            <TreeSelect
-                              ref={treeSelectRef}
-                              filter
-                              id={field.name}
-                              value={field.value}
-                              onChange={(e) => {
-                                let prodId = Object.keys(e.value).filter(
-                                  (key) =>
-                                    e.value[key].checked &&
-                                    !e.value[key].partiallyChecked
-                                )
-                                setSelectedProdId(prodId)
-                                field.onChange(e.value)
-                              }}
-                              selectionMode='checkbox'
-                              display='chip'
-                              inputRef={field.ref}
-                              options={prodVar}
-                              metaKeySelection={false}
-                              placeholder='Select Products'
-                              className={classNames('w-full', {
-                                'p-invalid': fieldState.error,
-                              })}
-                            />
-                            {getFormErrorMessage(field.name)}
-                          </>
+                          <TreeSelect
+                            ref={treeSelectRef}
+                            filter
+                            id={field.name}
+                            value={field.value}
+                            onChange={(e) => {
+                              let prodId = Object.keys(e.value).filter(
+                                (key) =>
+                                  e.value[key].checked &&
+                                  !e.value[key].partiallyChecked
+                              )
+                              setSelectedProdId(prodId)
+                              field.onChange(e.value)
+                            }}
+                            selectionMode='checkbox'
+                            display='chip'
+                            inputRef={field.ref}
+                            options={prodVar}
+                            metaKeySelection={false}
+                            placeholder='Select Products'
+                            className={classNames('w-full', {
+                              'p-invalid': fieldState.error,
+                            })}
+                          />
                         )}
                       />
                       {getFormErrorMessage('products')}
@@ -619,7 +616,7 @@ const NewOrder = () => {
                   <Controller
                     name='paymentStatus'
                     control={control}
-                    rules={{ required: 'Status is required.' }}
+                    rules={{ required: 'Payment Status is required.' }}
                     render={({ field, fieldState }) => (
                       <Dropdown
                         id={field.name}
@@ -668,7 +665,7 @@ const NewOrder = () => {
           <div className='flex justify-content-end gap-2'>
             <Button
               className={`skalebot-button ${style.colored} w-6rem`}
-              onClick={() => dispatch(updateMode(null))}
+              onClick={() => navigate('/orders')}
             >
               Cancel
             </Button>
