@@ -114,7 +114,6 @@ const handleDelete = (rowData) => {
 const handleOrderSelect = (rowData)=>{
   dispatch(updateMode('update'))
   navigate(`orderDetails/${rowData.id}`)
-  console.log('order view detail',rowData)
 }
 
 const onApplyFilter = (data)=>{

@@ -2,20 +2,11 @@ import { InputText } from "primereact/inputtext";
 import { useEffect, useRef, useState } from "react";
 import {ReactComponent as Delete} from "../../svg/delete.svg"
 import { CustomButton } from '../../components/CustomButton';
+import { classNames } from 'primereact/utils'
 import VariantPanel from "./VariantPanel";
 import { Toast } from "primereact/toast";
 import "./index.css"
-import { classNames } from 'primereact/utils'
-
-function VariantField({pid,varientErr,setvarientErr,
-    field,
-    fieldState,
-    varient,
-    setVarient,
-    varienttable,
-    setVarienttable}
-    ) {
-    
+function VariantField({pid,field,className,placeholder,varient,setVarient,varienttable,setVarienttable, edit, mode, varientErr, setvarientErr}) {
     const toast =useRef(null);
     const delete_varient=(id,index=undefined)=>{
       if(index==undefined){
@@ -170,7 +161,7 @@ function VariantField({pid,varientErr,setvarientErr,
     }
     return (
     <div> 
-        <div className="flex flex-column justify-content-end">
+        <div className="flex flex-column justify-content-end bg-white p-3 border-round border-50 mb-3">
         <Toast ref={toast} />
             
              <div  className="flex my-2 ">
@@ -194,6 +185,7 @@ function VariantField({pid,varientErr,setvarientErr,
                             className={classNames({
                                 'p-invalid': (varientErr&&x.name.length===0),
                               })}
+                            disabled={!edit && mode === 'update'}
                             placeholder={'please enter option name'}
                             defaultValue={x.name}
                             onChange={(e)=>{editVarient(pkey,e.target.value)}}
@@ -211,6 +203,7 @@ function VariantField({pid,varientErr,setvarientErr,
                                     <div className="flex align-items-center w-12 mt-1 justify-content-end">
                                         <InputText
                                             id={key}
+                                        disabled={!edit && mode === 'update'}
                                             className={`w-12 ${classNames({
                                                 'p-invalid':   (varientErr&&item.length===0),
                                               })} `}
@@ -234,7 +227,7 @@ function VariantField({pid,varientErr,setvarientErr,
             );
         })}
         </div>
-        <div>
+        <div className="mt-3 bg-white p-3 border-round border-50 mb-3">
             <div className="flex w-12 justify-content-end">
                {varient.length!==0&&<div className="flex p-2 m-2 w-2 save-btn justify-content-center cursor-pointer" onClick={saveVariant} >
                     Save
@@ -244,6 +237,8 @@ function VariantField({pid,varientErr,setvarientErr,
           {(varienttable.length>0)?<VariantPanel
                 varienttable={varienttable}
                 setVarienttable={setVarienttable}
+                mode={mode}
+                edit={edit}
            />:<></>}
         </div>
         </div>
