@@ -120,7 +120,7 @@ const ProductDetails = () => {
   }
 
   useEffect(() => {
-    if (mode == 'update' && selectedProduct) {
+    if (mode === 'update' && selectedProduct) {
       setValue('productName', selectedProduct.productName)
       setValue('categoryId', selectedProduct.categoryId)
       setValue('quantity', selectedProduct.quantity)
@@ -131,16 +131,16 @@ const ProductDetails = () => {
       handleImg(selectedProduct.url)
     }
     if (selectedProduct === []) {
-      changeMode('add')
+      dispatch(changeMode('add'))
       // setmode('add')
     } else {
-      changeMode('update')
+      dispatch(changeMode('update'))
       // setmode('update')
     }
   }, [selectedProduct])
 
   const imageBodyTemplate = () => {
-    if (mode == 'update' && selectedImage && selectedImage.length > 2) {
+    if (mode === 'update' && selectedImage && selectedImage.length > 2) {
       return (
         <img
           src={`${selectedImage}?v=${selectedImage.updatedAt}`}
