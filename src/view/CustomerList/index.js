@@ -40,18 +40,22 @@ const CustomerList = () => {
   } = useSelector((state) => state.customerTable);
 
   useEffect(()=>{
-    dispatch(getCustomers({page:page,limit:limit}))
-    .unwrap()
-    .catch(()=>{ 
-      console.log(customerData)
+    // dispatch(getCustomers({page:page,limit:limit}))
+    // .unwrap()
+    // .catch(()=>{ 
+    //   console.log(customerData)
 
-    }) 
+    // }) 
   },[page,limit])
 
 
 
   // customer list table------------------------
-
+  const bodyEmail = (rowData)=>{
+    return (
+      <Text style={{textTransform: "lowercase"}}>{rowData.email}</Text>
+    )
+  }
 
 
  const columns = [
@@ -61,11 +65,13 @@ const CustomerList = () => {
     {field: 'name', header: 'Customer Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
    
-    {field: 'email', header: 'Email',isFilter:false},  
+    {field: 'email', header: 'Email',isFilter:false,isBody:true,body:bodyEmail},  
     //{field: 'gstNumber', header: 'GST Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
     //{field: 'panNumber', header: 'PAN Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},  
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
   ];
+
+
 
   const deleteModule = () => {
     return (

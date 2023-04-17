@@ -21,7 +21,7 @@ import { Button } from 'primereact/button';
 
 import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
-
+import { ReactComponent as Delete } from '../../svg/delete.svg'
 
 
 const CheckIn = () => {
@@ -88,6 +88,7 @@ const CheckIn = () => {
 
   const [selectedReasons, setSelectedReasons] = useState(null);
   const [prodVar, setprodVar] = useState([])
+
   const getProdVariants = async () => {
     
     try {
@@ -106,9 +107,7 @@ useEffect(()=>{
 useEffect(() => {
   const filteredData = getDataByIds(prodVar, selectedProdId)
   setTableData(filteredData)
-  console.log(tableData)
 }, [selectedProdId, prodVar])
-
   
     const navigate = useNavigate()
     const goBack = () => {
@@ -140,34 +139,66 @@ useEffect(() => {
         }
         return acc
       }, [])
-    
+  
     const getDataByIds = (data, ids) => {
       const flattenedData = flatten(data)
       return ids.flatMap((id) => {
         const foundItem = flattenedData.find(
-          (item) => item.key == id && 'option1' in item
+          (item) => item.key == id && ('option1' in item || item.defaultProduct)
         )
         if (foundItem) {
+          const existingItem = tableData.find(
+            (item) => item.key === foundItem.key
+          )
+          console.log(foundItem)
           return {
             id: foundItem.id,
             key: foundItem.key,
+            url: foundItem.url,
             label: foundItem.label,
             productName: foundItem.productName,
-            productId: foundItem.productId,
+            productId: foundItem.productId ? foundItem.productId : foundItem.id,
             categoryId: foundItem.categoryId,
-            productVariantId: foundItem.id,
+            price: foundItem.price,
+            productVariantId: foundItem.productId ? foundItem.id : null,
             SKUCode: foundItem.SKUCode,
-            quantity:foundItem.quantity,
-            orderedQuantity: '',
+            orderedQuantity: foundItem ? foundItem.quantity : '',
+            isDefault: foundItem.defaultProduct ? true : false,
           }
         }
         return []
       })
     }
-    
   const getFormErrorMessage = (name) => {
     return (
       errors[name] && <small className='p-error'>{errors[name].message}</small>
+    )
+  }
+
+  
+  const productNameBody = (rowData) => {
+    console.log(rowData)
+    return (
+      <div className='flex flex-column'>
+        <div className='mb-1'>
+          <Text type={'heading'}>{rowData.productName}</Text>
+        </div>
+        {!rowData.isDefault ? (
+          <Text type={'sub-heading'}>
+            {rowData.option1 ? rowData.option1 : ''}
+            {rowData.option2 ? ` / ${rowData.option2}` : ''}
+            {rowData.option3 ? ` / ${rowData.option3}` : ''}
+          </Text>
+        ) : (
+          ''
+        )}
+        {rowData.isDefault ? (
+          ''
+        ) : (
+          <Text type={'sub-heading'}> {rowData.label} </Text>
+        )}
+        
+      </div>
     )
   }
   
@@ -178,22 +209,7 @@ useEffect(() => {
     setTableData(_products);
   }
  
-  const qtyEditor = (rowData, colData) => {
-    return (
-      <InputNumber
-        value={rowData.quantity}
-        placeholder="Enter Quantity"
-        id={rowData.key}
-        name={rowData.label}
-        showButtons
-        style={{ width: '8rem' }}
-        min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
-        onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
-      />
-    )
-  }
+
   const onCellEditCompleteCheckIn = (e, rowIndex) => {
     let _products = [...tableData];
     _products[rowIndex].checkInQuantity = e.value; 
@@ -229,13 +245,13 @@ useEffect(() => {
         columnResizeMode='expand'
         className='w-full'
       >
-        <Column header='Products' field='label'></Column>
+        <Column header='Products' field='label' body={productNameBody}></Column>
         <Column header='SKU Code' field='SKUCode'></Column>
        
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='quantity'
+          field='orderedQuantity'
           //body={qtyEditor}
         ></Column>
         <Column
@@ -244,37 +260,28 @@ useEffect(() => {
           field='quantity'
           body={checkInQuantityEditor}
         ></Column>
+         <Column header='Actions' body={actionBody}></Column>
       </DataTable>
     )
   }
   const onSubmit = (data) => {
-    console.log(data,tableData)
-   // let isQtyEmpty = false;
-    // tableData.forEach((prod) => {
-    //   if (!prod.quantity || prod.quantity === "") {
-    //     toast.current.show({ severity: 'error', detail: `${prod.label} quantity is empty` }) 
-    //     isQtyEmpty = true
-    //   }
-    // })
-    // if (!isQtyEmpty) {
-    //   data.productOrdered = tableData;
-    //   setTableData([])
-    //   reset()
-    //   console.log(data)
-    // }
 
-
-    
    let __prodVar = []
    tableData.forEach(ele => {
-     const __data = {
-      productVariantId:ele.productVariantId,
+  
+    var __data={
       quantity:ele.checkInQuantity
      }
-     __prodVar.push(__data)
+
+     if (ele.productVariantId) {
+        __data['productVariantId']=ele.productVariantId;
+     } else {
+      __data['productId']=ele.productId;
+     }
+     __prodVar.push(__data);
+
    });
 
-    
     let finalData = {
       reason:data.reason,  
       comment:data.comment,
@@ -285,9 +292,14 @@ useEffect(() => {
      .unwrap()
      .then((res) => {
           
-          let Message_Success = 'Check Out Successfully '
+          let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          goBack()
+          setTimeout(() => {
+            {
+              goBack()
+            }
+          }, 500)
+         
         })
         .catch((err)=>{
           console.log(err)
@@ -297,6 +309,33 @@ useEffect(() => {
      
    
   }
+
+  const treeSelectRef = useRef(null)
+
+  const handleDelete = (e, rowData) => {
+    e.preventDefault()
+    let newData = selectedProdId.filter((id) => id != rowData.key)
+    setSelectedProdId(newData)
+    const oldSel = treeSelectRef.current.props.value
+    oldSel[rowData.key].checked = false
+    if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
+      delete oldSel[rowData.key]
+      delete oldSel[rowData?.productId]
+  
+  }
+
+  
+  const actionBody = (rowData) => {
+    return (
+      <button
+        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+        onClick={(e) => handleDelete(e, rowData)}
+      >
+        <Delete />
+      </button>
+    )
+  }
+
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check In'  }];
 
   return (
@@ -327,7 +366,7 @@ useEffect(() => {
                 
            </div>
 
-            <div className='w-full gap-2 mt-3 flex flex-row justify-content-between'>
+            <div className='w-full gap-2 mt-3 flex flex-row lg:align-items-start justify-content-between'>
                 <div className='w-8'>
                   <div className='field bg-white p-3 border-solid border-1 border-gray-300 border-round border-50 w-full mb-3'>
                     <label htmlFor='categories'>Products *</label>
@@ -338,6 +377,7 @@ useEffect(() => {
                       render={({ field, fieldState }) => (
                         <>
                          <TreeSelect
+                            ref={treeSelectRef}
                             filter
                             id={field.name}
                             value={field.value}
@@ -382,6 +422,7 @@ useEffect(() => {
                                                                                }} options={reasons} 
                               className=" w-full __reason" placeholder="Select Reason"></TreeSelect>
                           </div>
+                          {getFormErrorMessage(field.name)} 
                         </>
                         )}
                       />

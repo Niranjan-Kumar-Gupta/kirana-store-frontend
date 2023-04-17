@@ -195,28 +195,28 @@ const CustomTable = (
         //console.log(globalFilterValue)
     }
 
-    
     const onGlobalFilterClick = (e) => {
       //const value = e;
-      if (globalFilterValue !== '') {
-        if (isGlobalFilterClick) {
-          setIsGlobalFilterClick(false)
-          setGlobalFilterValue('')
-          //onClearSearch('')
+      if(!isGlobalFilterClick&&globalFilterValue==""){
+        return;
+      }
+      if (isGlobalFilterClick) {
+           setGlobalFilterValue('')
+           onClearSearch('')
           let paginationData = {
             page: paginator.page,
             limit: paginator.limit,
             filterData:filtersData,
             globalFilterValue:''
           }; 
+          console.log(paginationData)
           dispatch(dispatchFunction(paginationData))
           .unwrap()
           .catch(()=>{ 
              
           }) 
+          setIsGlobalFilterClick(false)
         } else {
-          setIsGlobalFilterClick(true)
-          
           // onApplySearch(globalFilterValue) 
           let paginationData = {
             page: paginator.page,
@@ -224,25 +224,37 @@ const CustomTable = (
             filterData:filtersData,
             globalFilterValue
           }; 
-          console.log(paginationData)
+          // console.log(paginationData)
           dispatch(dispatchFunction(paginationData)) 
           .unwrap()
-          .catch(()=>{ 
-             
+          .catch(()=>{         
           }) 
-        }       
-      } 
+          setIsGlobalFilterClick(true)
+        }   
+
      // console.log(globalFilterValue)
     
     }
 
+    useEffect(()=>{
+      let paginationData = {
+        page: paginator.page,
+        limit: paginator.limit,
+        filterData:filtersData,
+        globalFilterValue
+      }; 
+      dispatch(dispatchFunction(paginationData))
+      .unwrap()
+      .catch(()=>{ 
+        //console.log(stockData)
+  
+      }) 
+    },[paginator.page,paginator.limit])
+  
+
     function handelKeyDown(e) {
     if (e.key==='Enter') {
-      if (!isGlobalFilterClick) {
-          onGlobalFilterClick()
-       }else{
         onGlobalFilterClick()
-       }
     }
     }
 
@@ -252,9 +264,9 @@ const CustomTable = (
   const renderHeader = () => {
         return (
             <div className="flex justify-content-end __searchField">
-                <span className="p-input-icon-right" onClick={onGlobalFilterClick}>  
+                <span className="p-input-icon-right" >  
                     <InputText value={globalFilterValue} onChange={onGlobalFilterChange}  placeholder="Keyword Search" onKeyPress={handelKeyDown}/>
-                    <i className={!isGlobalFilterClick?"pi pi-search cursor-pointer":"pi pi-times cursor-pointer"} />
+                    <i className={!isGlobalFilterClick?"pi pi-search cursor-pointer":"pi pi-times cursor-pointer"} onClick={onGlobalFilterClick}/>
                 </span>
             </div>
         );

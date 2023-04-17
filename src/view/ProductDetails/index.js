@@ -21,6 +21,7 @@ import {
   addProduct,
   updateProduct,
   resetSelectedProduct,
+  changeMode,
 } from '../../reducers/productTableSlice'
 import './index.css'
 import { InputNumber } from 'primereact/inputnumber'
@@ -42,12 +43,13 @@ const ProductDetails = () => {
   const {
     selectedProduct,
     loading,
+    mode,
     varient: varients,
     catagories,
     vartable,
   } = useSelector((state) => state.productTable)
 
-  const [mode, setmode] = useState('add')
+  // const [mode, setmode] = useState('add')
   const [edit, setEdit] = useState(false)
 
   useEffect(() => {
@@ -75,10 +77,16 @@ const ProductDetails = () => {
       })
       setVarient([...x])
     }
-    if (vartable && vartable.length > 0) {
-      setVarienttable([...vartable])
+    if(vartable&&vartable.length>0){ 
+      const result = vartable.filter(check);
+
+    function check(x) {
+        return !(x.label === " "||x.label === "");
+      }
+        setVarienttable([...result])
     }
-  }, [varients])
+    },[varients])
+  const [varientErr,setvarientErr]=useState(false)
 
   // console.log(mode,selectedProduct)
   const defaultValues = {
@@ -123,9 +131,11 @@ const ProductDetails = () => {
       handleImg(selectedProduct.url)
     }
     if (selectedProduct === []) {
-      setmode('add')
+      changeMode('add')
+      // setmode('add')
     } else {
-      setmode('update')
+      changeMode('update')
+      // setmode('update')
     }
   }, [selectedProduct])
 
@@ -161,15 +171,42 @@ const ProductDetails = () => {
     return false
   }
   useEffect(() => {
-    return () => {
+    return (() => {
       dispatch(resetSelectedProduct())
-    }
-  }, [])
+    })
+  },[])
+  const verifyVar=()=>{
+    let ck=false;
+    varient.forEach((x=>{
+                if(x.name===""||x.name==""){
+                  toast.current.show({
+                    severity: 'error',
+                    detail: 'option value is empty',
+                  })
+                  ck=true;
+                }
+              (x.values)&&x.values.forEach(item=>{
+                if(item===""||item==""){
+                  toast.current.show({
+                    severity: 'error',
+                    detail: 'option value is empty',
+                  })
+                  ck=true;
+              }
+      })
+    }))  
+    
+    return ck;
+  }
+
+
 
   const onSubmit = async (data) => {
     // console.log("sss",data,varient)
     // console.log(data,varient)
-
+    if(verifyVar()){
+      return;
+    }
     if (selectedImage === null) {
       toast.current.show({
         severity: 'error',
@@ -205,11 +242,8 @@ const ProductDetails = () => {
         .unwrap()
         .then((res) => {
           //show toast here
-
-          toast.current.show({
-            severity: 'success',
-            detail: 'Succesfully Product is updated',
-          })
+          
+          toast.current.show({ severity: 'success', detail: 'Product is updated successfully' })
           setTimeout(() => {
             {
               navigate('/products')
@@ -218,8 +252,8 @@ const ProductDetails = () => {
         })
         .catch((err) => {
           //show toast here
-          // console.log(err.response);
-          toast.current.show({ severity: 'error', detail: err.response.data })
+         // console.log(err.response);
+          toast.current.show({ severity: 'error', detail: err.message });
         })
     } else {
       data = {
@@ -236,10 +270,7 @@ const ProductDetails = () => {
           // setShowProductForm(false)
 
           // dispatch(changeShowNotice(true));
-          toast.current.show({
-            severity: 'success',
-            detail: 'Successfully Added Product',
-          })
+          toast.current.show({ severity: 'success', detail: "Product is Added successfully" });
           setTimeout(() => {
             {
               navigate('/products')
@@ -253,9 +284,9 @@ const ProductDetails = () => {
     console.log(data)
   }
 
-  let templabel =
-    mode === 'add' || id === 'add' ? 'Add Product' : `Product #${id}`
-  const itemslist = [{ label: 'Products', url: '/' }, { label: templabel }]
+ 
+  let templabel= (mode !== 'update'||id==='add')? 'Add Product': `ProductDetails for id: #${id}`
+  const itemslist=[{ label: 'Products', url: '/products'  }, { label: templabel }];
 
   return (
     <div className='w-11 m-auto mb-6'>
@@ -278,13 +309,13 @@ const ProductDetails = () => {
                 varient='filled w-6rem pl-3'
                 type='submit'
                 onClick={
-                  mode === 'create'
+                  mode !== 'update'
                     ? handleSubmit(onSubmit)
                     : edit
                     ? handleSubmit(onSubmit)
                     : () => setEdit(true)
                 }
-                label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
+                label={mode !== 'update' ? 'Save' : edit ? 'Update' : 'Edit'}
               />
             </div>
           </div>
@@ -307,7 +338,7 @@ const ProductDetails = () => {
                   <Controller
                     name='productName'
                     control={control}
-                    rules={{ required: 'Product Name' }}
+                    rules={{ required: 'Product Name is required' }}
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
@@ -320,14 +351,14 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product Name')}
+                  {getFormErrorMessage('productName')}
                 </div>
                 <div className='field'>
                   <label
                     htmlFor='desc'
                     className={classNames({ 'p-error': errors.name })}
                   >
-                    Description*
+                    Description
                   </label>
                   <Controller
                     name='desc'
@@ -346,7 +377,7 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product Description')}
+                  {getFormErrorMessage('desc')}
                 </div>
               </div>
 
@@ -361,8 +392,14 @@ const ProductDetails = () => {
                   <Controller
                     name='SKUCode'
                     control={control}
-                    rules={{ required: 'Product SKUCode' }}
-                    render={({ field, fieldState }) => (
+                    rules={{ required: 'Product SKUCode is required',
+                  pattern:{
+                    value:/^[a-zA-Z0-9]*$/,
+                    message:"Only alphanumeric characters without white spaces are allowed."
+                    }
+                  }}
+                    
+                  render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
                         disabled={!edit && mode === 'update'}
@@ -374,7 +411,7 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product SKUCode')}
+                  {getFormErrorMessage('SKUCode')}
                 </div>
               </div>
 
@@ -447,8 +484,8 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product Name')}
-                </div>
+                {getFormErrorMessage('status')}
+              </div>
               </div>
 
               <div className='bg-white p-3 border-round border-50 mb-3'>
@@ -462,7 +499,7 @@ const ProductDetails = () => {
                   <Controller
                     name='categoryId'
                     control={control}
-                    rules={{ required: 'Product Category Name' }}
+                    rules={{ required: 'Product Category Name is required' }}
                     render={({ field, fieldState }) => (
                       <TreeSelect
                         id={field.name}
@@ -533,14 +570,14 @@ const ProductDetails = () => {
                   control={control}
                   render={({ field, fieldState }) => (
                     <VariantField
-                      className={classNames({
-                        'p-invalid': fieldState.invalid,
-                      })}
                       placeholder='Enter Product Name'
                       field={field}
+                      fieldState={fieldState}
                       pid={id}
                       varient={varient}
                       setVarient={setVarient}
+                      varientErr={varientErr}
+                      setvarientErr={setvarientErr}
                       varienttable={varienttable}
                       setVarienttable={setVarienttable}
                       edit={edit}
@@ -548,8 +585,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-                {getFormErrorMessage('Product Name')}
-              </div>
+              </div> 
             </div>
           </div>
 
@@ -565,13 +601,13 @@ const ProductDetails = () => {
                 varient='filled w-6rem pl-3'
                 type='button'
                 onClick={
-                  mode === 'create'
+                  mode !== 'update'
                     ? handleSubmit(onSubmit)
                     : edit
                     ? handleSubmit(onSubmit)
                     : () => setEdit(true)
                 }
-                label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
+                label={mode !== 'update' ? 'Save' : edit ? 'Update' : 'Edit'}
               />
             </div>
           </div>
