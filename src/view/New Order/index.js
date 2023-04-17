@@ -14,7 +14,7 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { Toast } from 'primereact/toast'
 import style from './style.module.css'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useActionData } from 'react-router-dom'
 import {
   addOrder,
   getOrderDetails,
@@ -34,6 +34,8 @@ const NewOrder = () => {
   const [prodVar, setprodVar] = useState([])
   const [selectedProdId, setSelectedProdId] = useState([])
   const [tableData, setTableData] = useState()
+  const [edit, setEdit] = useState(false)
+
   const dispatch = useDispatch()
 
   const { id } = useParams()
@@ -240,11 +242,6 @@ const NewOrder = () => {
               severity: 'success',
               detail: 'Order Created Successfully',
             })
-            setTimeout(() => {
-              {
-                navigate('/orders')
-              }
-            }, 500)
             setTableData([])
             reset()
           })
@@ -273,8 +270,6 @@ const NewOrder = () => {
         showButtons
         style={{ width: '12rem' }}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
       />
     )
@@ -397,11 +392,11 @@ const NewOrder = () => {
         <Toast ref={toast} />
         {loader ? loader() : <></>}
         <div
-          className={`md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
+          className={`block md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
         >
-          <div className='flex flex-column md:flex-row lg:flex-row lg:w-10 md:w-8 md:justify-content-between align-items-center justify-content-center mb-3'>
-            <div className='lg:w-7 md:w-6 flex align-items-center'>
-              <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
+          <div className='flex lg:w-10 md:w-8 sm:justify-content-between align-items-center pb-3'>
+            <div className='flex align-items-center'>
+              <CustomBreadcrumb itemslist={itemslist} />
               {mode === 'update' && orderDetails.paymentStatus && (
                 <div className='hidden sm:block'>
                   <Badge
@@ -417,7 +412,7 @@ const NewOrder = () => {
                 </div>
               )}
             </div>
-            <div className='sm:w-12 md:w-5 lg:w-4'>
+            <div className='w-12 sm:w-5 lg:w-4 hidden sm:block'>
               <div className='flex justify-content-end gap-2'>
                 <Button
                   className={`skalebot-button ${style.colored} w-6rem`}
@@ -428,8 +423,14 @@ const NewOrder = () => {
                 <CustomButton
                   varient='filled w-6rem pl-3'
                   type='submit'
-                  onClick={handleSubmit(onSubmit)}
-                  label={mode === 'create' ? 'Save' : 'Update'}
+                  onClick={
+                    mode === 'create'
+                      ? handleSubmit(onSubmit)
+                      : edit
+                      ? handleSubmit(onSubmit)
+                      : () => setEdit(true)
+                  }
+                  label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
                 />
               </div>
             </div>
@@ -480,33 +481,30 @@ const NewOrder = () => {
                         control={control}
                         rules={{ required: 'Please select products.' }}
                         render={({ field, fieldState }) => (
-                          <>
-                            <TreeSelect
-                              ref={treeSelectRef}
-                              filter
-                              id={field.name}
-                              value={field.value}
-                              onChange={(e) => {
-                                let prodId = Object.keys(e.value).filter(
-                                  (key) =>
-                                    e.value[key].checked &&
-                                    !e.value[key].partiallyChecked
-                                )
-                                setSelectedProdId(prodId)
-                                field.onChange(e.value)
-                              }}
-                              selectionMode='checkbox'
-                              display='chip'
-                              inputRef={field.ref}
-                              options={prodVar}
-                              metaKeySelection={false}
-                              placeholder='Select Products'
-                              className={classNames('w-full', {
-                                'p-invalid': fieldState.error,
-                              })}
-                            />
-                            {getFormErrorMessage(field.name)}
-                          </>
+                          <TreeSelect
+                            ref={treeSelectRef}
+                            filter
+                            id={field.name}
+                            value={field.value}
+                            onChange={(e) => {
+                              let prodId = Object.keys(e.value).filter(
+                                (key) =>
+                                  e.value[key].checked &&
+                                  !e.value[key].partiallyChecked
+                              )
+                              setSelectedProdId(prodId)
+                              field.onChange(e.value)
+                            }}
+                            selectionMode='checkbox'
+                            display='chip'
+                            inputRef={field.ref}
+                            options={prodVar}
+                            metaKeySelection={false}
+                            placeholder='Select Products'
+                            className={classNames('w-full', {
+                              'p-invalid': fieldState.error,
+                            })}
+                          />
                         )}
                       />
                       {getFormErrorMessage('products')}
@@ -530,6 +528,7 @@ const NewOrder = () => {
                         render={({ field, fieldState }) => (
                           <InputNumber
                             id={field.name}
+                            disabled={!edit && mode === 'update'}
                             value={field.value}
                             onChange={(e) => field.onChange(e.value)}
                             useGrouping={false}
@@ -557,6 +556,7 @@ const NewOrder = () => {
                       render={({ field, fieldState }) => (
                         <InputNumber
                           id={field.name}
+                          disabled={!edit && mode === 'update'}
                           value={field.value}
                           onChange={(e) => field.onChange(e.value)}
                           useGrouping={false}
@@ -588,29 +588,6 @@ const NewOrder = () => {
 
               <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
-                  <label htmlFor='paymentStatus'>Payment Status *</label>
-                  <Controller
-                    name='paymentStatus'
-                    control={control}
-                    rules={{ required: 'Status is required.' }}
-                    render={({ field, fieldState }) => (
-                      <Dropdown
-                        id={field.name}
-                        options={paymentStatus}
-                        optionLabel='key'
-                        optionValue='value'
-                        placeholder='Choose payment status'
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.value)}
-                        className={classNames({
-                          'p-invalid': fieldState.invalid,
-                        })}
-                      />
-                    )}
-                  />
-                  {getFormErrorMessage('paymentStatus')}
-                </div>
-                <div className='field'>
                   <label htmlFor='status'>Order Status *</label>
                   <Controller
                     name='status'
@@ -619,6 +596,7 @@ const NewOrder = () => {
                     render={({ field, fieldState }) => (
                       <Dropdown
                         id={field.name}
+                        disabled={!edit && mode === 'update'}
                         options={status}
                         optionLabel='key'
                         optionValue='value'
@@ -634,6 +612,30 @@ const NewOrder = () => {
                   {getFormErrorMessage('status')}
                 </div>
                 <div className='field'>
+                  <label htmlFor='paymentStatus'>Payment Status *</label>
+                  <Controller
+                    name='paymentStatus'
+                    control={control}
+                    rules={{ required: 'Payment Status is required.' }}
+                    render={({ field, fieldState }) => (
+                      <Dropdown
+                        id={field.name}
+                        disabled={!edit && mode === 'update'}
+                        options={paymentStatus}
+                        optionLabel='key'
+                        optionValue='value'
+                        placeholder='Choose payment status'
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.value)}
+                        className={classNames({
+                          'p-invalid': fieldState.invalid,
+                        })}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('paymentStatus')}
+                </div>
+                <div className='field'>
                   <label htmlFor='completedAt'>Reminder Date</label>
                   <Controller
                     name='completedAt'
@@ -641,6 +643,7 @@ const NewOrder = () => {
                     render={({ field, fieldState }) => (
                       <Calendar
                         inputId={field.name}
+                        disabled={!edit && mode === 'update'}
                         value={field.value}
                         onChange={field.onChange}
                         showIcon
@@ -657,6 +660,28 @@ const NewOrder = () => {
               </div>
             </div>
           </form>
+        </div>
+        <div className='sm:w-12 md:w-5 lg:w-4 sm:hidden'>
+          <div className='flex justify-content-end gap-2'>
+            <Button
+              className={`skalebot-button ${style.colored} w-6rem`}
+              onClick={() => navigate('/orders')}
+            >
+              Cancel
+            </Button>
+            <CustomButton
+              varient='filled w-6rem pl-3'
+              type='submit'
+              onClick={
+                mode === 'create'
+                  ? handleSubmit(onSubmit)
+                  : edit
+                  ? handleSubmit(onSubmit)
+                  : () => setEdit(true)
+              }
+              label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
+            />
+          </div>
         </div>
       </div>
     </>

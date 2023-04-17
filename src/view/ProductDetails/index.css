@@ -1,16 +1,26 @@
 .panel-border {
-    border-style: none none dotted none !important;
-    border-width: 0.5px;
+  border-style: none none dotted none !important;
+  border-width: 0.5px;
 }
 
-
 .customButton-pd {
-    border: none;
-    padding: 0;
-    background: none;
-    cursor: pointer;
-  }
-  
-  .font-pd {
-    font-size: 1.5rem !important;
-  }
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.font-pd {
+  font-size: 1.5rem !important;
+}
+
+.colored {
+  background-color: #868686 !important;
+}
+
+.stickySubNav {
+  position: sticky;
+  top: 70px;
+  background-color: #F8F8FC;
+  z-index: 100;
+}
