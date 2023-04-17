@@ -16,15 +16,14 @@ const CreateCustomer = () => {
     
     
   return (
-    <div className='w-11 pt-3 m-auto'>
+    <div className='w-11 m-auto mb-6'>
           <Toast ref={toast} />
-          <div className='w-8 mt-0 m-auto'>
                 <CustomerForm
                     onHide={()=>{}}
                     showCustomerForm={null}
                     toast={toast}
                 />
-          </div>
+          
     </div>
   )
 }

@@ -274,10 +274,8 @@ const CustomTable = (
     const header = globalSearch ? renderHeader() :'';
 
     const actionBodyTemplate = (rowData) => {
-  
-        // console.log(rowData)
          return (
-           <div className="flex justify-content-center align-items-center gap-3">
+           <div className="__action flex justify-content-center align-items-center">
              <CustomButton
                varient="icon-button"
                icon={<Edit />}
