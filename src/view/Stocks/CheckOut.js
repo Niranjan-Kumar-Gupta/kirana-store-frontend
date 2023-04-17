@@ -384,18 +384,46 @@ const productNameBody = (rowData) => {
   }
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
-    <div className='w-12 pt-3 m-auto'>
+    <div className='w-11 m-auto mb-6'>
        <Toast ref={toast} />
        {loading ? loader() : <></>}
+
+
+       <div
+          className={`md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
+        >
+          <div className='flex flex-column md:flex-row lg:flex-row lg:w-10 md:w-8 md:justify-content-between align-items-center justify-content-center mb-3'>
+            <div className='lg:w-7 md:w-6 flex align-items-center'>
+              <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
+            </div>
+            <div className='sm:w-12 md:w-5 lg:w-4'>
+              <div className='flex justify-content-end gap-2'>
+                <Button
+                  className={`skalebot-button ${style.colored} w-6rem`}
+                  onClick={() => navigate('/stocks')}
+                >
+                  Cancel
+                </Button>
+                <CustomButton
+                  varient='filled w-7rem pl-3'
+                  type='submit'
+                  onClick={handleSubmit(onSubmit)}
+                  label={'Check Out'}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
       
 
-       <div className={`card w-9 m-auto mt-4`}>
+       <div className={`card`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='p-fluid'
             encType='multipart/form-data'
           >
-              <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
+              {/* <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
                   <div>
                     <div className={'w-full m-auto flex justify-content-start align-items-center'}>
                       <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>        
@@ -410,10 +438,11 @@ const productNameBody = (rowData) => {
                         </div>
                   </div>
                 
-              </div>
-              <div className='w-full mt-3 gap-2 flex flex-row lg:align-items-start justify-content-between'>
-                <div className='w-8 '>
-                  <div className='field w-full mb-3 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
+              </div> */}
+              <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
+                <div className='lg:w-7 md:w-8 sm:w-full'>
+                <div className='bg-white p-3 border-round border-50 mb-3'>
+                  <div className='field w-12 lg:w-5'>
                     <label htmlFor='categories'>Products *</label>
                     <Controller
                       name='products'
@@ -450,9 +479,10 @@ const productNameBody = (rowData) => {
 
                   </div>
                   {tableData && tableData.length !== 0 ? selectedProdTable() : ''}
+                 </div>
                 </div>
-                <div className='w-4 bg-white p-3 border-solid border-1 border-gray-300 border-round border-50'>
-                  <div>
+                <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
+                   <div>
                      <div className='field w-full mb-3'>
                       <label htmlFor='Reason'>Reason *</label>
                       <Controller
