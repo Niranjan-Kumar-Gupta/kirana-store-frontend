@@ -39,6 +39,7 @@ const NewOrder = () => {
   const dispatch = useDispatch()
 
   const { id } = useParams()
+  console.log(id)
   const { mode, orderDet, orderDetails, loading } = useSelector(
     (state) => state.orderTable
   )

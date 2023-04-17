@@ -55,6 +55,12 @@ const ProductDetails = () => {
   useEffect(() => {
     dispatch(getProductbyid({ id })).unwrap().then().catch()
     dispatch(getCategory()).unwrap().then().catch()
+    console.log(id)
+    if (id) {
+      dispatch(changeMode('update'))
+    } else {
+      dispatch(changeMode('add'))
+    }
   }, [])
   const handleImg = (img) => {
     setSeletedImage(img)
@@ -129,13 +135,6 @@ const ProductDetails = () => {
       setValue('SKUCode', selectedProduct.SKUCode)
       setValue('desc', selectedProduct.desc)
       handleImg(selectedProduct.url)
-    }
-    if (selectedProduct === []) {
-      dispatch(changeMode('add'))
-      // setmode('add')
-    } else {
-      dispatch(changeMode('update'))
-      // setmode('update')
     }
   }, [selectedProduct])
 
@@ -442,6 +441,7 @@ const ProductDetails = () => {
                     <CustomImageInput
                       setSelectedImage={handleImg}
                       label='Choose File'
+                      disabled={!edit && mode === 'update'}
                     />
                   </div>
                   {selectedImage && selectedImage.size > 8000000 ? (

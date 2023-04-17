@@ -98,7 +98,7 @@ console.log(data)
 
   const onAddNewClick = () => {
     dispatch(changeMode("add"));
-    navigate(`/products/productDetails/add`)
+    navigate(`./add`)
 
     // setShowProductForm(true)
   }
