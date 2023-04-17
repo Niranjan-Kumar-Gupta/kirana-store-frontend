@@ -9,7 +9,7 @@ import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import "./index.css"
-export default function VariantTable({varienttable, setVarienttable}) {
+export default function VariantTable({varienttable, setVarienttable, mode, edit}) {
     const onRowEditComplete = (e) => {
         let _varienttable = [...varienttable];
         let { newData, index } = e;
@@ -36,6 +36,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
             )
         }
         return <InputText type="text" value={rowData.SKUCode} 
+            disabled={!edit && mode === 'update'}
             onChange={(e) => onCellEdit({value:e.target.value}, colData.rowIndex,colData.field)} 
          />;
     };
@@ -48,6 +49,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
             ) 
         }
         return <InputNumber value={rowData.price} 
+        disabled={!edit && mode === 'update'}
         onValueChange={(e) => onCellEdit(e, colData.rowIndex,colData.field)}
         mode="currency" currency="INR" locale="en-US" />;
     };
@@ -61,6 +63,7 @@ export default function VariantTable({varienttable, setVarienttable}) {
         return  <Dropdown value={rowData.status} onChange={(e) => onCellEdit(e, colData.rowIndex,colData.field)} 
         options={statusOptions} 
         defaultValue={"Available"} 
+        disabled={!edit && mode === 'update'}
         optionLabel="key" 
         optionValue="value"/>    };
 

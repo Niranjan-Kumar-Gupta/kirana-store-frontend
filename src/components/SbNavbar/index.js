@@ -33,7 +33,10 @@ export const SbNavbar = () => {
   };
 
   useEffect(()=>{
-    const currentPath = location.pathname;
+    let currentPath = location.pathname;
+    if (currentPath == "/") {
+      currentPath = "/products";
+    }
     dispatch(changeSelectedTab(currentPath))
   })
 
