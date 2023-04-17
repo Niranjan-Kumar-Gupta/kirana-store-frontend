@@ -87,6 +87,8 @@ const StockHistoryTable = () => {
   },[stockHistoryData])
 
   const dispatch = useDispatch();
+
+   const stockTypeItems = ['Check In','Check Out']
      
      const columns = [
       {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
@@ -99,7 +101,7 @@ const StockHistoryTable = () => {
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
       
-      {field: 'stockType', header: 'stockType',isFilter:false,filterPlaceholder:"Search by catogery"},     
+      {field: 'stockType', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:stockTypeItems,filterPlaceholder:"Search by Stock Type"},     
       {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
     
       {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     
