@@ -237,7 +237,6 @@ function VariantField({
                   <div className='my-2'>Value</div>
                   <div
                     className='flex flex-column w-12 xl:w-8 lg:w-8'
-                    style={{}}
                   >
                     {x.values &&
                       x.values.map((item, key) => {
@@ -269,6 +268,7 @@ function VariantField({
                       })}
                     <div className='w-12 flex justify-content-end'>
                       <Button
+                        type='button'
                         className='noBgButton font-black w-8rem my-2'
                         disabled={!edit && mode === 'update'} 
                         onClick={() => {
