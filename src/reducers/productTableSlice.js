@@ -27,6 +27,7 @@ const initialState = {
   varient:[],
   selectedProductsList: [],
   vartable:[],
+  toastAction: null
 };
 
 export const getProducts = createAsyncThunk(
@@ -173,6 +174,9 @@ const productTableSlice = createSlice({
     },
     resetSelectedProductsList(state){
       state.selectedProductsList = []
+    },
+    resetToastAction(state) {
+      state.toastAction = null;
     }
   },
 
@@ -237,7 +241,7 @@ const productTableSlice = createSlice({
           ...state.productData.slice(0, state.limit - 1),
         ];
       }
-
+      state.toastAction = 'add'
       state.totalProductCount += 1;
       state.loading = false;
     });
@@ -255,6 +259,7 @@ const productTableSlice = createSlice({
       const d = new Date();
       let data={...action.payload,url:`${action.payload.url}?v=${d.getTime()}`};  
       state.productData = updateProductTable(state.productData, data);
+      state.toastAction = 'update'
       state.loading = false;
     });
     builder.addCase(updateProduct.pending, (state) => {
@@ -268,6 +273,7 @@ const productTableSlice = createSlice({
     builder.addCase(deleteProduct.fulfilled, (state, action) => {
       state.productData = removeDeleteData(state.productData, action.payload);
       state.totalProductCount -= 1;
+      state.toastAction = 'delete'
       state.loading = false
       state.mode =  null
     });
@@ -290,7 +296,8 @@ export const {
   changePage,
   setproduct,
   updateSelectedProductsList,
-  resetSelectedProductsList
+  resetSelectedProductsList,
+  resetToastAction,
 } = productTableSlice.actions;
 
 export default productTableSlice.reducer;

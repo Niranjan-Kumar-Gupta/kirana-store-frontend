@@ -26,3 +26,10 @@
   border-radius: 2px;
   min-width: 79px;
 }
+
+.font-black {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000 !important;
+}
+
