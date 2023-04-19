@@ -15,6 +15,7 @@ import {
   changePage,
   updateSelectedProductsList,
   resetSelectedProductsList,
+  resetToastAction,
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
@@ -31,6 +32,7 @@ const ProductList = () => {
     page,
     limit,
     totalProductCount,
+    toastAction,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
  
@@ -54,6 +56,17 @@ const ProductList = () => {
     //   console.log(err)
     // })
   },[page,limit])
+
+  useEffect(() => {
+    if (toastAction === 'add') {
+      toast.current.show({ severity: 'success', detail: "Product Succesfully Created" });
+    }else if (toastAction === 'update') {
+      toast.current.show({ severity: 'success', detail: "Product Succesfully Updated" });
+    }else if (toastAction === 'delete') {
+      toast.current.show({ severity: 'success', detail: "Product Succesfully Deleted" });
+    }
+    dispatch(resetToastAction())
+  },[])
 
 
 
@@ -98,7 +111,7 @@ console.log(data)
 
   const onAddNewClick = () => {
     dispatch(changeMode("add"));
-    navigate(`/products/productDetails/add`)
+    navigate(`/products/add`)
 
     // setShowProductForm(true)
   }

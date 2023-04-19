@@ -13,6 +13,7 @@ import {
 import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
 import { deleteOrder, resetSelectedOrder } from "../../reducers/orderTableSlice";
+import { useNavigate } from "react-router-dom";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
@@ -24,14 +25,14 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
   } = useSelector((state) => state.stocksHistoryTable);
 
  const dispatch = useDispatch();
+ const navigate = useNavigate()
 
   const deleteProductItem = () => {
     dispatch(deleteProduct(selectedProduct.id))
       .unwrap()
       .then(res => {
         dispatch(changeShowNotice(true))
-        //show toast here
-        toast.current.show({ severity: 'success', detail: "Succesfully Product Deleted" });
+        navigate('/products')
       })
       .catch(err => {
         //show toast here
@@ -70,9 +71,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     dispatch(deleteOrder(selectedOrder.id))
       .unwrap()
       .then(res => {
-        //show toast here
-        let Message_Success = Messag.Delete_Order_ToastSuccessMessage;
-        toast.current.show({ severity: 'success', detail: Message_Success });
+        navigate('/orders')
       })
       .catch(err => {
         //show toast here
@@ -165,7 +164,7 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       className={'dialog-custom'}
     >
       <p>
-        Are you Sure, you want delete?
+        Are you sure, you want delete?
       </p>
     </Dialog>
   );
