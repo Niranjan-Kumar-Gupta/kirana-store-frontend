@@ -171,6 +171,9 @@ const NewOrder = () => {
       const { children, ...rest } = curr
       acc.push(rest)
       if (children) {
+        if (children.length === 0) {
+          acc[acc.length - 1].isDefault = true;
+        }
         acc.push(...flatten(children))
       }
       return acc
@@ -180,7 +183,7 @@ const NewOrder = () => {
     const flattenedData = flatten(data)
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
-        (item) => item.key == id && ('option1' in item || item.defaultProduct)
+        (item) => item.key == id && ('option1' in item || item.isDefault)
       )
       if (foundItem) {
         const existingItem = tableData.find(
@@ -195,10 +198,10 @@ const NewOrder = () => {
           productId: foundItem.productId ? foundItem.productId : foundItem.id,
           categoryId: foundItem.categoryId,
           price: foundItem.price,
-          productVariantId: foundItem.productId ? foundItem.id : null,
+          productVariantId: foundItem.productId ? foundItem.id : foundItem.productVariantId,
           SKUCode: foundItem.SKUCode,
           orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
-          isDefault: foundItem.defaultProduct ? true : false,
+          isDefault: foundItem.isDefault ? true : false,
         }
       }
       return []
@@ -387,8 +390,7 @@ const NewOrder = () => {
     )
   }
 
-  let templabel =
-    mode !== 'update' ? 'Create New Order' : `Order #${selectedOrder.id}`
+  let templabel = mode !== 'update' ? 'Create New Order' : `Order #${selectedOrder.id}`
   const itemslist = [{ label: 'Orders', url: '/orders' }, { label: templabel }]
 
   return (
