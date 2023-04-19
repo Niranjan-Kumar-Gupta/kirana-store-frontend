@@ -16,6 +16,7 @@ import {
   updateSelectedProductsList,
   resetSelectedProductsList,
   getBrand,
+  resetToastAction,
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
@@ -33,6 +34,7 @@ const ProductList = () => {
     limit,
     totalProductCount,
     brandNames,
+    toastAction,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
  
@@ -60,13 +62,7 @@ const ProductList = () => {
 
   },[page,limit])
 
-  useEffect(()=>{
-    dispatch(getBrand()).unwrap().then((resp) => {
-      console.log("Ss")
-    }).catch((err) => {
-      console.log(err)
-    })
-  },[])
+
 
 
   const deleteModule = () => {
@@ -109,7 +105,7 @@ console.log(data)
 
   const onAddNewClick = () => {
     dispatch(changeMode("add"));
-    navigate(`/products/productDetails/add`)
+    navigate(`/products/add`)
 
     // setShowProductForm(true)
   }

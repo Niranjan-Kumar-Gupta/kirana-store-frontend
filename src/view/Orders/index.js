@@ -16,6 +16,7 @@ import {
   resetMode,
   changePage,
   resetSelectedOrder,
+  resetToastAction,
 } from "../../reducers/orderTableSlice";
 import "./style.css"
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
@@ -33,6 +34,7 @@ const Orders = () => {
     selectedOrder,
     totalOrderCount,
     selectedOrderId,
+    toastAction
   } = useSelector((state) => state.orderTable);
 
   const dispatch = useDispatch();
@@ -59,8 +61,9 @@ const Orders = () => {
  let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
  const statusBodyTemplate = (data) => {
  // console.log(data)
-  return <Tag value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
+  return <Tag className='__tag' value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
 };
+
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
     {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input', isDate: true},
@@ -93,6 +96,26 @@ const handleEdit = (rowData) => {
   console.log(rowData)
  
 };
+
+useEffect(() => {
+  if (toastAction === 'add') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Created',
+    })
+  } else if (toastAction === 'update') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Updated',
+    })
+  } else if (toastAction === 'delete') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Deleted',
+    })
+  }
+  dispatch(resetToastAction())
+},[])
 
 const deleteModule = () => {
   return (

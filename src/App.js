@@ -74,6 +74,10 @@ function App() {
 
           <Route path='products' element={<ProductList />} />
           <Route
+            path='products/add'
+            element={<ProductDetails />}
+          />
+          <Route
             path='products/productDetails/:id'
             element={<ProductDetails />}
           />

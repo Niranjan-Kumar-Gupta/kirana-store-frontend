@@ -28,6 +28,7 @@ import { InputNumber } from 'primereact/inputnumber'
 import Loader from '../../components/Loader'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { Button } from 'primereact/button'
+import { DeleteAlert } from '../../components/Alert/DeleteAlert'
 
 const ProductDetails = () => {
   const { id } = useParams()
@@ -51,10 +52,16 @@ const ProductDetails = () => {
 
   // const [mode, setmode] = useState('add')
   const [edit, setEdit] = useState(false)
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
   useEffect(() => {
     dispatch(getProductbyid({ id })).unwrap().then().catch()
     dispatch(getCategory()).unwrap().then().catch()
+    if (id) {
+      dispatch(changeMode('update'))
+    } else {
+      dispatch(changeMode('add'))
+    }
   }, [])
   const handleImg = (img) => {
     setSeletedImage(img)
@@ -77,16 +84,16 @@ const ProductDetails = () => {
       })
       setVarient([...x])
     }
-    if(vartable&&vartable.length>0){ 
-      const result = vartable.filter(check);
+    if (vartable && vartable.length > 0) {
+      const result = vartable.filter(check)
 
-    function check(x) {
-        return !(x.label === " "||x.label === "");
+      function check(x) {
+        return !(x.label === ' ' || x.label === '')
       }
-        setVarienttable([...result])
+      setVarienttable([...result])
     }
-    },[varients])
-  const [varientErr,setvarientErr]=useState(false)
+  }, [varients])
+  const [varientErr, setvarientErr] = useState(false)
 
   // console.log(mode,selectedProduct)
   const defaultValues = {
@@ -130,13 +137,6 @@ const ProductDetails = () => {
       setValue('desc', selectedProduct.desc)
       handleImg(selectedProduct.url)
     }
-    if (selectedProduct === []) {
-      dispatch(changeMode('add'))
-      // setmode('add')
-    } else {
-      dispatch(changeMode('update'))
-      // setmode('update')
-    }
   }, [selectedProduct])
 
   const imageBodyTemplate = () => {
@@ -171,41 +171,51 @@ const ProductDetails = () => {
     return false
   }
   useEffect(() => {
-    return (() => {
+    return () => {
       dispatch(resetSelectedProduct())
+    }
+  }, [])
+  const verifyVar = () => {
+    let ck = false
+    varient.forEach((x) => {
+      if (x.name === '' || x.name == '') {
+        toast.current.show({
+          severity: 'error',
+          detail: 'option value is empty',
+        })
+        ck = true
+      }
+      x.values &&
+        x.values.forEach((item) => {
+          if (item === '' || item == '') {
+            toast.current.show({
+              severity: 'error',
+              detail: 'option value is empty',
+            })
+            ck = true
+          }
+        })
     })
-  },[])
-  const verifyVar=()=>{
-    let ck=false;
-    varient.forEach((x=>{
-                if(x.name===""||x.name==""){
-                  toast.current.show({
-                    severity: 'error',
-                    detail: 'option value is empty',
-                  })
-                  ck=true;
-                }
-              (x.values)&&x.values.forEach(item=>{
-                if(item===""||item==""){
-                  toast.current.show({
-                    severity: 'error',
-                    detail: 'option value is empty',
-                  })
-                  ck=true;
-              }
-      })
-    }))  
-    
-    return ck;
+
+    return ck
   }
 
-
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item='product'
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    )
+  }
 
   const onSubmit = async (data) => {
     // console.log("sss",data,varient)
     // console.log(data,varient)
-    if(verifyVar()){
-      return;
+    if (verifyVar()) {
+      return
     }
     if (selectedImage === null) {
       toast.current.show({
@@ -241,19 +251,10 @@ const ProductDetails = () => {
       dispatch(updateProduct({ productId, data, selectedImage }))
         .unwrap()
         .then((res) => {
-          //show toast here
-          
-          toast.current.show({ severity: 'success', detail: 'Product is updated successfully' })
-          setTimeout(() => {
-            {
-              navigate('/products')
-            }
-          }, 1000)
+          navigate('/products')
         })
         .catch((err) => {
-          //show toast here
-         // console.log(err.response);
-          toast.current.show({ severity: 'error', detail: err.message });
+          toast.current.show({ severity: 'error', detail: err.message })
         })
     } else {
       data = {
@@ -261,37 +262,31 @@ const ProductDetails = () => {
         options: [...varient],
         productvariants: [...varienttable],
       }
-      // console.log("sss",data)
-
       dispatch(addProduct({ data, selectedImage }))
         .unwrap()
         .then(() => {
-          // setDisplayAddProductModule(false);
-          // setShowProductForm(false)
-
-          // dispatch(changeShowNotice(true));
-          toast.current.show({ severity: 'success', detail: "Product is Added successfully" });
-          setTimeout(() => {
-            {
-              navigate('/products')
-            }
-          }, 1000)
+          navigate('/products')
         })
         .catch((err) => {
           toast.current.show({ severity: 'error', detail: err.message })
         })
     }
-    console.log(data)
   }
 
- 
-  let templabel= (mode !== 'update'||id==='add')? 'Add Product': `ProductDetails for id: #${id}`
-  const itemslist=[{ label: 'Products', url: '/products'  }, { label: templabel }];
+  let templabel =
+    mode !== 'update' || id === 'add'
+      ? 'Add Product'
+      : `ProductDetails for id: #${id}`
+  const itemslist = [
+    { label: 'Products', url: '/products' },
+    { label: templabel },
+  ]
 
   return (
     <div className='w-11 m-auto mb-6'>
       <Toast ref={toast} />
       {loader()}
+      {displayAlertDelete && deleteModule()}
       <div className='block md:flex md:justify-content-center pt-3 stickySubNav'>
         <div className='flex lg:w-10 md:w-8 sm:justify-content-between align-items-center pb-3'>
           <CustomBreadcrumb itemslist={itemslist} />
@@ -299,11 +294,17 @@ const ProductDetails = () => {
             <div className='flex justify-content-end gap-2'>
               <Button
                 className={`skalebot-button colored w-6rem`}
-                onClick={() => {
-                  navigate('/products')
-                }}
+                onClick={
+                  mode !== 'update'
+                    ? () => {
+                        navigate('/products')
+                      }
+                    : () => {
+                        setDisplayAlertDelete(true)
+                      }
+                }
               >
-                Cancel
+                {mode !== 'update' ? 'Cancel' : 'Delete'}
               </Button>
               <CustomButton
                 varient='filled w-6rem pl-3'
@@ -392,17 +393,18 @@ const ProductDetails = () => {
                   <Controller
                     name='SKUCode'
                     control={control}
-                    rules={{ required: 'Product SKUCode is required',
-                  pattern:{
-                    value:/^[a-zA-Z0-9]*$/,
-                    message:"Only alphanumeric characters without white spaces are allowed."
-                    }
-                  }}
-                    
-                  render={({ field, fieldState }) => (
+                    rules={{
+                      required: 'Product SKUCode is required',
+                      pattern: {
+                        value: /^[a-zA-Z0-9]*$/,
+                        message:
+                          'Only alphanumeric characters without white spaces are allowed.',
+                      },
+                    }}
+                    render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
-                        disabled={!edit && mode === 'update'}
+                        disabled={mode === 'update'}
                         className={classNames({
                           'p-invalid': fieldState.invalid,
                         })}
@@ -442,6 +444,7 @@ const ProductDetails = () => {
                     <CustomImageInput
                       setSelectedImage={handleImg}
                       label='Choose File'
+                      disabled={!edit && mode === 'update'}
                     />
                   </div>
                   {selectedImage && selectedImage.size > 8000000 ? (
@@ -484,8 +487,8 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                {getFormErrorMessage('status')}
-              </div>
+                  {getFormErrorMessage('status')}
+                </div>
               </div>
 
               <div className='bg-white p-3 border-round border-50 mb-3'>
@@ -585,7 +588,7 @@ const ProductDetails = () => {
           </div>
 
           <div className='flex justify-content-center'>
-            <div className='w-12 md:w-8 lg:w-10'>
+            <div className='w-12 md:w-8 lg:w-11'>
               <div className='field'>
                 <label
                   htmlFor='varient'
@@ -613,7 +616,7 @@ const ProductDetails = () => {
                     />
                   )}
                 />
-              </div> 
+              </div>
             </div>
           </div>
 
@@ -621,9 +624,18 @@ const ProductDetails = () => {
             <div className='flex justify-content-end gap-3'>
               <Button
                 className={`skalebot-button colored w-6rem`}
-                onClick={() => navigate('/products')}
+                type='button'
+                onClick={
+                  mode !== 'update'
+                    ? () => {
+                        navigate('/products')
+                      }
+                    : () => {
+                        setDisplayAlertDelete(true)
+                      }
+                }
               >
-                Cancel
+                {mode !== 'update' ? 'Cancel' : 'Delete'}
               </Button>
               <CustomButton
                 varient='filled w-6rem pl-3'

@@ -9,6 +9,8 @@ import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import "./index.css"
+import './../../index.css'
+
 export default function VariantTable({varienttable, setVarienttable, mode, edit}) {
     const onRowEditComplete = (e) => {
         let _varienttable = [...varienttable];
@@ -80,7 +82,9 @@ export default function VariantTable({varienttable, setVarienttable, mode, edit}
 
     const actionBodyTemplate = (rowData) => {
         if(rowData.isActive){return (
-                <Delete onClick={() => deleteSelectedProducts(rowData)}/>
+            <Button type='button' onClick={() => deleteSelectedProducts(rowData)} className='noBgButton w-3rem' disabled={!edit && mode === 'update'}>
+                <Delete/>
+            </Button>
         );}
         else { 
             return (
