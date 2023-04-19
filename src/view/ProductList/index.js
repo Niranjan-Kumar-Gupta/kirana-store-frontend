@@ -58,8 +58,6 @@ const ProductList = () => {
     // }).catch((err) => {
     //   console.log(err)
     // })
-
-
   },[page,limit])
 
   useEffect(()=>{
