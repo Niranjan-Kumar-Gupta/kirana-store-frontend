@@ -62,7 +62,13 @@ const ProductList = () => {
 
   },[page,limit])
 
-
+  useEffect(()=>{
+    dispatch(getBrand()).unwrap().then((resp) => {
+      // console.log("Ss")
+    }).catch((err) => {
+      console.log(err)
+    })
+  },[])
 
 
   const deleteModule = () => {
