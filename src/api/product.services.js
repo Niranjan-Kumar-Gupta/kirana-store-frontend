@@ -58,6 +58,16 @@ const API_GET_CAT=async ()=>{
       throw err;
     }
 }
+const API_GET_BRAND=async ()=>{
+  try{
+    let resp = await axiosInstance.get(
+        `product/brands/`
+        );
+      return resp.data;
+    } catch (err) {
+      throw err;
+    }
+}
 
 const API_GET_VARIENT_ID=async (id)=>{
   try{
@@ -139,4 +149,5 @@ export {
   API_GET_VARIENT_ID,
   API_Add_VARIENT,
   API_GET_PRRODUCTS_WITH_VARIANTS,
+  API_GET_BRAND,
 };

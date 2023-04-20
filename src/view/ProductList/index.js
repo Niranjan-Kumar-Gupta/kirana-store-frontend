@@ -15,6 +15,7 @@ import {
   changePage,
   updateSelectedProductsList,
   resetSelectedProductsList,
+  getBrand,
   resetToastAction,
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +33,7 @@ const ProductList = () => {
     page,
     limit,
     totalProductCount,
+    brandNames,
     toastAction,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
@@ -41,11 +43,12 @@ const ProductList = () => {
  const columns = [
     {field: 'SKUCode',header: 'SKU Id'},
     {field: 'productName', header: 'Product Name'},
+    {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},
     {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'status', header: 'Stock'},
     {field: 'price', header: 'Price (₹)'},
     {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-    {field: 'desc', header: 'Description'},  
+    {field: 'desc', header: 'Description'}, 
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];
 
@@ -57,18 +60,13 @@ const ProductList = () => {
     // })
   },[page,limit])
 
-  useEffect(() => {
-    if (toastAction === 'add') {
-      toast.current.show({ severity: 'success', detail: "Product Succesfully Created" });
-    }else if (toastAction === 'update') {
-      toast.current.show({ severity: 'success', detail: "Product Succesfully Updated" });
-    }else if (toastAction === 'delete') {
-      toast.current.show({ severity: 'success', detail: "Product Succesfully Deleted" });
-    }
-    dispatch(resetToastAction())
+  useEffect(()=>{
+    dispatch(getBrand()).unwrap().then((resp) => {
+      // console.log("Ss")
+    }).catch((err) => {
+      console.log(err)
+    })
   },[])
-
-
 
 
   const deleteModule = () => {
