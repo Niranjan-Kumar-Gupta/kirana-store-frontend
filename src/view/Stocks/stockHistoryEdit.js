@@ -344,9 +344,7 @@ const StockHistoryEdit = () => {
                         onClick={ edit? handleSubmit(onSubmit):() => setEdit(true)}
                         label={'Edit'}
                         />
-                    </div>
-                
-                
+                    </div>           
                 </div>
         </div>
   )
