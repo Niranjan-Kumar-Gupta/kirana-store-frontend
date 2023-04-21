@@ -1,7 +1,7 @@
 import axiosInstance from "./axios.instance";
 import axios from "axios";
 // apies calls for products
-const API_GET_STOCKS_HISTORY = async (pageNo, limit,filterData,globalFilterValue) => {
+const API_GET_RAWMATERIAL_HISTORY = async (pageNo, limit,filterData,globalFilterValue) => {
   try {
     var resp;
     if (filterData || globalFilterValue) {
@@ -17,12 +17,12 @@ const API_GET_STOCKS_HISTORY = async (pageNo, limit,filterData,globalFilterValue
          allFilter += `&global=${globalFilterValue}`
       }
       resp = await axiosInstance.get(
-        `/stockhistory?page=${pageNo}&limit=${limit}${allFilter}`
+        `/rawstockhistory?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/stockhistory?page=${pageNo}&limit=${limit}`
+      `/rawstockhistory?page=${pageNo}&limit=${limit}&isActive=1`
       );
      }
     return resp.data;
@@ -32,12 +32,12 @@ const API_GET_STOCKS_HISTORY = async (pageNo, limit,filterData,globalFilterValue
 };
 
 
-const API_PUT_STOCKS_HISTORY =  async (__data) => {
+const API_PUT_RAWMATERIAL_HISTORY =  async (__data) => {
   console.log(__data)
   
   console.log(__data.id,__data.data)
   try {
-    const resp = await axiosInstance.put(`/stockhistory/${__data.id}`, __data.data); 
+    const resp = await axiosInstance.put(`/rawstockhistory/${__data.id}`, __data.data); 
     console.log(resp)
     return resp;
   } catch (err) {
@@ -46,12 +46,12 @@ const API_PUT_STOCKS_HISTORY =  async (__data) => {
 };
 
 
-const API_PUT_STOCKS_HISTORY_CHECK =  async (__data) => {
-  console.log(__data)
+const API_PUT_RAWMATERIAL_HISTORY_CHECK =  async (data) => {
+  console.log(data)
   
   //console.log(__data.id,__data.data)
   try {
-    const resp = await axiosInstance.put(`/stock`, __data); 
+    const resp = await axiosInstance.put(`/rawstock/`, data); 
     console.log(resp)
     return resp;
   } catch (err) {
@@ -59,9 +59,9 @@ const API_PUT_STOCKS_HISTORY_CHECK =  async (__data) => {
   }
 };
 
-const API_DELETE_STOCKS_HISTORY = async (__data) => {
+const API_DELETE_RAWMATERIAL_HISTORY = async (__data) => {
   try {
-    const resp = await axiosInstance.delete(`/stockhistory/${__data.id}`, __data.data); 
+    const resp = await axiosInstance.delete(`/rawstockhistory/${__data.id}`, __data.data); 
     return resp.data;
   } catch (err) {
     throw err;
@@ -69,8 +69,8 @@ const API_DELETE_STOCKS_HISTORY = async (__data) => {
 };
 
 export {
-  API_GET_STOCKS_HISTORY,
-  API_PUT_STOCKS_HISTORY,
-  API_DELETE_STOCKS_HISTORY,
-  API_PUT_STOCKS_HISTORY_CHECK
+  API_GET_RAWMATERIAL_HISTORY,
+  API_PUT_RAWMATERIAL_HISTORY,
+  API_DELETE_RAWMATERIAL_HISTORY,
+  API_PUT_RAWMATERIAL_HISTORY_CHECK
 };

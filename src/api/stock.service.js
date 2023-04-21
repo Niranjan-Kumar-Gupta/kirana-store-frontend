@@ -17,12 +17,12 @@ const API_GET_STOCKS = async (pageNo, limit,filterData,globalFilterValue) => {
          allFilter += `&global=${globalFilterValue}`
       }
       resp = await axiosInstance.get(
-        `/stock?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+        `/stock?page=${pageNo}&limit=${limit}${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/stock?page=${pageNo}&limit=${limit}&isActive=1`
+      `/stock?page=${pageNo}&limit=${limit}`
       );
      }
     return resp.data;

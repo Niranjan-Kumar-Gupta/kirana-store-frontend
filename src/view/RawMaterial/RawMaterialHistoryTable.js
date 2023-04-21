@@ -4,38 +4,54 @@ import { Text } from '../../components/Text';
 import Loader from '../../components/Loader'
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getStocks,
+  getRawMaterialHistory,
   changeMode,
   resetMode,
-  changeSelectedStock,
-  resetSelectedStock,
+  changeSelectedRawMaterial,
+  resetSelectedRawMaterial,
   changePage,
-} from "../../reducers/stocksTableSlice";
+} from "../../reducers/rawMaterialHistoryTableSlice";
 
 
 const RawMaterialHistoryTable = () => {
 
   
   const {
-    stockData,
+    rawMaterialHistoryData,
     page,
     limit,
     loading,
-    totalStockCount,
-  } = useSelector((state) => state.stockTable);
+    totalRawMaterialHistoryCount,
+  } = useSelector((state) => state.rawMaterialHistoryTable);
+
+
+  const quntBody = (rowData)=>{
+    // console.log(rowData.quantity)
+     return (
+       <div className='flex flex-row'>        
+           <Text type={'sub-heading'}>
+             {rowData.quantity }
+             {rowData.materialType ? ` ${rowData.materialType}` : ''}
+ 
+           </Text>
+       </div>
+     )
+   }
   const columns = [
 
     {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:""},     
   
-    {field: 'rawMaterial', header: 'Raw Material',isFilter:false,filterPlaceholder:""},     
+    {field: 'materialName', header: 'Raw Material',isFilter:false,filterPlaceholder:""},     
     
-    { field: 'productName',header: 'Product',isFilter:false,filterPlaceholder:""},     
+    //{ field: 'productName',header: 'Product',isFilter:false,filterPlaceholder:""},     
      
-    {field: 'venderName', header: 'Vender Name',isFilter:false,filterPlaceholder:""},     
+    //{field: 'vendorName', header: 'Vender Name',isFilter:false,filterPlaceholder:""},     
     
      
-    {field: 'quantity', header: 'Quantity(kg)',isFilter:false,filterPlaceholder:""},     
+    {field: 'quantity', header: 'Quantity',isFilter:false,isBody:true,body:quntBody,filterPlaceholder:""},     
  
+    {field: 'reason', header: 'Comment',isFilter:false,filterPlaceholder:""},     
+    
    ];
 
    const onApplyFilter = (data)=>{
@@ -62,16 +78,16 @@ const RawMaterialHistoryTable = () => {
     <div className="mt-2">
           <CustomTable 
              tableName={'rawMatHISTable'}
-             data={stockData}
+             data={rawMaterialHistoryData}
              columns={columns}
              globalSearch={true}
              onApplyFilter={onApplyFilter}
              onApplySearch={onApplySearch}
              onClearFilter={onClearFilter}
              onClearSearch={onClearSearch}
-             dispatchFunction={getStocks}
+             dispatchFunction={getRawMaterialHistory}
              //onEditNumberInput={onEditNumberInput}
-             paginator={{page:page,limit:limit,totalRecords:totalStockCount,changePage:changePage}}
+             paginator={{page:page,limit:limit,totalRecords:totalRawMaterialHistoryCount,changePage:changePage}}
            />       
        </div>
  

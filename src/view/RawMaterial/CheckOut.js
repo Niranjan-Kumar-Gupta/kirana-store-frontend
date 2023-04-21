@@ -13,9 +13,9 @@ import { classNames } from 'primereact/utils'
 import { Toast } from 'primereact/toast'
 import { CustomButton } from '../../components/CustomButton'
 import { InputTextarea } from 'primereact/inputtextarea';
-import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
+import { API_GET_RAWMATERIAL,API_GET_RAW_STOCK_MATERIAL } from '../../api/rawMaterial.service'
 import Loader from '../../components/Loader'
-import { API_GET_ORDERS } from '../../api/order.services';
+
 import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from 'primereact/button';
@@ -23,102 +23,58 @@ import { Button } from 'primereact/button';
 import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
-
+import { MultiSelect } from 'primereact/multiselect';
+import { updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
 
 const RawMaterialCheckOut = () => {
 
-  const [tableData, setTableData] = useState()
+  const [tableData, setTableData] = useState([])
   const toast = useRef(null)
-  const [selectedProdId, setSelectedProdId] = useState([])
-
-  const [orderId, setOrderId] = useState([])
-
+  const [selectedRawMaterial, setSelectedRawMaterial] = useState([])
+  const [rawMaterial, setRawMaterial] = useState([])
   const dispatch = useDispatch();
-
-  // const { 
-  //  // loading,
-  // } = useSelector((state) => state.stockTable);
 
   const { 
     loading,
-  } = useSelector((state) => state.stocksHistoryTable);
-
+  } = useSelector((state) => state.rawMaterialHistoryTable);
 
   const loader = () => {
     return <Loader visible={loading} />
   }
 
 
-  useEffect(()=>{
-    const getOrderData = async ()=>{
-        const order =  await API_GET_ORDERS(0,100000)
-        console.log(order)
-        let orderIds = []
-        order.rows.forEach(ele => {       
-            let data = {
-                key: ele.id,
-                label: `OrderId ${ele.id} `,
-                data: `OrderId ${ele.id} `,
-            }
-            orderIds.push(data)
-        });
-        setOrderId(orderIds)
-    }
-    getOrderData()
-   
-  },[])
-
-
-  const [reasons, setReasons] = useState( [
- 
-    {
-        key: 'production',
-        label: 'Production',
-        data: 'production ',
-       
-    },
-    {
-        key: 'correction',
-        label: 'Correction',
-        data: 'Correction ',
-       
-    
-    }
- ]);
-    
-
-  const [selectedReasons, setSelectedReasons] = useState(null);
-  const [prodVar, setprodVar] = useState([])
-
-  const getProdVariants = async () => {
-    
+  const getRawMaterial = async () => {  
     try {
-      const prodVariants = await API_GET_PRRODUCTS_WITH_VARIANTS(0, 100000)
-      console.log(prodVariants)
-      setprodVar(prodVariants.rows)
+      const rawMaterial = await API_GET_RAW_STOCK_MATERIAL(0, 100000)
+      console.log(rawMaterial) 
+      
+      rawMaterial.rows.forEach(ele => {
+         ele['checkInQuantity'] = ''
+      });
+      setRawMaterial(rawMaterial.rows)
+     
+
     } catch (error) {
       console.log(error)
     }
   }
 useEffect(()=>{
-   getProdVariants()
+   getRawMaterial()
 },[])
 
-
-useEffect(() => {
-  const filteredData = getDataByIds(prodVar, selectedProdId)
-  setTableData(filteredData)
-}, [selectedProdId, prodVar])
-  
+// useEffect(() => {
+//   setTableData(selectedRawMaterial)
+//   //console.log(tableData)
+// }, [selectedRawMaterial])
+   
     const navigate = useNavigate()
     const goBack = () => {
-        navigate('/stocks')
+        navigate('/rawMaterial')
       }
 
       const defaultValues = {
-        products: [],
-        comment: undefined,
-        reason: undefined,
+        rawMaterials: null,
+        comment: '',
       }
     
       const {
@@ -130,46 +86,7 @@ useEffect(() => {
       } = useForm({ defaultValues })
 
 
-      
-      const flatten = (arr) =>
-      arr.reduce((acc, curr) => {
-        const { children, ...rest } = curr
-        acc.push(rest)
-        if (children) {
-          acc.push(...flatten(children))
-        }
-        return acc
-      }, [])
-  
-    const getDataByIds = (data, ids) => {
-      const flattenedData = flatten(data)
-      return ids.flatMap((id) => {
-        const foundItem = flattenedData.find(
-          (item) => item.key == id && ('option1' in item || item.defaultProduct)
-        )
-        if (foundItem) {
-          const existingItem = tableData.find(
-            (item) => item.key === foundItem.key
-          )
-          console.log(foundItem)
-          return {
-            id: foundItem.id,
-            key: foundItem.key,
-            url: foundItem.url,
-            label: foundItem.label,
-            productName: foundItem.productName,
-            productId: foundItem.productId ? foundItem.productId : foundItem.id,
-            categoryId: foundItem.categoryId,
-            price: foundItem.price,
-            productVariantId: foundItem.productId ? foundItem.id : null,
-            SKUCode: foundItem.SKUCode,
-            orderedQuantity: foundItem ? foundItem.quantity : '',
-            isDefault: foundItem.defaultProduct ? true : false,
-          }
-        }
-        return []
-      })
-    }
+
   const getFormErrorMessage = (name) => {
     return (
       errors[name] && <small className='p-error'>{errors[name].message}</small>
@@ -177,44 +94,13 @@ useEffect(() => {
   }
 
   
-  const productNameBody = (rowData) => {
-    console.log(rowData)
-    return (
-      <div className='flex flex-column'>
-        <div className='mb-1'>
-          <Text type={'heading'}>{rowData.productName}</Text>
-        </div>
-        {!rowData.isDefault ? (
-          <Text type={'sub-heading'}>
-            {rowData.option1 ? rowData.option1 : ''}
-            {rowData.option2 ? ` / ${rowData.option2}` : ''}
-            {rowData.option3 ? ` / ${rowData.option3}` : ''}
-          </Text>
-        ) : (
-          ''
-        )}
-        {rowData.isDefault ? (
-          ''
-        ) : (
-          <Text type={'sub-heading'}> {rowData.label} </Text>
-        )}
-        
-      </div>
-    )
-  }
-  
-  const onCellEditComplete = (e, rowIndex) => {
-    let _products = [...tableData];
-    
-    _products[rowIndex].quantity = e.value; 
-    setTableData(_products);
-  }
- 
 
   const onCellEditCompleteCheckIn = (e, rowIndex) => {
-    let _products = [...tableData];
-    _products[rowIndex].checkInQuantity = e.value; 
-    setTableData(_products);
+     let _rawMaterial = [...tableData];
+     console.log(_rawMaterial);
+     _rawMaterial[rowIndex].checkInQuantity = e.value; 
+     console.log(_rawMaterial);
+     setTableData(_rawMaterial);
   }
  
   const checkInQuantityEditor = (rowData, colData) => {
@@ -222,42 +108,39 @@ useEffect(() => {
     return (
       <InputNumber
         value={rowData.checkInQuantity}
-        placeholder="Enter Check out Quantity"
-        id={rowData.key}
-        name={rowData.label}
+        placeholder="Enter Check In Quantity"
+        id={rowData.id}
+        name={rowData.materialName}
         showButtons
         style={{ width: '8rem' }}
         min={0}
         incrementButtonIcon='pi pi-plus'
         decrementButtonIcon='pi pi-minus'
-        onValueChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
+        onChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
       />
     )
   }
 
 
-  const selectedProdTable = () => {  
+  const selectedRawMaterialTable = () => {  
     return (
       <DataTable
         value={tableData}
-        dataKey='key'
         responsiveLayout='scroll'
         resizableColumns
         columnResizeMode='expand'
         className='w-full'
       >
-        <Column header='Products' field='label' body={productNameBody}></Column>
-        <Column header='SKU Code' field='SKUCode'></Column>
-       
-        <Column
+        <Column header='Raw Material Name' field='materialName' ></Column>
+         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='orderedQuantity'
+          field='quantity'
           //body={qtyEditor}
         ></Column>
         <Column
           className='qtyCells'
-          header='Check In Quantity'
+          header='Check Out Quantity'
           field='quantity'
           body={checkInQuantityEditor}
         ></Column>
@@ -267,63 +150,51 @@ useEffect(() => {
   }
   const onSubmit = (data) => {
 
-   let __prodVar = []
-   tableData.forEach(ele => {
-  
-    var __data={
-      quantity:ele.checkInQuantity
-     }
+    let checkInData = {
+      materialArray:[],
+      reason:data.comment
+   }
 
-     if (ele.productVariantId) {
-        __data['productVariantId']=ele.productVariantId;
-     } else {
-      __data['productId']=ele.productId;
-     }
-     __prodVar.push(__data);
+     data.rawMaterials.forEach(ele => {
+         checkInData.materialArray.push({
+          materialId:ele.materialId,
+          quantity:-ele.checkInQuantity,
+          vendorName:'a'
+         })
+     });
 
-   });
-
-    let finalData = {
-      reason:data.reason,  
-      comment:data.comment,
-      productvariants:__prodVar
-     }
-     console.log(finalData)
-    //  dispatch( updateStocksHistoryCheck (finalData))
-    //  .unwrap()
-    //  .then((res) => {
-          
-    //       let Message_Success = 'Check In Successfully '
-    //       toast.current.show({ severity: 'success', detail: Message_Success })
-    //       setTimeout(() => {
-    //         {
-    //           goBack()
-    //         }
-    //       }, 500)
-         
-    //     })
-    //     .catch((err)=>{
-    //       console.log(err)
-    //       toast.current.show({ severity: 'error', detail: err.message }) 
-       
-    //     })
+      console.log(checkInData);
+      dispatch(updateRawMaterialHistoryCheck(checkInData))
+      .unwrap()
+      .then((res) => {
+        let Message_Success = 'Check Out Successfully '
+        toast.current.show({ severity: 'success', detail: Message_Success })
+      })
+      .catch((err)=>{
+        console.log(err)
+        toast.current.show({ severity: 'error', detail: err.message }) 
      
+      })
    
   }
 
-  const treeSelectRef = useRef(null)
+  const multiSelectRef = useRef(null)
 
   const handleDelete = (e, rowData) => {
     e.preventDefault()
-    let newData = selectedProdId.filter((id) => id != rowData.key)
-    setSelectedProdId(newData)
-    const oldSel = treeSelectRef.current.props.value
-    oldSel[rowData.key].checked = false
-    if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
-      delete oldSel[rowData.key]
-      delete oldSel[rowData?.productId]
-  
+   
+    let newData = tableData.filter((data) => data.id != rowData.id)
+    const oldSel = multiSelectRef.current.props.value
+
+    oldSel.forEach((ele,index) => {
+       if (rowData.id == ele.id) {
+          oldSel.splice(index,1)
+       }
+    });
+    console.log('dddddddd', oldSel)
+    setTableData(newData)
   }
+
 
   
   const actionBody = (rowData) => {
@@ -336,6 +207,10 @@ useEffect(() => {
       </button>
     )
   }
+
+
+
+
 
   const itemslist=[{ label: 'Raw Material',url: '/rawMaterial' },{ label: 'Check Out'  }];
 
@@ -362,7 +237,7 @@ useEffect(() => {
                   varient='filled w-7rem pl-3'
                   type='submit'
                   onClick={handleSubmit(onSubmit)}
-                  label={'Check In'}
+                  label={'Check Out'}
                 />
               </div>
             </div>
@@ -374,53 +249,38 @@ useEffect(() => {
             className='p-fluid'
             encType='multipart/form-data'
           >
-           {/* <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
-                  <div>
-                  <div className={'w-full m-auto flex justify-content-start align-items-center'}>
-                    <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
-                  </div>
-                  </div>
-                  <div className='flex gap-2'>
-                        <div className='flex '>
-                          <Button severity="secondary"  label={'Cancel'} onClick={goBack} /> 
-                        </div>
-                        <div className='flex '>
-                          <CustomButton  varient='filled' type='submit' label={'Check In'} /> 
-                        </div>
-                  </div>
-                
-           </div> */}
+         
 
             <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
               <div className='lg:w-7 md:w-8 sm:w-full'>
                 <div className='bg-white p-3 border-round border-50 mb-3'>
                   <div className='field w-12 lg:w-5'>
-                    <label htmlFor='categories'>Products *</label>
+                    <label htmlFor='categories'>Raw Material *</label>
                     <Controller
-                      name='products'
-                      
+                      name='rawMaterials'                  
                       control={control}
-                      rules={{ required: 'Please select a product.' }}
+                      rules={{ required: 'Please select a Raw Material.' }}
                       render={({ field, fieldState }) => (
                         <>
-                         <TreeSelect
-                            ref={treeSelectRef}
+                         <MultiSelect
+                            ref={multiSelectRef}
                             filter
                             id={field.name}
-                            value={field.value}
+                            value={field.value} 
+                            name='rawMaterials'                           
                             onChange={(e) => {
-                              let prodId = Object.keys(e.value).filter(
-                                (key) => e.value[key].checked
-                              )
-                              setSelectedProdId(prodId)
-                              field.onChange(e.value)
-                            }}
-                            selectionMode='checkbox'
-                            display='chip'
+                             console.log(e.value)
+                                
+                             field.onChange(e.value)
+                             
+                             //onChangeDrop(e.value)
+                             //setSelectedRawMaterial(e.value)       
+                             setTableData(e.value)
+                            }}                       
+                            options={rawMaterial}
                             inputRef={field.ref}
-                            options={prodVar}
-                            metaKeySelection={false}
-                            placeholder='Select Products'
+                            optionLabel="materialName" 
+                            placeholder='Select Raw Materials'
                             className={classNames('w-full', {
                               'p-invalid': fieldState.error,
                             })}
@@ -431,7 +291,7 @@ useEffect(() => {
                     />
                    
                   </div>
-                  {tableData && tableData.length !== 0 ? selectedProdTable() : ''}
+                  {tableData && tableData.length !== 0 ? selectedRawMaterialTable() : ''}
                 </div>
                 </div>
                 <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>

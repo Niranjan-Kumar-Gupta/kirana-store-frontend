@@ -6,11 +6,21 @@ import RawMaterialHistoryTable from './RawMaterialHistoryTable';
 import RawMaterialTable from './RawMaterialTable';
 import style from './style.module.css'
 import RawMaterialForm from '../../components/Forms/RawMaterialForm';
+import { Toast } from 'primereact/toast'
+
+import {  
+  changeMode,
+  resetMode,
+  resetSelectedRawMaterial,
+} from "../../reducers/rawMaterialSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 const RawMaterial = () => {
 
   const [showRawMaterialForm, setShowRawMaterialForm] = useState(false);
+  const dispatch = useDispatch();
+  const toast = useRef(null)
 
     const switchButtons = [
         { name: "Raw Material", value: "rawMaterial" },
@@ -27,7 +37,7 @@ const RawMaterial = () => {
   const renderTable = (table) => {
     switch (table) {
       case "rawMaterial":
-        return <RawMaterialTable />;
+        return <RawMaterialTable setShowRawMaterialForm={setShowRawMaterialForm}/>;
       case "rawMaterialHistory":
         return <RawMaterialHistoryTable/>;
     }
@@ -45,9 +55,10 @@ const RawMaterial = () => {
   };
 
   const onAddNewClick = () => {
+    dispatch(resetMode())
+    dispatch(resetSelectedRawMaterial())
     setShowRawMaterialForm(true)
-    //console.log('ssss')
-    console.log(showRawMaterialForm)
+   
   }
 
   const onHide = () => {
@@ -59,13 +70,14 @@ const RawMaterial = () => {
       <RawMaterialForm
         onHide = {onHide}
         showRawMaterialForm={showRawMaterialForm}
-       
+        toast={toast}
       />
     )
   }
 
   return (
     <div className="w-11 pt-3 m-auto"> 
+      <Toast ref={toast} />
     {showRawMaterialForm ? rawMaterialModal() : <></>}
     <div className="flex mt-4 justify-content-between align-items-center gap-2">
          <CustomSwitch

@@ -88,7 +88,7 @@ const API_ADD_PRODUCT = async (configData,image) => {
     const imgUploadUrl = data.product.src;
     // console.log(data)
     if(imgUploadUrl && image){
-      const uploded = await  axios.put(imgUploadUrl,image,{headers:{'Content-Type': 'image/png'}})
+      const uploded = await axios.put(imgUploadUrl,image,{headers:{'Content-Type': 'image/png'}})
     }
     return data;
   } catch (err) {

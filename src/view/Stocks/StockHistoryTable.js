@@ -100,7 +100,8 @@ const StockHistoryTable = () => {
        
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      
+      {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Brand Name"},     
+          
       {field: 'stockType', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:stockTypeItems,filterPlaceholder:"Search by Stock Type"},     
       {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
     

@@ -16,8 +16,21 @@ import { Button } from 'primereact/button';
 import { CustomImageInput } from '../CustomImageInput'
 import { ReactComponent as Cross } from '../../assets/svgIcons/cross.svg'
 
-const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
+import {
+  addRawMaterial,
+  updateRawMaterial
+} from "../../reducers/rawMaterialSlice";
+
+
+const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
+
+  const {
+    selectedRawMaterial,
+    mode
+  } = useSelector((state) => state.rawMaterialTable);
  
+    const dispatch = useDispatch();
+
 
     const [selectedImage, setSeletedImage] = useState(null)
     const defaultValues = {
@@ -39,6 +52,15 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
         )
     }
 
+    useEffect(()=>{
+       if (mode=='update' && selectedRawMaterial) {
+        console.log(selectedRawMaterial)
+        setValue('rawMaterialName',selectedRawMaterial.materialName)
+        setValue('unit',selectedRawMaterial.materialType)
+        handleImg(selectedRawMaterial.url)
+      }   
+    },[])
+
     const dialogHeader = () => {
         return (
           <div>
@@ -48,23 +70,52 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
                   textDecorationLine: 'underline',
                   textDecorationStyle: 'dashed',
                 }}
-              >{`Add New Raw Material`}</span>
+              >{mode=='update'?'Update Raw Material':`Add New Raw Material`}</span>
             </Text>
           </div>
         )
     }
 
     const onSubmit = (data) => {
-
+        console.log(data)
+        const __data = {
+          materialName:data.rawMaterialName,
+          materialType:data.unit
+        }
+        console.log(__data)
+        if (mode=='update') {
+          dispatch(updateRawMaterial({id:selectedRawMaterial.id,data:__data}))
+          .unwrap()
+          .then(() => {
+                onHide()
+                let Message_Success = 'Update Successfully '
+                toast.current.show({ severity: 'success', detail: Message_Success })
+              })
+          .catch(err => {
+               toast.current.show({ severity: 'error', detail: err.message })
+            })
+        }else{
+        dispatch(addRawMaterial({data:__data,selectedImage}))
+        .unwrap()
+        .then(() => {
+              onHide()
+              let Message_Success = 'Update Successfully '
+              toast.current.show({ severity: 'success', detail: Message_Success })
+            })
+        .catch(err => {
+          toast.current.show({ severity: 'error', detail: err.message })
+          })
+        }
+      
     }
 
     const handleImg = (img) => {
         setSeletedImage(img)
     }
 
-    const imageBodyTemplate = () => {
-        const d = new Date()
-        if ( selectedImage ) {
+    const imageBodyTemplate = () => {    
+        const d = new Date()  
+        if (mode == 'update' && selectedImage && selectedImage.length > 2) {
           return (
             <img
               src={`${selectedImage}?v=${d.getTime()}`}
@@ -72,7 +123,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
               style={{ width: '100px' }}
             />
           )
-        } else
+        } else    
           return selectedImage ? (
             <img
               src={`${selectedImage.objectURL}`}
@@ -109,7 +160,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
             render={({ field, fieldState }) => (
               <InputText
                 id={field.name}
-                maxLength={20}
+               
                 className={classNames({ 'p-invalid': fieldState.invalid })}
                 placeholder='Name of Raw Material'
                 {...field}
@@ -123,18 +174,16 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
             <Controller
               name='unit'
               control={control}
-              rules={{ required: 'Unit is required.' }}
+              rules={{ required: 'Please enter Unit.' }}
               render={({ field, fieldState }) => (
-                <InputNumber
-                  id={field.name}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.value)}
-                  useGrouping={false}
-                  placeholder='Enter Unit'
+                <InputText
+                  id={field.name}            
                   className={classNames({ 'p-invalid': fieldState.invalid })}
+                  placeholder='Enter Unit'
+                  {...field}
                 />
-              )}
-            />
+                )}
+              />
             {getFormErrorMessage('unit')}
         </div>
         <div className='field'>
@@ -182,7 +231,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm}) => {
           <CustomButton
             varient='filled'
             type='submit'
-            label={'Save'}
+            label={mode=='update'?'Update':'Save'}
           />
         </div>
       </form>
