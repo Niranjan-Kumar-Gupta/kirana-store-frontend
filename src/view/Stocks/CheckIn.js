@@ -314,6 +314,7 @@ useEffect(() => {
 
   const handleDelete = (e, rowData) => {
     e.preventDefault()
+  
     let newData = selectedProdId.filter((id) => id != rowData.key)
     setSelectedProdId(newData)
     const oldSel = treeSelectRef.current.props.value
@@ -411,6 +412,7 @@ useEffect(() => {
                               let prodId = Object.keys(e.value).filter(
                                 (key) => e.value[key].checked
                               )
+                             
                               setSelectedProdId(prodId)
                               field.onChange(e.value)
                             }}

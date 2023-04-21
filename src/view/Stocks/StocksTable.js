@@ -46,7 +46,7 @@ const StocksTable = () => {
           { field: 'productName',header: 'Product Name',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
           { field: 'SKUCode',header: 'SKU Code',isFilter:false,filterPlaceholder:"Search by code"},
            
-         // {field: 'desc', header: 'Description',isFilter:false,filterPlaceholder:"Search by catogery"},     
+          {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Brand Name"},     
           
            
           {field: 'quantity', header: 'Available Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     

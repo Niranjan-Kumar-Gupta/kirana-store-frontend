@@ -60,7 +60,7 @@ const stockTableSlice = createSlice({
       state.selectedStock = action.payload;
     },
     resetSelectedStock(state) {
-      state.selectedCustomer = null;
+      state.selectedStock = null;
     },
     changePage(state, action) {
       state.page = action.payload

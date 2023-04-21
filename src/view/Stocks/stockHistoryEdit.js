@@ -9,6 +9,7 @@ import style from './style.module.css'
 import { TreeSelect } from 'primereact/treeselect'
 import { API_GET_ORDERS } from '../../api/order.services';
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
+import { Button } from 'primereact/button'
 
 import {
    
@@ -28,6 +29,8 @@ const StockHistoryEdit = () => {
         loading,
         totalStockHistoryCount,
       } = useSelector((state) => state.stocksHistoryTable);
+      const [edit, setEdit] = useState(false)
+
 
     const navigate = useNavigate()
     const goBack = () => {
@@ -167,19 +170,43 @@ const StockHistoryEdit = () => {
     }
   }, [])
 
-  const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Update'  }];
+  const itemslist=[{ label: 'Stock History',url: '/stocks' },{ label: 'Edit'  }];
 
 
     
   return (
-        <div className='w-8 pt-3 m-auto'>
+        <div className='w-11 m-auto mb-6'>
              {loading ? loader() : <></>}
-             <div className={'w-full mb-2 m-auto flex justify-content-start align-items-center'}>
-                    <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>
-                  </div>
-               <div className={`card`}>
-                    <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
-                    <div className='field'>
+                <div
+                  className={`block md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
+                >
+              <div className='flex lg:w-10 md:w-8 sm:justify-content-between align-items-center pb-3'>
+            <div className='flex align-items-center'>
+              <CustomBreadcrumb itemslist={itemslist} />
+            </div>
+            <div className='w-12 sm:w-5 lg:w-4 hidden sm:block'>
+              <div className='flex justify-content-end gap-2'>
+                <Button
+                  className={`skalebot-button ${style.colored} w-6rem`}
+                  onClick={() => navigate('/stocks')}
+                >
+                  Cancel
+                </Button>
+                <CustomButton
+                  varient='filled w-6rem pl-3'
+                  type='submit'
+                  onClick={edit? handleSubmit(onSubmit):() => setEdit(true)}
+                  label={'Edit'}
+                />
+              </div>
+            </div>
+              </div>
+                </div>
+                <div className={`card m-auto w-full`}>
+                  <form onSubmit={handleSubmit(onSubmit)} className='p-fluid'>
+                    <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
+                          <div className='lg:w-7 md:w-8 sm:w-full'>
+                              <div className='field  bg-white p-3 border-round border-50 mb-3'>
                         <label htmlFor='SKUCode'>SKU Code</label>
                         <Controller
                         name='SKUCode'
@@ -195,9 +222,9 @@ const StockHistoryEdit = () => {
                         )}
                         />
                         {getFormErrorMessage('SKUCode')}
-                    </div>
+                              </div>
                     
-                    <div className='field'>
+                             <div className='field  bg-white p-3 border-round border-50 mb-3'>
                         <label htmlFor='product'>product </label>
                         <Controller
                         name='product'
@@ -214,28 +241,10 @@ const StockHistoryEdit = () => {
                         )}
                         />
                         {getFormErrorMessage('product')}
-                    </div>
-                    {/* <div className='field'>
-                        <label htmlFor='category'>category</label>
-                        <Controller
-                        name='category'
-                        control={control}
-                       
-                        render={({ field, fieldState }) => (
-                            <InputText
-                            id={field.category}
-                            value={field.value}
-                            onChange={(e) => field.onChange(e.value)}
-                            disabled={true}
-                            className={classNames({ 'p-invalid': fieldState.invalid })}
-                            {...field}
-                            />
-                        )}
-                        />
-                        {getFormErrorMessage('category')}
-                    </div> */}
+                             </div>
+           
 
-                    <div className='field'>
+                              <div className='field  bg-white p-3 border-round border-50 mb-3'>
                         <label htmlFor='stockType'>stockType</label>
                         <Controller
                         name='stockType'
@@ -253,9 +262,11 @@ const StockHistoryEdit = () => {
                         )}
                         />
                         {getFormErrorMessage('stockType')}
-                    </div>
-
-                    <div className='field'>
+                             </div>
+                          </div>
+                         <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
+                       
+                         <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor='quantity'>Quantity</label>
                         <Controller
                         name='quantity'
@@ -265,6 +276,7 @@ const StockHistoryEdit = () => {
                             <InputText
                             id={field.quantity}
                             value={field.value}
+                            disabled={!edit}
                             onChange={(e) => field.onChange(e.value)}
                             placeholder='Enter your email here'
                             className={classNames({ 'p-invalid': fieldState.invalid })}
@@ -275,24 +287,16 @@ const StockHistoryEdit = () => {
                         {getFormErrorMessage('quantity')}
                     </div>
 
-                    <div className='field'>
+                    <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor='reason'>Reason</label>
                         <Controller
                         name='reason'
                         control={control}
                        
                         render={({ field, fieldState }) => (
-                            // <InputText
-                            // id={field.reason}
-                            // value={field.value}
-                            // onChange={(e) => field.onChange(e.value)}
-                            // placeholder='Enter your email here'
-                            // className={classNames({ 'p-invalid': fieldState.invalid })}
-                            // {...field}
-                            // />
                             <>
                                 <div className="card w-full flex justify-content-center">
-                                <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
+                                <TreeSelect disabled={!edit} value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
                                     className=" w-full" placeholder="Select Reason"></TreeSelect>
                                 </div>
                             </>
@@ -301,7 +305,7 @@ const StockHistoryEdit = () => {
                         {getFormErrorMessage('reason')}
                     </div>
                    
-                    <div className='field'>
+                    <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor=' comment'>comment</label>
                         <Controller
                         name='comment'
@@ -311,6 +315,7 @@ const StockHistoryEdit = () => {
                             <InputText
                             id={field.comment}
                             value={field.value}
+                            disabled={!edit}
                             onChange={(e) => field.onChange(e.value)}
                             placeholder='Enter your email here'
                             className={classNames({ 'p-invalid': fieldState.invalid })}
@@ -320,14 +325,26 @@ const StockHistoryEdit = () => {
                         />
                         {getFormErrorMessage('email')}
                     </div>
+                         </div>
+                    </div>             
+                  </form>
+                </div>
 
-                    <div className='flex justify-content-end gap-2 mt-3 '>
-                        <div className='flex  '>
-                            <CustomButton varient='filled' type='submit' label={'Edit'} />
-                        
-                        </div>
-                    </div>
-                    </form>
+                <div className='sm:w-12 md:w-5 lg:w-4 sm:hidden'>
+                      <div className='flex justify-content-center gap-2'>
+                        <Button
+                        className={`skalebot-button ${style.colored} w-6rem`}
+                        onClick={() => navigate('/stocks')}
+                        >
+                        Cancel
+                        </Button>
+                        <CustomButton
+                        varient='filled w-6rem pl-3'
+                        type='submit'
+                        onClick={ edit? handleSubmit(onSubmit):() => setEdit(true)}
+                        label={'Edit'}
+                        />
+                    </div>           
                 </div>
         </div>
   )

@@ -7,20 +7,22 @@ const API_GET_STOCKS = async (pageNo, limit,filterData,globalFilterValue) => {
     if (filterData || globalFilterValue) {
       console.log(filterData,globalFilterValue)
       let allFilter=''
-      // filterData.forEach(element => {
-      //    console.log(element)
-      //    allFilter += `&${element.key}=${element.value}`
-      // });
+      if (filterData) {
+        let entries = Object.entries(filterData)
+        entries.map( ([key, val]) => {
+         allFilter += `&${key}=${val}`
+       });
+       }
       if (globalFilterValue) {
          allFilter += `&global=${globalFilterValue}`
       }
       resp = await axiosInstance.get(
-        `/stock?page=${pageNo}&limit=${limit}&isActive=1${allFilter}`
+        `/stock?page=${pageNo}&limit=${limit}${allFilter}`
          )
     }
     else{
       resp = await axiosInstance.get(
-      `/stock?page=${pageNo}&limit=${limit}&isActive=1`
+      `/stock?page=${pageNo}&limit=${limit}`
       );
      }
     return resp.data;

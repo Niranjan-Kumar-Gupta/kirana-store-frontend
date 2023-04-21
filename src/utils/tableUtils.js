@@ -6,6 +6,8 @@ function updateTableData(currentList, updatedData) {
   });
   return updatedList;
 }
+
+
 function updateProductTable(currentList, updatedData) {
   console.log(currentList,updatedData)
   const updatedList = currentList.map((item) => {
