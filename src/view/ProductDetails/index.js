@@ -24,6 +24,7 @@ import {
   changeMode,
 } from '../../reducers/productTableSlice'
 import './index.css'
+import './../../index.css'
 import { InputNumber } from 'primereact/inputnumber'
 import Loader from '../../components/Loader'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
@@ -55,7 +56,9 @@ const ProductDetails = () => {
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
   useEffect(() => {
-    dispatch(getProductbyid({ id })).unwrap().then().catch()
+    if (id) {
+      dispatch(getProductbyid({ id })).unwrap().then().catch()
+    }
     dispatch(getCategory()).unwrap().then().catch()
     if (id) {
       dispatch(changeMode('update'))
@@ -144,7 +147,7 @@ const ProductDetails = () => {
       return (
         <img
           src={`${selectedImage}?v=${selectedImage.updatedAt}`}
-          onError={(e) => (e.target.src = './images/ImgPlaceholder.svg')}
+          onError={(e) => (e.target.src = './../../images/ImgPlaceholder.svg')}
           style={{ width: '100px' }}
         />
       )
@@ -152,7 +155,7 @@ const ProductDetails = () => {
       return selectedImage ? (
         <img
           src={`${selectedImage.objectURL}`}
-          onError={(e) => (e.target.src = './images/ImgPlaceholder.svg')}
+          onError={(e) => (e.target.src = './../../images/ImgPlaceholder.svg')}
           style={{ width: '100px' }}
         />
       ) : (
@@ -274,9 +277,7 @@ const ProductDetails = () => {
   }
 
   let templabel =
-    mode !== 'update' || id === 'add'
-      ? 'Add Product'
-      : `ProductDetails for id: #${id}`
+    mode !== 'update' || id === 'add' ? 'Add Product' : `Product #${id}`
   const itemslist = [
     { label: 'Products', url: '/products' },
     { label: templabel },
@@ -299,12 +300,16 @@ const ProductDetails = () => {
                     ? () => {
                         navigate('/products')
                       }
+                    : edit
+                    ? () => {
+                        setEdit(false)
+                      }
                     : () => {
                         setDisplayAlertDelete(true)
                       }
                 }
               >
-                {mode !== 'update' ? 'Cancel' : 'Delete'}
+                {mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'}
               </Button>
               <CustomButton
                 varient='filled w-6rem pl-3'
@@ -427,13 +432,14 @@ const ProductDetails = () => {
                           {selectedImage ? (
                             <>
                               {selectedImage.name}
-                              <span
-                                className='ml-4 cursor-pointer text-3xl'
+                              <Button
+                                className='noBgButton'
                                 onClick={() => handleImg(null)}
+                                disabled={!edit && mode === 'update'}
                               >
                                 {' '}
                                 <Cross />
-                              </span>
+                              </Button>
                             </>
                           ) : (
                             'No File Choosen*'
@@ -539,7 +545,7 @@ const ProductDetails = () => {
                       <InputNumber
                         id={field.name}
                         value={field.value}
-                        onChange={(e) => field.onChange(parseInt(e.value))}
+                        onChange={(e) => field.onChange(e.value)}
                         useGrouping={false}
                         disabled={!edit && mode === 'update'}
                         mode='currency'
@@ -596,18 +602,21 @@ const ProductDetails = () => {
             <div className='flex justify-content-end gap-3'>
               <Button
                 className={`skalebot-button colored w-6rem`}
-                type='button'
                 onClick={
                   mode !== 'update'
                     ? () => {
                         navigate('/products')
+                      }
+                    : edit
+                    ? () => {
+                        setEdit(false)
                       }
                     : () => {
                         setDisplayAlertDelete(true)
                       }
                 }
               >
-                {mode !== 'update' ? 'Cancel' : 'Delete'}
+                {mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'}
               </Button>
               <CustomButton
                 varient='filled w-6rem pl-3'

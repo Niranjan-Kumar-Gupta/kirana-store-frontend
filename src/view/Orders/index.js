@@ -16,7 +16,7 @@ import {
   resetMode,
   changePage,
   resetSelectedOrder,
-  resetToastAction,
+  resetToastActionOrder,
 } from "../../reducers/orderTableSlice";
 import "./style.css"
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
@@ -114,7 +114,7 @@ useEffect(() => {
       detail: 'Order Succesfully Deleted',
     })
   }
-  dispatch(resetToastAction())
+  dispatch(resetToastActionOrder())
 },[])
 
 const deleteModule = () => {
@@ -136,7 +136,7 @@ const handleDelete = (rowData) => {
 };
 const handleOrderSelect = (rowData)=>{
   dispatch(updateMode('update'))
-  navigate(`orderDetails/${rowData.id}`)
+  navigate(`${rowData.id}`)
 }
 
 const onApplyFilter = (data)=>{
@@ -153,7 +153,7 @@ console.log(data)
 }
 
 const hanldeCreate = () => {
-  navigate(`./create`)
+  navigate('new')
   dispatch(updateMode('create'))
 }
 
@@ -163,7 +163,7 @@ const itemslist=[{ label: 'Orders', url: '/orders'  }, ];
     <div className="w-11 pt-3 m-auto">
       <Toast ref={toast} />
       {displayAlertDelete && deleteModule()}
-      {loader ? loader() : <></>}
+      {loader()}
       <div className='flex justify-content-between align-items-center'>
         <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
         <CustomButton

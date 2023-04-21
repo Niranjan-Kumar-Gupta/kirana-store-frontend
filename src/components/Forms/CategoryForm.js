@@ -59,7 +59,7 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
               textDecorationLine: 'underline',
               textDecorationStyle: 'dashed',
             }}
-          >{`${mode === 'update' ? 'Update' : 'Add New'} Category`}</span>
+          >{`${mode === 'update' ? 'Update' : 'Add'} Category`}</span>
         </Text>
       </div>
     )

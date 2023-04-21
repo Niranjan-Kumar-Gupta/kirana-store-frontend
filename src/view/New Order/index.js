@@ -14,12 +14,11 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { Toast } from 'primereact/toast'
 import style from './style.module.css'
-import { useNavigate, useParams, useActionData } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   addOrder,
   getOrderDetails,
   resetMode,
-  resetToastAction,
   updateMode,
   updateOrder,
 } from '../../reducers/orderTableSlice'
@@ -27,9 +26,9 @@ import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
 import Loader from '../../components/Loader'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
-import { Button } from 'primereact/button'
 import { Calendar } from 'primereact/calendar'
 import { DeleteAlert } from '../../components/Alert/DeleteAlert'
+import { Tag } from 'primereact/tag';
 
 const NewOrder = () => {
   const [customers, setCustomers] = useState([])
@@ -39,19 +38,17 @@ const NewOrder = () => {
   const [edit, setEdit] = useState(false)
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
-  const dispatch = useDispatch()
-
   const { id } = useParams()
-  const { mode, orderDet, selectedOrder, loading, toastAction } = useSelector(
+  const { mode, orderDet, selectedOrder, loading } = useSelector(
     (state) => state.orderTable
-  )
-
-  const paymentStatus = [
+    )
+    
+    const paymentStatus = [
     { key: 'Fully Paid', value: 'Fully Paid' },
     { key: 'Partially Paid', value: 'Partially Paid' },
     { key: 'Not Paid', value: 'Not Paid' },
   ]
-
+  
   const status = [
     { key: 'New', value: 'New' },
     { key: 'Delivered', value: 'Delivered' },
@@ -59,9 +56,10 @@ const NewOrder = () => {
     { key: 'In Progress', value: 'In Progress' },
     { key: 'Completed', value: 'Completed' },
   ]
-
+  
   const toast = useRef(null)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const defaultValues = {
     customerId: '',
@@ -121,13 +119,6 @@ const NewOrder = () => {
   }
 
   useEffect(() => {
-    if (mode === 'update') {
-      try {
-        dispatch(getOrderDetails(id))
-      } catch (error) {
-        console.log(error)
-      }
-    }
     if (mode !== 'update') {
       getProdVariants()
     }
@@ -164,7 +155,7 @@ const NewOrder = () => {
         selectedOrder.completedAt ? new Date(selectedOrder.completedAt) : null
       )
     }
-  }, [mode, selectedOrder])
+  }, [selectedOrder])
 
   const flatten = (arr) =>
     arr.reduce((acc, curr) => {
@@ -172,7 +163,7 @@ const NewOrder = () => {
       acc.push(rest)
       if (children) {
         if (children.length === 0) {
-          acc[acc.length - 1].isDefault = true;
+          acc[acc.length - 1].isDefault = true
         }
         acc.push(...flatten(children))
       }
@@ -198,7 +189,9 @@ const NewOrder = () => {
           productId: foundItem.productId ? foundItem.productId : foundItem.id,
           categoryId: foundItem.categoryId,
           price: foundItem.price,
-          productVariantId: foundItem.productId ? foundItem.id : foundItem.productVariantId,
+          productVariantId: foundItem.productId
+            ? foundItem.id
+            : foundItem.productVariantId,
           SKUCode: foundItem.SKUCode,
           orderedQuantity: existingItem ? existingItem.orderedQuantity : '',
           isDefault: foundItem.isDefault ? true : false,
@@ -390,7 +383,8 @@ const NewOrder = () => {
     )
   }
 
-  let templabel = mode !== 'update' ? 'Create New Order' : `Order #${selectedOrder.id}`
+  let templabel =
+    mode !== 'update' ? 'Create Order' : `Order #${selectedOrder.id}`
   const itemslist = [{ label: 'Orders', url: '/orders' }, { label: templabel }]
 
   return (
@@ -407,39 +401,42 @@ const NewOrder = () => {
               <CustomBreadcrumb itemslist={itemslist} />
               {mode === 'update' && selectedOrder.paymentStatus && (
                 <div className='hidden sm:block'>
-                  <Badge
-                    value={`Payment ${selectedOrder.paymentStatus}`}
-                    severity={
+                  <Tag className={style.__tag} value={`Payment ${selectedOrder.paymentStatus}`} severity={
                       selectedOrder.paymentStatus === 'Fully Paid'
                         ? 'success'
                         : selectedOrder.paymentStatus === 'Partially Paid'
                         ? 'warning'
                         : 'danger'
-                    }
-                  ></Badge>
+                    } />
                 </div>
               )}
             </div>
             <div className='w-12 sm:w-5 lg:w-4 hidden sm:block'>
               <div className='flex justify-content-end gap-2'>
-                <Button
-                  className={`skalebot-button ${style.colored} w-6rem`}
+                <CustomButton
+                  varient={'cancel w-6rem'}
                   type='button'
+                  label={
+                    mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'
+                  }
                   onClick={
                     mode !== 'update'
                       ? () => {
-                          navigate('/orders')
+                          navigate('/products')
+                        }
+                      : edit
+                      ? () => {
+                          setEdit(false)
                         }
                       : () => {
                           setDisplayAlertDelete(true)
                         }
                   }
-                >
-                  {mode !== 'update' ? 'Cancel' : 'Delete'}
-                </Button>
+                />
                 <CustomButton
-                  varient='filled w-6rem pl-3'
+                  varient='filled w-6rem'
                   type='submit'
+                  label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
                   onClick={
                     mode === 'create'
                       ? handleSubmit(onSubmit)
@@ -447,7 +444,6 @@ const NewOrder = () => {
                       ? handleSubmit(onSubmit)
                       : () => setEdit(true)
                   }
-                  label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
                 />
               </div>
             </div>
@@ -462,7 +458,7 @@ const NewOrder = () => {
           >
             <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
               <div className='lg:w-7 md:w-8 sm:w-full'>
-                <div className='bg-white p-3 border-round border-50 mb-3 flex flex-wrap justify-content-between align-items-center'>
+                <div className='bg-white p-3 border-round border-50 mb-3 flex flex-wrap align-items-center'>
                   <div className='field w-12 lg:w-5'>
                     <label htmlFor='customerId'>Customer *</label>
                     <Controller
@@ -488,7 +484,7 @@ const NewOrder = () => {
                     />
                     {getFormErrorMessage('customerId')}
                   </div>
-                  <div>
+                  <div className='lg:ml-3 lg:mt-2'>
                     {mode === 'create' && (
                       <CustomButton
                         varient='filled'
@@ -690,24 +686,28 @@ const NewOrder = () => {
         </div>
         <div className='sm:w-12 md:w-5 lg:w-4 sm:hidden'>
           <div className='flex justify-content-end gap-2'>
-            <Button
-              className={`skalebot-button ${style.colored} w-6rem`}
+            <CustomButton
+              varient={'cancel w-6rem'}
               type='button'
+              label={mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'}
               onClick={
                 mode !== 'update'
                   ? () => {
-                      navigate('/orders')
+                      navigate('/products')
+                    }
+                  : edit
+                  ? () => {
+                      setEdit(false)
                     }
                   : () => {
                       setDisplayAlertDelete(true)
                     }
               }
-            >
-              {mode !== 'update' ? 'Cancel' : 'Delete'}
-            </Button>
+            />
             <CustomButton
-              varient='filled w-6rem pl-3'
+              varient='filled w-6rem'
               type='submit'
+              label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
               onClick={
                 mode === 'create'
                   ? handleSubmit(onSubmit)
@@ -715,7 +715,6 @@ const NewOrder = () => {
                   ? handleSubmit(onSubmit)
                   : () => setEdit(true)
               }
-              label={mode === 'create' ? 'Save' : edit ? 'Update' : 'Edit'}
             />
           </div>
         </div>

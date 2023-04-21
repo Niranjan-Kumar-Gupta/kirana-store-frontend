@@ -1,9 +1,9 @@
 import { Dialog } from "primereact/dialog";
 import { CustomButton } from "../CustomButton";
 import { useSelector, useDispatch } from "react-redux"
-import { deleteCustomer, resetSelectedCustomer } from "../../reducers/customerTableSlice";
+import { deleteCustomer, resetSelectedCustomer, resetToastActionCustomer } from "../../reducers/customerTableSlice";
 import { deleteCategory, resetSelectedCategory } from "../../reducers/categoryTableSlice"
-import { deleteProduct, resetSelectedProduct } from "../../reducers/productTableSlice";
+import { deleteProduct, resetSelectedProduct, resetToastAction } from "../../reducers/productTableSlice";
 import {
  
   deleteStocksHistory,
@@ -12,8 +12,8 @@ import {
 
 import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
-import { deleteOrder, resetSelectedOrder } from "../../reducers/orderTableSlice";
-import { useNavigate } from "react-router-dom";
+import { deleteOrder, resetSelectedOrder, resetToastActionOrder } from "../../reducers/orderTableSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
@@ -26,13 +26,24 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
 
  const dispatch = useDispatch();
  const navigate = useNavigate()
+ const location = useLocation();
+
+ // to check the page on which action is performed 
+ const onDetailsPage = () => {
+  return location.pathname.split('/').length > 2;
+ }
 
   const deleteProductItem = () => {
     dispatch(deleteProduct(selectedProduct.id))
       .unwrap()
       .then(res => {
         dispatch(changeShowNotice(true))
-        navigate('/products')
+        if (onDetailsPage()) {
+          navigate('/products')
+        } else {
+          dispatch(resetToastAction());
+        }
+        toast.current.show({ severity: 'success', detail: Messag.Delete_Product_ToastSuccessMessage });
       })
       .catch(err => {
         //show toast here
@@ -57,7 +68,11 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     dispatch(deleteCustomer(selectedCustomer.id))
       .unwrap()
       .then(res => {
-        //show toast here
+        if (onDetailsPage()) {
+          navigate('/customers')
+        } else {
+          dispatch(resetToastActionCustomer());
+        }
         let Message_Success = Messag.Delete_Cust_ToastSuccessMessage;
         toast.current.show({ severity: 'success', detail: Message_Success });
       })
@@ -71,7 +86,12 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
     dispatch(deleteOrder(selectedOrder.id))
       .unwrap()
       .then(res => {
-        navigate('/orders')
+        if (onDetailsPage()) {
+          navigate('/orders')
+        } else {
+          dispatch(resetToastActionOrder());
+        }
+        toast.current.show({ severity: 'success', detail: Messag.Delete_Order_ToastSuccessMessage });
       })
       .catch(err => {
         //show toast here

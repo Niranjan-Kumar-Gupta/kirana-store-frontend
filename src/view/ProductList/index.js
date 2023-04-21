@@ -86,7 +86,7 @@ const ProductList = () => {
     // console.log('prod edit',product)
     dispatch(changeMode("update"));
     // dispatch(changeSelectedProduct(product));
-    navigate(`/products/productDetails/${product.id}`)
+    navigate(`${product.id}`)
     // setDisplayAddProductModule(true);
   };
   const handleDelete = (product) => {
@@ -111,7 +111,7 @@ console.log(data)
 
   const onAddNewClick = () => {
     dispatch(changeMode("add"));
-    navigate(`/products/add`)
+    navigate(`/products/new`)
 
     // setShowProductForm(true)
   }
@@ -133,7 +133,7 @@ console.log(data)
       />
     )
   }
-  const itemslist=[{ label: 'Products List', url: '/products'  }, ];
+  const itemslist=[{ label: 'Products', url: '/products'  }, ];
 
   return (
     <div className='w-11 pt-3 m-auto'>
@@ -146,7 +146,7 @@ console.log(data)
         </div>
         <CustomButton
           varient='filled'
-          label={'Add New Product'}
+          label={'Add Product'}
           icon={'pi pi-plus'}
           onClick={onAddNewClick}
         />

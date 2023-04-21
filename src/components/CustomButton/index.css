@@ -9,6 +9,10 @@
   letter-spacing: 0.5px !important;
 }
 
+.skalebot-button:hover {
+  opacity: 0.9;
+}
+
 .skalebot-button.filled{
   background: #1c738e !important;
   border: 1px solid #bcbcbc !important;
