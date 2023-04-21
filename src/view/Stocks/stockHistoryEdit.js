@@ -195,7 +195,7 @@ const StockHistoryEdit = () => {
                 <CustomButton
                   varient='filled w-6rem pl-3'
                   type='submit'
-                  onClick={ () => setEdit(true)}
+                  onClick={edit? handleSubmit(onSubmit):() => setEdit(true)}
                   label={'Edit'}
                 />
               </div>
@@ -266,7 +266,7 @@ const StockHistoryEdit = () => {
                           </div>
                          <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
                        
-                         <div className='field  bg-white p-3 border-round border-50 mb-3'>
+                         <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor='quantity'>Quantity</label>
                         <Controller
                         name='quantity'
@@ -287,7 +287,7 @@ const StockHistoryEdit = () => {
                         {getFormErrorMessage('quantity')}
                     </div>
 
-                    <div className='field  bg-white p-3 border-round border-50 mb-3'>
+                    <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor='reason'>Reason</label>
                         <Controller
                         name='reason'
@@ -305,7 +305,7 @@ const StockHistoryEdit = () => {
                         {getFormErrorMessage('reason')}
                     </div>
                    
-                    <div className='field  bg-white p-3 border-round border-50 mb-3'>
+                    <div className='field  bg-white p-2 border-round border-50 mb-3'>
                         <label htmlFor=' comment'>comment</label>
                         <Controller
                         name='comment'
@@ -341,7 +341,7 @@ const StockHistoryEdit = () => {
                         <CustomButton
                         varient='filled w-6rem pl-3'
                         type='submit'
-                        onClick={ () => setEdit(true)}
+                        onClick={ edit? handleSubmit(onSubmit):() => setEdit(true)}
                         label={'Edit'}
                         />
                     </div>
