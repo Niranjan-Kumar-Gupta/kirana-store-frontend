@@ -250,7 +250,7 @@ const ProductDetails = () => {
         options: [...varient],
         productvariants: [...varienttable],
       }
-      console.log('sss', data)
+      // console.log('sss', data)
       dispatch(updateProduct({ productId, data, selectedImage }))
         .unwrap()
         .then((res) => {
@@ -560,6 +560,34 @@ const ProductDetails = () => {
                     )}
                   />
                   {getFormErrorMessage('Product Price')}
+                </div>
+              </div>
+
+              <div className='bg-white p-3 border-round border-50 mb-3'>
+                <div className='field'>
+                  <label
+                    htmlFor='brandName'
+                    className={classNames({ 'p-error': errors.name })}
+                  >
+                    Brand Name*
+                  </label>
+                  <Controller
+                    name='brandName'
+                    control={control}
+                    rules={{ required: 'Product Brand Name' }}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id={field.name}
+                        disabled={!edit && mode === 'update'}
+                        className={classNames({
+                          'p-invalid': fieldState.invalid,
+                        })}
+                        placeholder='Enter Brand Name'
+                        {...field}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('brandName')}
                 </div>
               </div>
             </div>

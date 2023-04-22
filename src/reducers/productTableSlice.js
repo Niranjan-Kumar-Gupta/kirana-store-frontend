@@ -7,6 +7,7 @@ import {
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
   API_GET_VARIENT_ID,
+  API_GET_BRAND
 } from "../api/product.services";
 import {
   removeDeleteData,
@@ -67,6 +68,19 @@ export const getVarientbyid = createAsyncThunk(
     }
   }
 );
+
+export const getBrand = createAsyncThunk(
+  "productTable/getBrand",
+  async ( thunkAPI) => {
+    try {
+       let resp = await API_GET_BRAND();
+      return resp;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
 
 export const getCategory = createAsyncThunk(
   "productTable/getCategory",
@@ -226,6 +240,20 @@ const productTableSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getCategory.rejected, (state) => {
+      state.loading = false;
+    });
+
+
+    builder.addCase(getBrand.fulfilled, (state, action) => {
+      let x = action.payload.rows;
+      state.brandNames = x.map((a)=>{console.log(a.brandName);
+         return a.brandName});
+      state.loading = false;
+    });
+    builder.addCase(getBrand.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getBrand.rejected, (state) => {
       state.loading = false;
     });
 

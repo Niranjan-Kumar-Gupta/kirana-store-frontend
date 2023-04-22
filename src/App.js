@@ -29,6 +29,9 @@ import CreateCustomer from './view/CreateCustomer'
 import CheckIn from './view/Stocks/CheckIn'
 import CheckOut from './view/Stocks/CheckOut'
 import StockHistoryEdit from './view/Stocks/stockHistoryEdit'
+import RawMaterial from './view/RawMaterial'
+import RawMaterialCheckIn from './view/RawMaterial/CheckIn'
+import RawMaterialCheckOut from './view/RawMaterial/CheckOut'
 
 
 function App() {
@@ -72,6 +75,10 @@ function App() {
           <Route path='customers/:id' element={<CreateCustomer />} />
           <Route path='stocks/checkIn' element={<CheckIn />} />
           <Route path='stocks/checkOut' element={<CheckOut />} />
+
+          <Route path='rawMaterial' element={<RawMaterial />} />
+          <Route path='rawMaterial/checkIn' element={<RawMaterialCheckIn/>}/>
+          <Route path='rawMaterial/checkOut' element={<RawMaterialCheckOut/>}/>
 
           <Route path='products' element={<ProductList />} />
           <Route
