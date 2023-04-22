@@ -200,7 +200,7 @@ function VariantField({
                 onClick={() => addVarient()}
                 disabled={!edit && mode === 'update'}
                 icon={'pi pi-plus'}
-                label={'Add New Variant'}
+                label={'Add Variant'}
               >
               </CustomButton>
             )}

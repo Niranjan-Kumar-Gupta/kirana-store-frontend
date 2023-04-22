@@ -23,5 +23,11 @@
 
 .colored {
   background-color: #868686 !important;
+  border: none !important;
+}
+
+.__tag{
+  border-radius: 50px !important;
+  width: 140px !important;
 }
 

@@ -109,7 +109,7 @@ const orderTableSlice = createSlice({
       state.orderDet = {}
       state.selectedOrder = {}
     },
-    resetToastAction(state) {
+    resetToastActionOrder(state) {
       state.toastAction = null;
     }
   },
@@ -188,6 +188,6 @@ const orderTableSlice = createSlice({
   },
 });
 
-export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails, resetToastAction } = orderTableSlice.actions;
+export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails, resetToastActionOrder } = orderTableSlice.actions;
 
 export default orderTableSlice.reducer;

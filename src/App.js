@@ -62,8 +62,8 @@ function App() {
         >
           {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='orders' element={<Orders />} />
-          <Route path='orders/create' element={<NewOrder />} />
-          <Route path='orders/orderDetails/:id' element={<NewOrder />} />
+          <Route path='orders/new' element={<NewOrder />} />
+          <Route path='orders/:id' element={<NewOrder />} />
           <Route path='stocks' element={<Stocks />} />
           {/* <Route path='productionCards' element={<ProductionCards />} /> */}
           <Route path='stocks/checkIn' element={<CheckIn />} />
@@ -71,7 +71,8 @@ function App() {
           <Route path='stocks/edit' element={<StockHistoryEdit />} />      
           <Route path='productionCards' element={<ProductionCards />} />
           <Route path='customers' element={<CustomerList />} />
-          <Route path='customers/create' element={<CreateCustomer />} />
+          <Route path='customers/new' element={<CreateCustomer />} />
+          <Route path='customers/:id' element={<CreateCustomer />} />
           <Route path='stocks/checkIn' element={<CheckIn />} />
           <Route path='stocks/checkOut' element={<CheckOut />} />
 
@@ -81,11 +82,11 @@ function App() {
 
           <Route path='products' element={<ProductList />} />
           <Route
-            path='products/add'
+            path='products/new'
             element={<ProductDetails />}
           />
           <Route
-            path='products/productDetails/:id'
+            path='products/:id'
             element={<ProductDetails />}
           />
           <Route path='categories' element={<Categories />} />

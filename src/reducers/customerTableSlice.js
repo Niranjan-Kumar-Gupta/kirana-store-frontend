@@ -7,7 +7,8 @@ import {
   API_GET_GROUPS,
   API_GET_GROUP_CUSTOMERS,
   API_CREATE_GROUP,
-  API_PUT_GROUP
+  API_PUT_GROUP,
+  API_GET_CUSTOMER_BY_ID
 } from "../api/customer.services";
 import { removeDeleteData, updateTableData } from "../utils/tableUtils";
 
@@ -29,6 +30,7 @@ const initialState = {
   page: 0,
   limit: 10,
   mode: null,
+  toastAction: null,
 };
 
 export const getCustomers = createAsyncThunk(
@@ -131,6 +133,18 @@ export const getCustomersInGroups = createAsyncThunk(
   }
 )
 
+export const getCustomerById = createAsyncThunk(
+  "customerTable/getCustomerId",
+  async (id, thunkAPI) => {
+    try {
+      const customerDetails = await API_GET_CUSTOMER_BY_ID(id);
+      return customerDetails;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  }
+)
+
 export const updateGroup = createAsyncThunk(
   "group/updateGroup",
   async ({groupId, data}, thunkAPI) =>{
@@ -198,6 +212,9 @@ const customerTableSlice = createSlice({
     },
     setSelectedGroupIdToNull(state) {
       state.selectedGroupID = null;
+    },
+    resetToastActionCustomer(state) {
+      state.toastAction = null;
     }
   },
 
@@ -222,6 +239,7 @@ const customerTableSlice = createSlice({
       }else{
         state.customerData = [data, ...state.customerData.slice(0,state.limit-1)]
       }
+      state.toastAction = 'add';
       state.totalCustomerCount += 1;
       state.loading = false;
     });
@@ -232,9 +250,21 @@ const customerTableSlice = createSlice({
       state.loading = false;
     });
 
+    builder.addCase(getCustomerById.fulfilled, (state, action) => {
+      state.selectedCustomer = action.payload
+      state.loading = false;
+    });
+    builder.addCase(getCustomerById.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getCustomerById.rejected, (state) => {
+      state.loading = false;
+    });
+
     //update customer
     builder.addCase(updateCustomer.fulfilled, (state, action) => {
       state.customerData = updateTableData(state.customerData, action.payload);
+      state.toastAction = 'update';
       state.loading = false;
     });
     builder.addCase(updateCustomer.pending, (state) => {
@@ -247,6 +277,7 @@ const customerTableSlice = createSlice({
     //delete customer
     builder.addCase(deleteCustomer.fulfilled, (state, action) => {
       state.customerData = removeDeleteData(state.customerData, action.payload);
+      state.toastAction = 'delete';
       state.totalCustomerCount -= 1;
       state.loading = false;
     });
@@ -328,7 +359,8 @@ export const {
   changeSelectedGroup,
   resetSelectedGroup,
   changeSelectedGroupId,
-  setSelectedGroupIdToNull
+  setSelectedGroupIdToNull,
+  resetToastActionCustomer
 } = customerTableSlice.actions;
 
 export default customerTableSlice.reducer;

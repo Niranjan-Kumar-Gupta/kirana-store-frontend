@@ -18,6 +18,7 @@ import {
   getCustomers,
   resetMode,
   resetSelectedCustomer,
+  resetToastActionCustomer,
 } from "../../reducers/customerTableSlice";
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 
@@ -37,6 +38,7 @@ const CustomerList = () => {
     loading,
     totalCustomerCount,
     showCustomersType,
+    toastAction
   } = useSelector((state) => state.customerTable);
 
   useEffect(()=>{
@@ -84,14 +86,32 @@ const CustomerList = () => {
     );
   };
 
+  useEffect(() => {
+    if (toastAction === 'add') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Customer Succesfully Added',
+      })
+    } else if (toastAction === 'update') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Customer Succesfully Updated',
+      })
+    } else if (toastAction === 'delete') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Customer Succesfully Deleted',
+      })
+    }
+    dispatch(resetToastActionCustomer())
+  },[])
+
 
   
   const handleEdit = (customer) => {
-     console.log('customer edit',customer)
-     dispatch(changeSelectedCustomer(customer));
-     dispatch(changeMode("update"));
-    navigate(`create`)
-   
+    dispatch(changeSelectedCustomer(customer));
+    dispatch(changeMode("update"));
+    navigate(`${customer.id}`);
   };
   const handleDelete = (customer) => {
     console.log('customer del',customer)
@@ -117,7 +137,7 @@ const CustomerList = () => {
 
   const onAddNewClick = () => {
     
-    navigate(`create`)
+    navigate('new')
     dispatch(changeMode("add"))
   }
 
@@ -149,7 +169,7 @@ const CustomerList = () => {
         
         <CustomButton
           varient='filled'
-          label={'Add New Customer'}
+          label={'Add Customer'}
           icon={'pi pi-plus'}
           onClick={onAddNewClick}
         />

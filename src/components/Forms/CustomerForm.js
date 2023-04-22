@@ -6,7 +6,7 @@ import { CustomButton } from '../CustomButton'
 import { classNames } from 'primereact/utils'
 import './formStyle.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { addCustomer, updateCustomer } from '../../reducers/customerTableSlice'
+import { addCustomer, changeMode, getCustomerById, updateCustomer } from '../../reducers/customerTableSlice'
 import * as Messag from '../../config/ToastMessage'
 import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form'
 import { isValidPhoneNumber } from 'react-phone-number-input'
@@ -18,12 +18,18 @@ import { Dropdown } from 'primereact/dropdown'
 import { useNavigate, useParams } from 'react-router-dom'
 import style from './style.module.css'
 import CustomBreadcrumb from '../CustomBreadcrumb'
-import { Button } from 'primereact/button';
+import { DeleteAlert } from '../../components/Alert/DeleteAlert'
+import { InputNumber } from 'primereact/inputnumber'
+import Loader from '../../components/Loader'
+import { Toast } from 'primereact/toast'
 
 export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
-  const { mode, selectedCustomer } = useSelector((state) => state.customerTable)
+  const { mode, selectedCustomer, loading } = useSelector((state) => state.customerTable)
+  const [edit, setEdit] = useState(false)
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
   const navigate = useNavigate()
+  const { id } = useParams();
   const goBack = () => {
       navigate('/customers')
     }
@@ -35,7 +41,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     gstNumber: '',
     panNumber: '',
     location:'',
-    pincode:'',
+    pincode: undefined,
     phoneNumber: '',
   }
 
@@ -56,10 +62,24 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
     )
   }
 
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item='customer'
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    )
+  }
+
+  const loader = () => {
+    return <Loader visible={loading} />
+  }
+
   // handle sumbit formdata
   const onSubmit =  (data) => {
-    console.log(data)
-    data = { ...data, phone: data.phone.substring(1) }
+    data = { ...data, phone: parseInt(data.phone.substring(1)), pincode: parseInt(data.pincode) }
 
     if (mode === 'update') {
       const customerId = selectedCustomer.id
@@ -67,9 +87,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
         .unwrap()
         .then((res) => {
           onHide(reset)
-          setTimeout(() => {
-            goBack()
-          }, 1000);
+          goBack()
           let Message_Success = Messag.Update_Cust_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
         })
@@ -82,13 +100,10 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
         .unwrap()
         .then((res) => {
           onHide(reset)
-          setTimeout(() => {
-            goBack()
-          }, 1000);
+          goBack()
           //show toast here
           let Message_Success = Messag.Add_Cust_ToastSuccessMessage
           toast.current.show({ severity: 'success', detail: Message_Success })
-          
         })
         .catch((err) => {
           //show toast here
@@ -99,7 +114,22 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
   }
 
   useEffect(() => {
-    console.log(selectedCustomer)
+    if (id) {
+      dispatch(changeMode('update'));
+      dispatch(getCustomerById(id))
+        .unwrap()
+        .then(() => {
+
+        })
+        .catch((err) => {
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
+    } else {
+      dispatch(changeMode('add'));
+    }
+  },[id])
+
+  useEffect(() => {
     if (mode === 'update' && selectedCustomer) {
       setValue('name', selectedCustomer.name)
       setValue('phone', '+' + selectedCustomer.phone)
@@ -110,31 +140,54 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
       setValue('pincode', selectedCustomer.pincode || '')
       setValue('phoneNumber', selectedCustomer.phoneNumber || '')    
     }
-  }, [])
+  }, [selectedCustomer])
 
-  let templabel= `${(mode === 'update' )? 'Update' : 'Add'} Customer`; 
+  let templabel = mode === 'update' ? selectedCustomer?.name : 'Add Customer'
   const itemslist=[{ label: 'Customers',url: '/customers' },{ label:  templabel }];
   return (
 
      <>
+     <Toast ref={toast} />
+     {loader()}
+     {displayAlertDelete && deleteModule()}
      <div className={`md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}>
           <div className='flex flex-column md:flex-row lg:flex-row lg:w-10 md:w-8 md:justify-content-between align-items-center justify-content-center mb-3'>
             <div className='lg:w-7 md:w-6 flex align-items-center'>
               <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
             </div>
-            <div className='sm:w-12 md:w-5 lg:w-4'>
+            <div className='w-12 sm:w-5 lg:w-4 hidden sm:block'>
               <div className='flex justify-content-end gap-2'>
-                <Button
-                  className={`skalebot-button ${style.colored} w-6rem`}
-                  onClick={() => navigate('/customers')}
-                >
-                  Cancel
-                </Button>
                 <CustomButton
-                  varient='filled w-10rem pl-3'
+                  varient={'cancel w-6rem'}
+                  type='button'
+                  label={
+                    mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'
+                  }
+                  onClick={
+                    mode !== 'update'
+                      ? () => {
+                          navigate('/customers')
+                        }
+                      : edit
+                      ? () => {
+                          setEdit(false)
+                        }
+                      : () => {
+                          setDisplayAlertDelete(true)
+                        }
+                  }
+                />
+                <CustomButton
+                  varient='filled w-6rem'
                   type='submit'
-                  onClick={handleSubmit(onSubmit)}
-                  label={itemslist[1].label}
+                  label={mode === 'add' ? 'Save' : edit ? 'Update' : 'Edit'}
+                  onClick={
+                    mode === 'add'
+                      ? handleSubmit(onSubmit)
+                      : edit
+                      ? handleSubmit(onSubmit)
+                      : () => setEdit(true)
+                  }
                 />
               </div>
             </div>
@@ -156,6 +209,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
+                        disabled={!edit && mode === 'update'}
                         maxLength={24}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter Customer Name'
@@ -180,6 +234,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                       <PhoneInputWithCountry
                         name='phone'
                         control={control}
+                        disabled={!edit && mode === 'update'}
                         defaultCountry='IN'
                         id={field.name}
                         placeholder='Enter Phone Number'
@@ -208,6 +263,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                       <InputText
                         id={field.name}
                         value={field.value}
+                        disabled={!edit && mode === 'update'}
                         onChange={(e) => field.onChange(e.value)}
                         placeholder='Enter Email'
                         className={classNames({ 'p-invalid': fieldState.invalid })}
@@ -227,6 +283,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                       <InputText
                         id={field.name}
                         maxLength={24}
+                        disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter GST Number'
                         {...field}
@@ -245,6 +302,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                       <InputText
                         id={field.name}
                         maxLength={24}
+                        disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter PAN Number'
                         {...field}
@@ -268,6 +326,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                   render={({ field, fieldState }) => (
                     <InputText
                       id={field.location}
+                      disabled={!edit && mode === 'update'}
                       className={classNames({ 'p-invalid': fieldState.invalid })}
                       placeholder='Enter Customer Address'
                       {...field}
@@ -282,13 +341,17 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                   <Controller
                     name='pincode'
                     control={control}
-                    rules={{ required: 'pincode is required.' }}
+                    rules={{ required: 'Pincode is required.' }}
                     render={({ field, fieldState }) => (
-                      <InputText
-                        id={field.pincode}
+                      <InputNumber
+                        id={field.name}
+                        value={field.value}
+                        useGrouping={false}
+                        onChange={(e) => field.onChange(e.value)}
+                        disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter Pincode'
-                        {...field}
+                     
                       />
                     )}
                   />
@@ -303,6 +366,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.phoneNumber}
+                        disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter Phone Number'
                         {...field}
@@ -318,6 +382,40 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
          
         </form>
       </div>
+      <div className='sm:w-12 md:w-5 lg:w-4 sm:hidden'>
+          <div className='flex justify-content-end gap-2'>
+            <CustomButton
+              varient={'cancel w-6rem'}
+              type='button'
+              label={mode !== 'update' ? 'Cancel' : edit ? 'Cancel' : 'Delete'}
+              onClick={
+                mode !== 'update'
+                  ? () => {
+                      navigate('/customers')
+                    }
+                  : edit
+                  ? () => {
+                      setEdit(false)
+                    }
+                  : () => {
+                      setDisplayAlertDelete(true)
+                    }
+              }
+            />
+            <CustomButton
+              varient='filled w-6rem'
+              type='submit'
+              label={mode === 'add' ? 'Save' : edit ? 'Update' : 'Edit'}
+              onClick={
+                mode === 'add'
+                  ? handleSubmit(onSubmit)
+                  : edit
+                  ? handleSubmit(onSubmit)
+                  : () => setEdit(true)
+              }
+            />
+          </div>
+        </div>
 
       </>
     
