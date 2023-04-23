@@ -14,11 +14,13 @@ import * as Messag from '../../config/ToastMessage';
 import { changeShowNotice } from "../../reducers/appSlice";
 import { deleteOrder, resetSelectedOrder, resetToastActionOrder } from "../../reducers/orderTableSlice";
 import { useLocation, useNavigate } from "react-router-dom";
+import { deleteRawMaterial } from "../../reducers/rawMaterialSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
   const { selectedOrder } = useSelector(state => state.orderTable);
+  const { selectedRawMaterial } = useSelector(state => state.rawMaterialTable)
     
   const {
     selectedStockHistory,
@@ -101,7 +103,6 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
 
   const deleteStockHistoryItem = () => {
 
-    console.log(selectedStockHistory)
     const __data = {
       id:selectedStockHistory.id,
       data:selectedStockHistory
@@ -120,30 +121,44 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       })
   }
 
+  const deleteRawMaterialItem = () => {
+    dispatch(deleteRawMaterial(selectedRawMaterial.id))
+      .unwrap()
+      .then(res => {
+        //show toast here
+        let Message_Success = 'Raw Material Successfully Deleted';
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        //show toast here
+        toast.current.show({ severity: 'error', detail: err.response.data });
+      })
+  } 
+
   
 
 
   const onHide = () => {
     setDisplayAlertDelete(false)
-    switch (item) {
-      case 'product':
-        dispatch(resetSelectedProduct())
-        break;
-      case 'order':
-        dispatch(resetSelectedOrder())
-        break;
-      case 'category':
-        dispatch(resetSelectedCategory())
-        break;
-      case "customer":
-        dispatch(resetSelectedCustomer())
-        break;
-      case "stockHistory":
-        dispatch(resetSelectedStockHistory())
-        break;
-      default:
-        break;
-    }
+    // switch (item) {
+    //   case 'product':
+    //     dispatch(resetSelectedProduct())
+    //     break;
+    //   case 'order':
+    //     dispatch(resetSelectedOrder())
+    //     break;
+    //   case 'category':
+    //     dispatch(resetSelectedCategory())
+    //     break;
+    //   case "customer":
+    //     dispatch(resetSelectedCustomer())
+    //     break;
+    //   case "stockHistory":
+    //     dispatch(resetSelectedStockHistory())
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
   const handleDelete = () => {
     switch (item) {
@@ -161,6 +176,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         break;
       case "stockHistory":
         deleteStockHistoryItem()
+        break;
+      case "rawMaterial":
+        deleteRawMaterialItem()
         break;
     }
     onHide();

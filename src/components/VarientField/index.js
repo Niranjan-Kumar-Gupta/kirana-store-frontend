@@ -196,7 +196,8 @@ function VariantField({
             </div>
             {varient.length < 3 && (
               <CustomButton
-                varient='filled w-12rem'
+                type='button'
+                varient='filled w-10rem'
                 onClick={() => addVarient()}
                 disabled={!edit && mode === 'update'}
                 icon={'pi pi-plus'}
@@ -285,6 +286,7 @@ function VariantField({
           <div className='flex justify-content-end'>
             {varient.length !== 0 && (
               <CustomButton
+                type='button'
                 varient='filled w-6rem'
                 label={'Save'}
                 onClick={saveVariant}

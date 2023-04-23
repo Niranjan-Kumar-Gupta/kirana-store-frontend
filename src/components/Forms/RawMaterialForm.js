@@ -70,14 +70,13 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
                   textDecorationLine: 'underline',
                   textDecorationStyle: 'dashed',
                 }}
-              >{mode=='update'?'Update Raw Material':`Add New Raw Material`}</span>
+              >{mode=='update'?'Update Raw Material':`Add Raw Material`}</span>
             </Text>
           </div>
         )
     }
 
     const onSubmit = (data) => {
-        console.log(data)
         const __data = {
           materialName:data.rawMaterialName,
           materialType:data.unit
@@ -151,7 +150,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
             htmlFor='rawMaterialName'
             className={classNames({ 'p-error': errors.rawMaterialName })}
           >
-            Raw Material Name *
+            Name *
           </label>
           <Controller
             name='rawMaterialName'
@@ -222,14 +221,15 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
               <small>* Image size should be less than 8MB. </small>
             )}
           </div>      
-        <div className='flex gap-2 mt-5'>
-         <Button
+        <div className='flex justify-content-end gap-2 mt-5'>
+         <CustomButton
             label={'Cancel'}
+            type='button'
             onClick={onHide}
-            className={`skalebot-button ${style.colored} w-6rem`}
+            varient={'cancel w-6rem'}
           />
           <CustomButton
-            varient='filled'
+            varient='filled w-6rem'
             type='submit'
             label={mode=='update'?'Update':'Save'}
           />

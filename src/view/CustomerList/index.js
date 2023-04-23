@@ -59,13 +59,19 @@ const CustomerList = () => {
     )
   }
 
+  const bodyPhone = (rowData) => {
+    return (
+      <Text>+{rowData.phone}</Text>
+    )
+  }
+
 
  const columns = [
    // {field: 'id',header: 'S.No.',isFilter:false,filterType:'input'},
      {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
     
     {field: 'name', header: 'Customer Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Name"},
-    {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
+    {field: 'phone', header: 'Phone Number', isBody: true, body: bodyPhone, isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
    
     {field: 'email', header: 'Email',isFilter:false,isBody:true,body:bodyEmail},  
     //{field: 'gstNumber', header: 'GST Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
@@ -90,17 +96,17 @@ const CustomerList = () => {
     if (toastAction === 'add') {
       toast.current.show({
         severity: 'success',
-        detail: 'Customer Succesfully Added',
+        detail: 'Customer Successfully Added',
       })
     } else if (toastAction === 'update') {
       toast.current.show({
         severity: 'success',
-        detail: 'Customer Succesfully Updated',
+        detail: 'Customer Successfully Updated',
       })
     } else if (toastAction === 'delete') {
       toast.current.show({
         severity: 'success',
-        detail: 'Customer Succesfully Deleted',
+        detail: 'Customer Successfully Deleted',
       })
     }
     dispatch(resetToastActionCustomer())

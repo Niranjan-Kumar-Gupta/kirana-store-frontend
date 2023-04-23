@@ -33,9 +33,6 @@ const API_GET_STOCKS_HISTORY = async (pageNo, limit,filterData,globalFilterValue
 
 
 const API_PUT_STOCKS_HISTORY =  async (__data) => {
-  console.log(__data)
-  
-  console.log(__data.id,__data.data)
   try {
     const resp = await axiosInstance.put(`/stockhistory/${__data.id}`, __data.data); 
     console.log(resp)
@@ -47,9 +44,6 @@ const API_PUT_STOCKS_HISTORY =  async (__data) => {
 
 
 const API_PUT_STOCKS_HISTORY_CHECK =  async (__data) => {
-  console.log(__data)
-  
-  //console.log(__data.id,__data.data)
   try {
     const resp = await axiosInstance.put(`/stock`, __data); 
     console.log(resp)

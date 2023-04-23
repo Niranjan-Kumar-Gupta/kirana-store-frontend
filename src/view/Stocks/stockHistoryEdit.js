@@ -46,7 +46,6 @@ const StockHistoryEdit = () => {
         if ( selectedStockHistory.stockType == "Check Out") {
             const getOrderData = async ()=>{
                 const order =  await API_GET_ORDERS(0,100000)
-                console.log(order)
                 let orderIds = []
                 order.rows.forEach(ele => {       
                     let data = {
@@ -102,7 +101,6 @@ const StockHistoryEdit = () => {
         }]);
      
     useEffect(()=>{
-        // console.log("id",orderId)
         let _reason = [...reasons]
         _reason[0].children = orderId
         setReasons(_reason)
@@ -143,7 +141,6 @@ const StockHistoryEdit = () => {
             id:selectedStockHistory.id,
             data
         }
-        console.log(__data)
         dispatch(updateStocksHistory(__data))
         .unwrap()
         .then((res) => {
@@ -157,7 +154,6 @@ const StockHistoryEdit = () => {
       }
     
   useEffect(() => {
-    // console.log(selectedStockHistory)
     if (selectedStockHistory) {
      setValue('SKUCode', selectedStockHistory.SKUCode || '')
       setValue('reason', selectedStockHistory.reason || '')

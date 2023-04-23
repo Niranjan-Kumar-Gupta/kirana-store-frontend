@@ -101,17 +101,17 @@ useEffect(() => {
   if (toastAction === 'add') {
     toast.current.show({
       severity: 'success',
-      detail: 'Order Succesfully Created',
+      detail: 'Order Successfully Created',
     })
   } else if (toastAction === 'update') {
     toast.current.show({
       severity: 'success',
-      detail: 'Order Succesfully Updated',
+      detail: 'Order Successfully Updated',
     })
   } else if (toastAction === 'delete') {
     toast.current.show({
       severity: 'success',
-      detail: 'Order Succesfully Deleted',
+      detail: 'Order Successfully Deleted',
     })
   }
   dispatch(resetToastActionOrder())
