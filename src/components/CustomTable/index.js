@@ -146,43 +146,58 @@ const CustomTable = (
         dispatch(dispatchFunction(paginationData))
        }
 
-     const onClickClearFilter = (e)=>{       
+     const onClickClearFilter = (e)=>{   
+       console.log(e)    
         const btn = document.querySelectorAll(".p-column-filter");
         let activeFilterIndex = 0;
         columns.map((col,index)=>{
-          if (col.isFilter) {
-           if (filtersData.hasOwnProperty(col['field'])) {
-             //console.log(filtersData[col['field']],index,activeFilterIndex)
-             if (filtersData[col['field']]) {
-              setFiltersData({...filtersData,[e.field]: null})
-             // console.log(btn[index].children[0].children[0].style.color)
-              btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
-              btn[activeFilterIndex].classList.remove('__activeFilter') 
-             // console.log(filtersData[col['field']])
-              delete filtersData[col['field']]
-              let paginationData = {
-                page: paginator.page,
-                limit: paginator.limit,
-                filterData:filtersData,
-                globalFilterValue
-              }; 
-              //console.log(paginationData)
-              dispatch(dispatchFunction(paginationData))
-             } 
-          }
-            activeFilterIndex += 1
-          }
-       })
+          //if (e.field == col['field']) {
+             //console.log((e.field == col['field']),e.field,col['field'])
+             if (col.isFilter) {
+              if (filtersData.hasOwnProperty(col['field'])) {
+                console.log(filtersData[col['field']],index,activeFilterIndex)
+                if (filtersData[col['field']] && (e.field == col['field'])) {
+                 setFiltersData({...filtersData,[e.field]: null})
+                // console.log(btn[index].children[0].children[0].style.color)
+                 btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
+                 btn[activeFilterIndex].classList.remove('__activeFilter') 
+                 console.log(filtersData[col['field']])
+                 delete filtersData[col['field']]
+                
+                 //console.log(paginationData)
+                 for (const key in filtersData)
+                 {
+                   if (filtersData[key] === null) {
+                       console.log(key);
+                       delete filtersData[key]
+                   }
+                    
+                 }
+          
+                 let paginationData = {
+                  page: paginator.page,
+                  limit: paginator.limit,
+                  filterData:filtersData,
+                  globalFilterValue
+                }; 
+                 dispatch(dispatchFunction(paginationData))
+                } 
+                }
+               activeFilterIndex += 1
+              }
+          //}
+         
+        })
 
        console.log(filtersData)
-       for (const key in filtersData)
-       {
-         if (filtersData[key] === null) {
-             console.log(key);
-             delete filtersData[key]
-         }
+      //  for (const key in filtersData)
+      //  {
+      //    if (filtersData[key] === null) {
+      //        console.log(key);
+      //        delete filtersData[key]
+      //    }
           
-       }
+      //  }
 
        
         onClearFilter(filtersData)
