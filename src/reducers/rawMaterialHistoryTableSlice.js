@@ -21,6 +21,7 @@ const initialState = {
   page: 0,
   limit: 5,
   mode: null,
+  toastAction: null,
 };
 
 export const getRawMaterialHistory = createAsyncThunk(
@@ -39,7 +40,7 @@ export const getRawMaterialHistory = createAsyncThunk(
 export const updateRawMaterialHistory = createAsyncThunk(
   "RawMaterialTable/putRawMaterial",
   async ( data, thunkAPI) => {
-    console.log(data)
+    
     try {
       const RawMaterial = await API_PUT_RAWMATERIAL_HISTORY(data);
       return RawMaterial;
@@ -52,7 +53,7 @@ export const updateRawMaterialHistory = createAsyncThunk(
 export const updateRawMaterialHistoryCheck = createAsyncThunk(
   "RawMaterialTable/checkRawMaterial",
   async ( data, thunkAPI) => {
-    console.log(data)
+    
     try {
       const RawMaterial = await API_PUT_RAWMATERIAL_HISTORY_CHECK(data);
       return RawMaterial;
@@ -65,7 +66,6 @@ export const updateRawMaterialHistoryCheck = createAsyncThunk(
 export const deleteRawMaterialHistory = createAsyncThunk(
   "stockTable/deleteStock",
   async ( data, thunkAPI) => {
-    console.log(data)
     try {
       const RawMaterial = await API_DELETE_RAWMATERIAL_HISTORY(data);
       return RawMaterial;
@@ -89,7 +89,6 @@ const rawMaterialHistoryTableSlice = createSlice({
     },
   
     changeSelectedRawMaterialHistory(state, action) {
-      console.log(action)
       state.selectedRawMaterialHistory = action.payload;
     },
     resetSelectedRawMaterialHistory(state) {
@@ -98,6 +97,12 @@ const rawMaterialHistoryTableSlice = createSlice({
     changePage(state, action) {
       state.page = action.payload
     },
+    changeToastActionRaw(state, action) {
+      state.toastAction = action.payload
+    },
+    resetToastActionRaw(state) {
+      state.toastAction = null
+    }
   },
 
   extraReducers: (builder) => {
@@ -118,12 +123,11 @@ const rawMaterialHistoryTableSlice = createSlice({
 
     builder.addCase(updateRawMaterialHistory.fulfilled, (state, action) => {
       state.loading = false;
-     
     });
 
     builder.addCase(updateRawMaterialHistory.pending, (state) => {
-      state.loading = true
-      ;
+      state.loading = true;
+      
     });
     builder.addCase(updateRawMaterialHistory.rejected, (state) => {
       state.loading = false;
@@ -177,6 +181,8 @@ export const {
   changeSelectedRawMaterialHistory,
   resetSelectedRawMaterialHistory,
   changePage,
+  resetToastActionRaw,
+  changeToastActionRaw
 } = rawMaterialHistoryTableSlice.actions;
 
 export default rawMaterialHistoryTableSlice.reducer;

@@ -22,7 +22,7 @@ import { Button } from 'primereact/button';
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import { MultiSelect } from 'primereact/multiselect';
-import { updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
+import { changeToastActionRaw, updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
 
 
 const RawMaterialCheckIn = () => {
@@ -146,7 +146,6 @@ useEffect(()=>{
     )
   }
   const onSubmit = (data) => {
-     console.log(data) 
      
      let checkInData = {
       materialArray:[],
@@ -161,12 +160,11 @@ useEffect(()=>{
          })
      });
 
-      console.log(checkInData);
       dispatch(updateRawMaterialHistoryCheck(checkInData))
       .unwrap()
       .then((res) => {
-        let Message_Success = 'Check In Successfully '
-        toast.current.show({ severity: 'success', detail: Message_Success })
+        goBack()
+        dispatch(changeToastActionRaw('checkIn'))
       })
       .catch((err)=>{
         console.log(err)

@@ -24,7 +24,7 @@ import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/sto
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import { MultiSelect } from 'primereact/multiselect';
-import { updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
+import { changeToastActionRaw, updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
 
 const RawMaterialCheckOut = () => {
 
@@ -163,15 +163,13 @@ useEffect(()=>{
          })
      });
 
-      console.log(checkInData);
       dispatch(updateRawMaterialHistoryCheck(checkInData))
       .unwrap()
       .then((res) => {
-        let Message_Success = 'Check Out Successfully '
-        toast.current.show({ severity: 'success', detail: Message_Success })
+        goBack()
+        dispatch(changeToastActionRaw('checkOut'))
       })
       .catch((err)=>{
-        console.log(err)
         toast.current.show({ severity: 'error', detail: err.message }) 
      
       })

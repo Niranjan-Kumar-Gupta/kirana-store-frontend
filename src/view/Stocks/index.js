@@ -84,7 +84,7 @@ const [table, setTable] = useState('stock')
                 value={table}
                 handleSwitch={handleSwitch}
               />
-           <div className="flex  justify-content-center align-items-center gap-3" >  
+           <div className="flex  justify-content-center align-items-center gap-2" >  
              
               <CustomButton
                 varient="filled"

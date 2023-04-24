@@ -117,13 +117,13 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
           materialName:data.rawMaterialName,
           materialType:data.unit
         }
-        console.log(__data)
+  
         if (mode=='update') {
           dispatch(updateRawMaterial({id:selectedRawMaterial.id,data:__data}))
           .unwrap()
           .then(() => {
                 onHide()
-                let Message_Success = 'Update Successfully '
+                let Message_Success = 'Raw Material Successfully Updated'
                 toast.current.show({ severity: 'success', detail: Message_Success })
               })
           .catch(err => {
@@ -134,7 +134,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
         .unwrap()
         .then(() => {
               onHide()
-              let Message_Success = 'Update Successfully '
+              let Message_Success = 'Raw Material Successfully Added'
               toast.current.show({ severity: 'success', detail: Message_Success })
             })
         .catch(err => {
