@@ -16,6 +16,7 @@ import {
   resetMode,
   changePage,
   resetSelectedOrder,
+  resetToastActionOrder,
 } from "../../reducers/orderTableSlice";
 import "./style.css"
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
@@ -33,6 +34,7 @@ const Orders = () => {
     selectedOrder,
     totalOrderCount,
     selectedOrderId,
+    toastAction
   } = useSelector((state) => state.orderTable);
 
   const dispatch = useDispatch();
@@ -95,6 +97,26 @@ const handleEdit = (rowData) => {
  
 };
 
+useEffect(() => {
+  if (toastAction === 'add') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Created',
+    })
+  } else if (toastAction === 'update') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Updated',
+    })
+  } else if (toastAction === 'delete') {
+    toast.current.show({
+      severity: 'success',
+      detail: 'Order Succesfully Deleted',
+    })
+  }
+  dispatch(resetToastActionOrder())
+},[])
+
 const deleteModule = () => {
   return (
     <DeleteAlert
@@ -114,7 +136,7 @@ const handleDelete = (rowData) => {
 };
 const handleOrderSelect = (rowData)=>{
   dispatch(updateMode('update'))
-  navigate(`orderDetails/${rowData.id}`)
+  navigate(`${rowData.id}`)
 }
 
 const onApplyFilter = (data)=>{
@@ -131,7 +153,7 @@ console.log(data)
 }
 
 const hanldeCreate = () => {
-  navigate(`./create`)
+  navigate('new')
   dispatch(updateMode('create'))
 }
 
@@ -141,7 +163,7 @@ const itemslist=[{ label: 'Orders', url: '/orders'  }, ];
     <div className="w-11 pt-3 m-auto">
       <Toast ref={toast} />
       {displayAlertDelete && deleteModule()}
-      {loader ? loader() : <></>}
+      {loader()}
       <div className='flex justify-content-between align-items-center'>
         <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
         <CustomButton

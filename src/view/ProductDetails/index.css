@@ -16,6 +16,7 @@
 
 .colored {
   background-color: #868686 !important;
+  border: none !important;
 }
 
 .stickySubNav {

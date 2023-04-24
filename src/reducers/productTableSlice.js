@@ -7,6 +7,7 @@ import {
   API_PUT_PRODUCT,
   API_DELETE_PRODUCT,
   API_GET_VARIENT_ID,
+  API_GET_BRAND
 } from "../api/product.services";
 import {
   removeDeleteData,
@@ -27,6 +28,7 @@ const initialState = {
   varient:[],
   selectedProductsList: [],
   vartable:[],
+  toastAction: null
 };
 
 export const getProducts = createAsyncThunk(
@@ -66,6 +68,19 @@ export const getVarientbyid = createAsyncThunk(
     }
   }
 );
+
+export const getBrand = createAsyncThunk(
+  "productTable/getBrand",
+  async ( thunkAPI) => {
+    try {
+       let resp = await API_GET_BRAND();
+      return resp;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
 
 export const getCategory = createAsyncThunk(
   "productTable/getCategory",
@@ -173,6 +188,9 @@ const productTableSlice = createSlice({
     },
     resetSelectedProductsList(state){
       state.selectedProductsList = []
+    },
+    resetToastAction(state) {
+      state.toastAction = null;
     }
   },
 
@@ -225,6 +243,20 @@ const productTableSlice = createSlice({
       state.loading = false;
     });
 
+
+    builder.addCase(getBrand.fulfilled, (state, action) => {
+      let x = action.payload.rows;
+      state.brandNames = x.map((a)=>{console.log(a.brandName);
+         return a.brandName});
+      state.loading = false;
+    });
+    builder.addCase(getBrand.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getBrand.rejected, (state) => {
+      state.loading = false;
+    });
+
     //add product
 
     builder.addCase(addProduct.fulfilled, (state, action) => {
@@ -237,7 +269,7 @@ const productTableSlice = createSlice({
           ...state.productData.slice(0, state.limit - 1),
         ];
       }
-
+      state.toastAction = 'add'
       state.totalProductCount += 1;
       state.loading = false;
     });
@@ -255,6 +287,7 @@ const productTableSlice = createSlice({
       const d = new Date();
       let data={...action.payload,url:`${action.payload.url}?v=${d.getTime()}`};  
       state.productData = updateProductTable(state.productData, data);
+      state.toastAction = 'update'
       state.loading = false;
     });
     builder.addCase(updateProduct.pending, (state) => {
@@ -268,6 +301,7 @@ const productTableSlice = createSlice({
     builder.addCase(deleteProduct.fulfilled, (state, action) => {
       state.productData = removeDeleteData(state.productData, action.payload);
       state.totalProductCount -= 1;
+      state.toastAction = 'delete'
       state.loading = false
       state.mode =  null
     });
@@ -290,7 +324,8 @@ export const {
   changePage,
   setproduct,
   updateSelectedProductsList,
-  resetSelectedProductsList
+  resetSelectedProductsList,
+  resetToastAction,
 } = productTableSlice.actions;
 
 export default productTableSlice.reducer;

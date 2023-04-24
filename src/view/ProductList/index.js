@@ -15,6 +15,8 @@ import {
   changePage,
   updateSelectedProductsList,
   resetSelectedProductsList,
+  getBrand,
+  resetToastAction,
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
@@ -31,6 +33,8 @@ const ProductList = () => {
     page,
     limit,
     totalProductCount,
+    brandNames,
+    toastAction,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
  
@@ -39,11 +43,12 @@ const ProductList = () => {
  const columns = [
     {field: 'SKUCode',header: 'SKU Id'},
     {field: 'productName', header: 'Product Name'},
+    {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},
     {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
     {field: 'status', header: 'Stock'},
     {field: 'price', header: 'Price (₹)'},
     {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
-    {field: 'desc', header: 'Description'},  
+    {field: 'desc', header: 'Description'}, 
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];
 
@@ -55,7 +60,13 @@ const ProductList = () => {
     // })
   },[page,limit])
 
-
+  useEffect(()=>{
+    dispatch(getBrand()).unwrap().then((resp) => {
+      // console.log("Ss")
+    }).catch((err) => {
+      console.log(err)
+    })
+  },[])
 
 
   const deleteModule = () => {
@@ -73,7 +84,7 @@ const ProductList = () => {
     // console.log('prod edit',product)
     dispatch(changeMode("update"));
     // dispatch(changeSelectedProduct(product));
-    navigate(`/products/productDetails/${product.id}`)
+    navigate(`${product.id}`)
     // setDisplayAddProductModule(true);
   };
   const handleDelete = (product) => {
@@ -98,7 +109,7 @@ console.log(data)
 
   const onAddNewClick = () => {
     dispatch(changeMode("add"));
-    navigate(`/products/productDetails/add`)
+    navigate(`/products/new`)
 
     // setShowProductForm(true)
   }
@@ -120,7 +131,7 @@ console.log(data)
       />
     )
   }
-  const itemslist=[{ label: 'Products List', url: '/products'  }, ];
+  const itemslist=[{ label: 'Products', url: '/products'  }, ];
 
   return (
     <div className='w-11 pt-3 m-auto'>
@@ -133,7 +144,7 @@ console.log(data)
         </div>
         <CustomButton
           varient='filled'
-          label={'Add New Product'}
+          label={'Add Product'}
           icon={'pi pi-plus'}
           onClick={onAddNewClick}
         />

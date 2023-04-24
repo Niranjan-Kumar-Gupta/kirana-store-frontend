@@ -1,15 +1,25 @@
+/* Global css */
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
 body {
-    margin: 0;
-    background: #F8F8FC;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-      monospace;
-  }
+  background: #F8F8FC;
+}
+
+.noBgButton {
+  border: none !important;
+  padding: 0 !important;
+  background: none !important;
+  cursor: pointer !important;
+}
+
+.stickySubNav {
+  position: sticky;
+  top: 70px;
+  background-color: #F8F8FC;
+  z-index: 100;
+}
   

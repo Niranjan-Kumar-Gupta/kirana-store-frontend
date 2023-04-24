@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react'
-import { BreadCrumb } from 'primereact/breadcrumb'
 import './index.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ReactComponent as Arrow } from '../../svg/rightArrow.svg'
 
 export default function CustomBreadcrumb({ className = '', itemslist }) {
@@ -21,7 +19,7 @@ export default function CustomBreadcrumb({ className = '', itemslist }) {
               <Arrow />{' '}
             </span>
             <button
-              className={`customBreadButton ${className} ${
+              className={`customBreadButton ${
                 idx !== 0 ? 'fontWeighNormal' : ''
               }`}
               onClick={() => navigate(item.url)}
@@ -32,10 +30,5 @@ export default function CustomBreadcrumb({ className = '', itemslist }) {
         )
       })}
     </div>
-    // <BreadCrumb
-    //   className={`bg-transparent rm-breadcrumb ${className}`}
-    //   model={itemslist}
-    //   home={home}
-    // />
   )
 }

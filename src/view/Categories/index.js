@@ -131,7 +131,7 @@ const Categories = () => {
         </div>
         <CustomButton
           varient='filled'
-          label={'Add New Category'}
+          label={'Add Category'}
           icon={'pi pi-plus'}
           onClick={onAddNewClick}
         />

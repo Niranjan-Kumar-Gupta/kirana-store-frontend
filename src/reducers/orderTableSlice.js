@@ -13,7 +13,7 @@ const initialState = {
   mode: null,
   selectedOrdersList: [],
   orderDet: {},
-  orderDetails: {}
+  toastAction: null,
 };
 
 export const getOrders = createAsyncThunk(
@@ -107,7 +107,10 @@ const orderTableSlice = createSlice({
     },
     resetOrderDetails(state) {
       state.orderDet = {}
-      state.orderDetails = {}
+      state.selectedOrder = {}
+    },
+    resetToastActionOrder(state) {
+      state.toastAction = null;
     }
   },
 
@@ -126,8 +129,8 @@ const orderTableSlice = createSlice({
 
     builder.addCase(getOrderDetails.fulfilled, (state, action) => {
       state.orderDet = action.payload;
-      state.orderDetails = action.payload.orderDetails
-      state.selectedOrderId = action.payload.id
+      state.selectedOrder = action.payload.orderDetails
+      state.selectedOrderId = action.payload.orderDetails.id
       state.loading = false;
     });
     builder.addCase(getOrderDetails.pending, (state) => {
@@ -144,6 +147,7 @@ const orderTableSlice = createSlice({
       }else{
         state.orderData = [data, ...state.orderData.slice(0, state.limit-1)]
       }
+      state.toastAction = 'add';
       state.totalOrderCount += 1;
       state.loading = false;
     });
@@ -157,7 +161,8 @@ const orderTableSlice = createSlice({
     builder.addCase(updateOrder.fulfilled, (state, action) => {
       const order = action.payload;
       state.orderDet = order
-      state.orderDetails = order.orderDetails
+      state.selectedOrder = order.orderDetails
+      state.toastAction = 'update';
       state.loading = false
     });
     builder.addCase(updateOrder.pending, (state) => {
@@ -169,6 +174,7 @@ const orderTableSlice = createSlice({
     
     builder.addCase(deleteOrder.fulfilled, (state, action) => {
       state.orderData = removeDeleteData(state.orderData, action.payload.id);
+      state.toastAction = 'delete';
       state.totalOrderCount -= 1;
       state.loading = false;
     });
@@ -182,6 +188,6 @@ const orderTableSlice = createSlice({
   },
 });
 
-export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails } = orderTableSlice.actions;
+export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails, resetToastActionOrder } = orderTableSlice.actions;
 
 export default orderTableSlice.reducer;
