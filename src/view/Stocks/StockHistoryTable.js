@@ -78,6 +78,8 @@ const StockHistoryTable = () => {
            stockType:ele.stockType,
            updatedAt:ele.updatedAt,
            reason:ele.reason,
+           flag:ele.flag,
+           brandName:ele.productvariants.brandName,
            comment:ele.comment
        }
        data.push(_data)
@@ -87,6 +89,7 @@ const StockHistoryTable = () => {
   },[stockHistoryData])
 
   const dispatch = useDispatch();
+
 
    const stockTypeItems = ['Check In','Check Out']
      
@@ -102,9 +105,9 @@ const StockHistoryTable = () => {
       
       {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Brand Name"},     
           
-      {field: 'stockType', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:stockTypeItems,filterPlaceholder:"Search by Stock Type"},     
+      {field: 'flag', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:stockTypeItems,filterPlaceholder:"Search by Stock Type"},     
       {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
-    
+     
       {field: 'reason', header: 'Reason',isFilter:false,filterPlaceholder:"Search by catogery"},     
       {field: 'comment', header: 'comment',isFilter:false,filterPlaceholder:"Search by catogery"},     
      
@@ -162,14 +165,6 @@ const StockHistoryTable = () => {
   return <Loader visible={loading} />
 }
 
-  // const onEditNumberInput = (data)=>{
-  //   console.log(data)
-  //   products.forEach(ele => {
-  //      if (data.id===ele.id) {
-  //        ele.avilable += data.onHold
-  //      }
-  //   });
-  //   }
 
     
   return (

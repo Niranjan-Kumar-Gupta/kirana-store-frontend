@@ -64,7 +64,7 @@ const CustomerList = () => {
    // {field: 'id',header: 'S.No.',isFilter:false,filterType:'input'},
      {field: 'customerCode', header: 'Customer Code',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Code"},
     
-    {field: 'name', header: 'Customer Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Customer Name"},
+    {field: 'name', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'phone', header: 'Phone Number',isFilter:false,filterType:'input',filterPlaceholder:"Search by Phone Number"},
    
     {field: 'email', header: 'Email',isFilter:false,isBody:true,body:bodyEmail},  

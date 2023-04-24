@@ -152,13 +152,13 @@ const CustomTable = (
         columns.map((col,index)=>{
           if (col.isFilter) {
            if (filtersData.hasOwnProperty(col['field'])) {
-             //console.log(filtersData[col['field']],index,activeFilterIndex)
+             console.log(filtersData[col['field']],index,activeFilterIndex)
              if (filtersData[col['field']]) {
               setFiltersData({...filtersData,[e.field]: null})
              // console.log(btn[index].children[0].children[0].style.color)
               btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
               btn[activeFilterIndex].classList.remove('__activeFilter') 
-             // console.log(filtersData[col['field']])
+              console.log(filtersData[col['field']])
               delete filtersData[col['field']]
               let paginationData = {
                 page: paginator.page,

@@ -67,7 +67,7 @@ const CheckOut = () => {
     {
       //  key: 'orderDelivery',
         label: 'Order Delivery',
-       // data: 'Order Delivery',
+        data: 'Order Delivery',
        
         children: []
     },
@@ -382,6 +382,11 @@ const productNameBody = (rowData) => {
    }
  
   }
+
+  function onNodeSelect(e) {
+    console.log(e)
+  }
+
   const itemslist=[{ label: 'Stocks',url: '/stocks' },{ label: 'Check Out'  }];
   return (
     <div className='w-11 m-auto mb-6'>
@@ -423,22 +428,7 @@ const productNameBody = (rowData) => {
             className='p-fluid'
             encType='multipart/form-data'
           >
-              {/* <div className={'w-full m-auto flex justify-content-between align-items-center'}>    
-                  <div>
-                    <div className={'w-full m-auto flex justify-content-start align-items-center'}>
-                      <CustomBreadcrumb className='pl-0' itemslist={itemslist}/>        
-                     </div>
-                  </div>
-                  <div className='flex gap-2'>
-                        <div className='flex '>
-                          <Button severity="secondary"  label={'Cancel'} onClick={goBack} /> 
-                        </div>
-                        <div className='flex '>
-                          <CustomButton  varient='filled' type='submit' label={'Check Out'} /> 
-                        </div>
-                  </div>
-                
-              </div> */}
+            
               <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
                 <div className='lg:w-7 md:w-8 sm:w-full'>
                 <div className='bg-white p-3 border-round border-50 mb-3'>
@@ -493,7 +483,7 @@ const productNameBody = (rowData) => {
                           <>
                             <div className="card w-full flex justify-content-center">
                               <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
-                                className="w-full" placeholder="Select Reason"></TreeSelect>
+                                className="w-full" metaKeySelection={true}  onNodeSelect={onNodeSelect} placeholder="Select Reason"></TreeSelect>
                               
                             </div>
                             {getFormErrorMessage(field.name)} 
@@ -527,12 +517,7 @@ const productNameBody = (rowData) => {
                 </div>
               </div>
 
-            {/* <div className='flex justify-content-end gap-2 mt-3 '>
-              <div className='flex  '>
-                <CustomButton varient='filled' type='submit' label={'Check Out'} />
-            
-              </div>
-            </div> */}
+           
           </form>
         </div>
    
