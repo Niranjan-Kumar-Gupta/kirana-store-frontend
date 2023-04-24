@@ -14,9 +14,11 @@ import {
   resetSelectedRawMaterial,
 } from '../../reducers/rawMaterialSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { resetToastActionRaw } from '../../reducers/rawMaterialHistoryTableSlice'
 
 const RawMaterial = () => {
   const [showRawMaterialForm, setShowRawMaterialForm] = useState(false)
+  const { toastAction } = useSelector(state => state.rawMaterialHistoryTable)
   const dispatch = useDispatch()
   const toast = useRef(null)
 
@@ -31,6 +33,21 @@ const RawMaterial = () => {
     //  console.log(item);
     setTable(item)
   }
+
+  useEffect(() => {
+    if (toastAction === 'checkIn') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Check In Successfully',
+      })
+    } else if (toastAction === 'checkOut') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Check Out Successfully',
+      })
+    }
+    dispatch(resetToastActionRaw())
+  },[])
 
   const renderTable = (table) => {
     switch (table) {
