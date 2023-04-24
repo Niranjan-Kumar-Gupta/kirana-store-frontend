@@ -70,14 +70,49 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
                   textDecorationLine: 'underline',
                   textDecorationStyle: 'dashed',
                 }}
-              >{mode=='update'?'Update Raw Material':`Add New Raw Material`}</span>
+              >{mode=='update'?'Update Raw Material':`Add Raw Material`}</span>
             </Text>
           </div>
         )
     }
 
+    
+  const typechecker = (selectedImage) => {
+    if (
+      selectedImage.type === 'image/png' ||
+      selectedImage.type === 'image/jpeg'
+    ) {
+      return true
+    }
+    return false
+  }
+
     const onSubmit = (data) => {
-        console.log(data)
+
+      
+    if (selectedImage === null) {
+      toast.current.show({
+        severity: 'error',
+        detail: 'Please select an image.',
+      })
+      return
+    }
+    if (typechecker(selectedImage) || typeof selectedImage === 'string') {
+      if (selectedImage.size > 8000000) {
+        toast.current.show({
+          severity: 'error',
+          detail: 'Image size should be less than 8 MB.',
+        })
+        return
+      }
+    } else {
+      toast.current.show({
+        severity: 'error',
+        detail: 'Please select .jpg or .png format image.',
+      })
+      return
+    }
+
         const __data = {
           materialName:data.rawMaterialName,
           materialType:data.unit
@@ -151,7 +186,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
             htmlFor='rawMaterialName'
             className={classNames({ 'p-error': errors.rawMaterialName })}
           >
-            Raw Material Name *
+            Name *
           </label>
           <Controller
             name='rawMaterialName'
@@ -222,14 +257,15 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
               <small>* Image size should be less than 8MB. </small>
             )}
           </div>      
-        <div className='flex gap-2 mt-5'>
-         <Button
+        <div className='flex justify-content-end gap-2 mt-5'>
+         <CustomButton
             label={'Cancel'}
+            type='button'
             onClick={onHide}
-            className={`skalebot-button ${style.colored} w-6rem`}
+            varient={'cancel w-6rem'}
           />
           <CustomButton
-            varient='filled'
+            varient='filled w-6rem'
             type='submit'
             label={mode=='update'?'Update':'Save'}
           />

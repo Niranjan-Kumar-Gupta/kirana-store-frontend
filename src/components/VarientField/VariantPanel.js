@@ -10,6 +10,7 @@ import { Button } from 'primereact/button';
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import "./index.css"
 import './../../index.css'
+import { CustomButton } from '../CustomButton';
 
 export default function VariantTable({varienttable, setVarienttable, mode, edit}) {
     const onRowEditComplete = (e) => {
@@ -72,7 +73,7 @@ export default function VariantTable({varienttable, setVarienttable, mode, edit}
     const deleteSelectedProducts = (rowData) => {
         let _varienttable = [...varienttable];
         _varienttable = _varienttable.map((val) => {
-            if(val.key===rowData.key){
+            if(val.variantKey===rowData.variantKey){
                 return {...val,isActive:!val.isActive} 
             }
             else return val
@@ -88,7 +89,7 @@ export default function VariantTable({varienttable, setVarienttable, mode, edit}
         );}
         else { 
             return (
-            <i className="pi pi-refresh" style={{ fontSize: '1rem' }} onClick={() => deleteSelectedProducts(rowData)} ></i>
+                <CustomButton type='button' onClick={() => deleteSelectedProducts(rowData)} varient='noBgButton w-3rem font-black' disabled={!edit && mode === 'update'} icon={"pi pi-refresh cursor-pointer"} />
             );}
     };
   

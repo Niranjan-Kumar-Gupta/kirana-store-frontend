@@ -113,8 +113,6 @@ useEffect(()=>{
         showButtons
         style={{ width: '8rem' }}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
       />
     )

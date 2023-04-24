@@ -12,8 +12,9 @@ import {
   changePage,
   deleteRawMaterial
 } from "../../reducers/rawMaterialSlice";
+import { DeleteAlert } from '../../components/Alert/DeleteAlert';
 
-const RawMaterialTable = ({setShowRawMaterialForm}) => {
+const RawMaterialTable = ({setShowRawMaterialForm, toast}) => {
   
   const {
     rawMaterialData,
@@ -23,6 +24,8 @@ const RawMaterialTable = ({setShowRawMaterialForm}) => {
     totalRawMaterialCount,
     selectedRawMaterial
   } = useSelector((state) => state.rawMaterialTable);
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
+
   const dispatch = useDispatch();
 
   const quntBody = (rowData)=>{
@@ -64,17 +67,27 @@ const RawMaterialTable = ({setShowRawMaterialForm}) => {
   const onClearSearch = (data)=>{
   console.log(data)
   }
+
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item='rawMaterial'
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    )
+  }
+
   const handleEdit = (data) => {
-    console.log('raw material  edit',data)
     dispatch(changeSelectedRawMaterial(data))
     dispatch(changeMode('update'))
     setShowRawMaterialForm(true) 
  };
 
  const handleDelete = (data) => {
-   console.log('raw material  del',data)
-   dispatch(deleteRawMaterial(data.id)) 
-    
+   dispatch(changeSelectedRawMaterial(data))
+   setDisplayAlertDelete(true);
  };
 
 
@@ -86,6 +99,7 @@ const RawMaterialTable = ({setShowRawMaterialForm}) => {
   return (
     <div className='w-full pt-3 m-auto'>
     {loading ? loader() : <></>}
+    {displayAlertDelete && deleteModule()}
     <div className="mt-2">
           <CustomTable 
              tableName={'rawMatTable'}

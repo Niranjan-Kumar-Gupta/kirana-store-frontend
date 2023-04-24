@@ -229,9 +229,15 @@ export const CategoryForm = ({ onHide, showCategoryForm, toast }) => {
             />
             {getFormErrorMessage('desc')}
           </div>
-          <div>
+          <div className='flex justify-content-end gap-2'>
             <CustomButton
-              varient='filled'
+              varient='cancel w-6rem'
+              type='button'
+              onClick={onHide}
+              label={'Cancel'}
+            />
+            <CustomButton
+              varient='filled w-6rem'
               type='submit'
               label={mode === 'update' ? 'Update' : 'Save'}
             />

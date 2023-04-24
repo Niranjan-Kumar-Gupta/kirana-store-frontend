@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from 'primereact/button';
 
-import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
+import { changeToastActionCheck, updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 
@@ -51,7 +51,6 @@ const CheckIn = () => {
   useEffect(()=>{
     const getOrderData = async ()=>{
         const order =  await API_GET_ORDERS(0,100000)
-        console.log(order)
         let orderIds = []
         order.rows.forEach(ele => {       
             let data = {
@@ -93,7 +92,6 @@ const CheckIn = () => {
     
     try {
       const prodVariants = await API_GET_PRRODUCTS_WITH_VARIANTS(0, 100000)
-      console.log(prodVariants)
       setprodVar(prodVariants.rows)
     } catch (error) {
       console.log(error)
@@ -135,6 +133,9 @@ useEffect(() => {
         const { children, ...rest } = curr
         acc.push(rest)
         if (children) {
+          if (children.length === 0) {
+            acc[acc.length - 1].isDefault = true
+          }
           acc.push(...flatten(children))
         }
         return acc
@@ -144,13 +145,12 @@ useEffect(() => {
       const flattenedData = flatten(data)
       return ids.flatMap((id) => {
         const foundItem = flattenedData.find(
-          (item) => item.key == id && ('option1' in item || item.defaultProduct)
+          (item) => item.key == id && ('option1' in item || item.isDefault)
         )
         if (foundItem) {
           const existingItem = tableData.find(
             (item) => item.key === foundItem.key
           )
-          console.log(foundItem)
           return {
             id: foundItem.id,
             key: foundItem.key,
@@ -160,10 +160,13 @@ useEffect(() => {
             productId: foundItem.productId ? foundItem.productId : foundItem.id,
             categoryId: foundItem.categoryId,
             price: foundItem.price,
-            productVariantId: foundItem.productId ? foundItem.id : null,
+            productVariantId: foundItem.productId
+            ? foundItem.id
+            : foundItem.productVariantId,
             SKUCode: foundItem.SKUCode,
-            orderedQuantity: foundItem ? foundItem.quantity : '',
-            isDefault: foundItem.defaultProduct ? true : false,
+            availableQuantity: foundItem.quantity,
+            checkInQuantity: existingItem ? existingItem.checkInQuantity : '',
+            isDefault: foundItem.isDefault ? true : false,
           }
         }
         return []
@@ -177,7 +180,6 @@ useEffect(() => {
 
   
   const productNameBody = (rowData) => {
-    console.log(rowData)
     return (
       <div className='flex flex-column'>
         <div className='mb-1'>
@@ -213,22 +215,20 @@ useEffect(() => {
   const onCellEditCompleteCheckIn = (e, rowIndex) => {
     let _products = [...tableData];
     _products[rowIndex].checkInQuantity = e.value; 
-    setTableData(_products);
+    if (e.value) {
+      setTableData(_products)
+    }
   }
  
   const checkInQuantityEditor = (rowData, colData) => {
-    
     return (
       <InputNumber
         value={rowData.checkInQuantity}
-        placeholder="Enter Check out Quantity"
+        placeholder="Enter Quantity"
         id={rowData.key}
         name={rowData.label}
-        showButtons
         style={{ width: '8rem' }}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onValueChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
       />
     )
@@ -251,7 +251,7 @@ useEffect(() => {
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='orderedQuantity'
+          field='availableQuantity'
           //body={qtyEditor}
         ></Column>
         <Column
@@ -287,19 +287,14 @@ useEffect(() => {
       comment:data.comment,
       productvariants:__prodVar
      }
-     console.log(finalData)
      dispatch( updateStocksHistoryCheck (finalData))
      .unwrap()
      .then((res) => {
           
           let Message_Success = 'Check In Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          setTimeout(() => {
-            {
-              goBack()
-            }
-          }, 500)
-         
+          goBack()
+          dispatch(changeToastActionCheck('checkIn'))
         })
         .catch((err)=>{
           console.log(err)

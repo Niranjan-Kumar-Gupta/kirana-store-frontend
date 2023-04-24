@@ -1,64 +1,65 @@
 import React, { useState, useEffect, useRef } from 'react'
-import CustomSwitch from "../../components/CustomSwitch";
-import { CustomButton } from "../../components/CustomButton";
+import CustomSwitch from '../../components/CustomSwitch'
+import { CustomButton } from '../../components/CustomButton'
 import { useNavigate } from 'react-router-dom'
-import RawMaterialHistoryTable from './RawMaterialHistoryTable';
-import RawMaterialTable from './RawMaterialTable';
+import RawMaterialHistoryTable from './RawMaterialHistoryTable'
+import RawMaterialTable from './RawMaterialTable'
 import style from './style.module.css'
-import RawMaterialForm from '../../components/Forms/RawMaterialForm';
+import RawMaterialForm from '../../components/Forms/RawMaterialForm'
 import { Toast } from 'primereact/toast'
 
-import {  
+import {
   changeMode,
   resetMode,
   resetSelectedRawMaterial,
-} from "../../reducers/rawMaterialSlice";
-import { useDispatch, useSelector } from "react-redux";
-
+} from '../../reducers/rawMaterialSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 const RawMaterial = () => {
-
-  const [showRawMaterialForm, setShowRawMaterialForm] = useState(false);
-  const dispatch = useDispatch();
+  const [showRawMaterialForm, setShowRawMaterialForm] = useState(false)
+  const dispatch = useDispatch()
   const toast = useRef(null)
 
-    const switchButtons = [
-        { name: "Raw Material", value: "rawMaterial" },
-        { name: "History", value: "rawMaterialHistory" },
-      ];
-      const navigate = useNavigate()
-      const [table, setTable] = useState('rawMaterial')
-  
+  const switchButtons = [
+    { name: 'Raw Material', value: 'rawMaterial' },
+    { name: 'History', value: 'rawMaterialHistory' },
+  ]
+  const navigate = useNavigate()
+  const [table, setTable] = useState('rawMaterial')
+
   const handleSwitch = (item) => {
-  //  console.log(item);
+    //  console.log(item);
     setTable(item)
-  };
+  }
 
   const renderTable = (table) => {
     switch (table) {
-      case "rawMaterial":
-        return <RawMaterialTable setShowRawMaterialForm={setShowRawMaterialForm}/>;
-      case "rawMaterialHistory":
-        return <RawMaterialHistoryTable/>;
+      case 'rawMaterial':
+        return (
+          <RawMaterialTable
+            setShowRawMaterialForm={setShowRawMaterialForm}
+            toast={toast}
+          />
+        )
+      case 'rawMaterialHistory':
+        return <RawMaterialHistoryTable />
     }
-  };
+  }
   const onClickCheckInAndOut = (page) => {
-   
     switch (page) {
-      case "checkIn":   
-        navigate("checkIn");
+      case 'checkIn':
+        navigate('checkIn')
         break
-      case "checkOut":
-        navigate("checkOut");
+      case 'checkOut':
+        navigate('checkOut')
         break
     }
-  };
+  }
 
   const onAddNewClick = () => {
     dispatch(resetMode())
     dispatch(resetSelectedRawMaterial())
     setShowRawMaterialForm(true)
-   
   }
 
   const onHide = () => {
@@ -68,7 +69,7 @@ const RawMaterial = () => {
   const rawMaterialModal = () => {
     return (
       <RawMaterialForm
-        onHide = {onHide}
+        onHide={onHide}
         showRawMaterialForm={showRawMaterialForm}
         toast={toast}
       />
@@ -76,43 +77,45 @@ const RawMaterial = () => {
   }
 
   return (
-    <div className="w-11 pt-3 m-auto"> 
+    <div className='w-11 pt-3 m-auto'>
       <Toast ref={toast} />
-    {showRawMaterialForm ? rawMaterialModal() : <></>}
-    <div className="flex mt-4 justify-content-between align-items-center gap-2">
-         <CustomSwitch
-           options={switchButtons}
-           value={table}
-           handleSwitch={handleSwitch}
-         />
-         <div className='flex justify-content-center align-items-center gap-2'>
-               
-                <div className={`${style.__border} px-4 mx-3`}>
-                  <CustomButton
-                    varient="filled"
-                    label={"Add New Raw Material"}          
-                    onClick={onAddNewClick}
-                  />
-                </div>
+      {showRawMaterialForm ? rawMaterialModal() : <></>}
+      <div className='flex flex-wrap mt-4 justify-content-between align-items-center gap-2'>
+        <CustomSwitch
+          options={switchButtons}
+          value={table}
+          handleSwitch={handleSwitch}
+        />
+        <div className='flex flex-wrap justify-content-center align-items-center gap-2'>
+          <div className={`${style.__border} px-4 mx-3`}>
+            <CustomButton
+              varient='filled'
+              icon={'pi pi-plus'}
+              label={'Add Raw Material'}
+              onClick={onAddNewClick}
+            />
+          </div>
 
-              <div className="flex  justify-content-center align-items-center gap-3" >
-                <CustomButton
-                  varient="filled"
-                  label={"Check In"}          
-                  onClick={()=>{onClickCheckInAndOut('checkIn')}}
-                />
-                <CustomButton
-                  varient="filled"
-                  label={"Check Out"}
-                  onClick={()=>{onClickCheckInAndOut('checkOut')}}   
-                />
-             </div>  
-         </div>
- 
+          <div className='flex justify-content-center align-items-center gap-2'>
+            <CustomButton
+              varient='filled'
+              label={'Check In'}
+              onClick={() => {
+                onClickCheckInAndOut('checkIn')
+              }}
+            />
+            <CustomButton
+              varient='filled'
+              label={'Check Out'}
+              onClick={() => {
+                onClickCheckInAndOut('checkOut')
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      {renderTable(table)}
     </div>
-     {renderTable(table)}
-
- </div>
   )
 }
 

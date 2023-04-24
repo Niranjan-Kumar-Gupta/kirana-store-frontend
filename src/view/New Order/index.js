@@ -172,6 +172,8 @@ const NewOrder = () => {
 
   const getDataByIds = (data, ids) => {
     const flattenedData = flatten(data)
+    console.log(flattenedData)
+
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
         (item) => item.key == id && ('option1' in item || item.isDefault)
@@ -206,7 +208,6 @@ const NewOrder = () => {
   }
 
   const onSubmit = (data) => {
-    console.log(data)
     if (mode === 'update') {
       let updatedData = {
         orderDetails: {},
@@ -269,8 +270,7 @@ const NewOrder = () => {
         placeholder='Enter Quantity'
         id={rowData.key}
         name={rowData.label}
-        showButtons
-        style={{ width: '12rem' }}
+        style={{ width: '8rem' }}
         min={0}
         onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
       />
@@ -365,7 +365,7 @@ const NewOrder = () => {
         <Column header='Price' field='price'></Column>
         <Column
           className='qtyCells'
-          header='Quantity'
+          header='Ordered Quantity'
           field='orderedQuantity'
           body={mode === 'create' ? qtyEditor : ''}
         ></Column>
@@ -422,7 +422,7 @@ const NewOrder = () => {
                   onClick={
                     mode !== 'update'
                       ? () => {
-                          navigate('/products')
+                          navigate('/orders')
                         }
                       : edit
                       ? () => {
@@ -489,7 +489,7 @@ const NewOrder = () => {
                       <CustomButton
                         varient='filled'
                         icon={'pi pi-plus'}
-                        onClick={() => navigate('/customers/create')}
+                        onClick={() => navigate('/customers/new')}
                         label={'Add Customer'}
                       />
                     )}
