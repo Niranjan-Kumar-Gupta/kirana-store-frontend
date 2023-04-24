@@ -136,11 +136,11 @@ export const Login = () => {
                 />
                 {getFormErrorMessage("password")}
               </div>
-              <div className="flex" >
+              {/* <div className="flex" >
                 <div style={{cursor:"pointer"}} onClick={resetPage}>
                 <Text type={"sub-heading"} color="#1C738E" >Forgot Password</Text>
                 </div>
-              </div>
+              </div> */}
               <div className="w-7 m-auto mt-7">
                 <CustomButton
                   type="submit"

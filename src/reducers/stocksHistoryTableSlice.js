@@ -23,8 +23,9 @@ const initialState = {
   totalStockHistoryCount:0,
   selectedStockHistory:null,
   page: 0,
-  limit: 5,
+  limit: 10,
   mode: null,
+  toastAction : null
 };
 
 export const getStocksHistory = createAsyncThunk(
@@ -93,7 +94,6 @@ const stocksHistoryTableSlice = createSlice({
     },
   
     changeSelectedStockHistory(state, action) {
-      console.log(action)
       state.selectedStockHistory = action.payload;
     },
     resetSelectedStockHistory(state) {
@@ -102,6 +102,12 @@ const stocksHistoryTableSlice = createSlice({
     changePage(state, action) {
       state.page = action.payload
     },
+    changeToastActionCheck(state, action) {
+      state.toastAction = action.payload
+    },
+    resetToastActionCheck(state) {
+      state.toastAction = null;
+    }
   },
 
   extraReducers: (builder) => {
@@ -122,7 +128,6 @@ const stocksHistoryTableSlice = createSlice({
 
     builder.addCase(updateStocksHistory.fulfilled, (state, action) => {
       state.loading = false;
-     
     });
 
     builder.addCase(updateStocksHistory.pending, (state) => {
@@ -137,7 +142,6 @@ const stocksHistoryTableSlice = createSlice({
 
      builder.addCase(updateStocksHistoryCheck.fulfilled, (state, action) => {
       state.loading = false;
-     
     });
 
     builder.addCase(updateStocksHistoryCheck.pending, (state) => {
@@ -151,13 +155,11 @@ const stocksHistoryTableSlice = createSlice({
      //del stocks
 
      builder.addCase(deleteStocksHistory.fulfilled, (state, action) => {
-      console.log(action.payload)
       state.stockHistoryData = removeDeleteData(state.stockHistoryData, action.payload.id);
       state.totalStockHistoryCount -= 1;
       state.loading = false
       state.mode =  null
-      state.loading = false;
-     
+      state.toastAction = 'delete'
     });
 
     builder.addCase(deleteStocksHistory.pending, (state) => {
@@ -181,6 +183,8 @@ export const {
   changeSelectedStockHistory,
   resetSelectedStockHistory,
   changePage,
+  resetToastActionCheck,
+  changeToastActionCheck,
 } = stocksHistoryTableSlice.actions;
 
 export default stocksHistoryTableSlice.reducer;

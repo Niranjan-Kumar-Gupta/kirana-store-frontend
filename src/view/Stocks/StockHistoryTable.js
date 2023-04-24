@@ -62,8 +62,6 @@ const StockHistoryTable = () => {
   },[])
 
   useEffect(()=>{
-
-    console.log(stockHistoryData)
     let data = []
     stockHistoryData.forEach(ele => {
        let _data = {
@@ -83,7 +81,7 @@ const StockHistoryTable = () => {
        data.push(_data)
     });
     setStockHistoryTable(data)
-    console.log(data)
+    
   },[stockHistoryData])
 
   const dispatch = useDispatch();
@@ -114,7 +112,6 @@ const StockHistoryTable = () => {
      ];
 
      function productBodyTemp(rowData) {
-      console.log(rowData)
       return (
         <div className='flex flex-column'>
           <div className='mb-1'>
@@ -131,29 +128,28 @@ const StockHistoryTable = () => {
       
       
   const onApplyFilter = (data)=>{
-    console.log(data)
+    
   }
   const onApplySearch = (data)=>{
-    console.log(data)
+    
   }
   
   const onClearFilter = (data)=>{
-    console.log(data)
+    
   }
 
   const onClearSearch = (data)=>{
-  console.log(data)
+  
   }
 
   const handleEdit = (data) => {
-    console.log('stock history edit',data)
+    
     navigate('edit') 
     dispatch(changeSelectedStockHistory(data))
    
  };
 
  const handleDelete = (data) => {
-   console.log('stock history del',data)
    dispatch(changeSelectedStockHistory(data))
    setDisplayAlertDelete(true);
  };

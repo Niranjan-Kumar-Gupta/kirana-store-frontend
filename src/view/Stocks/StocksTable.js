@@ -32,7 +32,7 @@ const StocksTable = () => {
     //   //console.log(stockData)
 
     // }) 
-    console.log(stockData)
+   
 
   },[page,limit])
 
@@ -54,7 +54,7 @@ const StocksTable = () => {
          ];
     
   function productBodyTemp(rowData) {
-      console.log(rowData)
+    
       return (
         <div className='flex flex-column'>
           <div className='mb-1'>

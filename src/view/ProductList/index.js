@@ -62,10 +62,28 @@ const ProductList = () => {
 
   useEffect(()=>{
     dispatch(getBrand()).unwrap().then((resp) => {
-      // console.log("Ss")
+      
     }).catch((err) => {
       console.log(err)
     })
+  
+    if (toastAction === 'add') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Product Successfully Added',
+      })
+    } else if (toastAction === 'update') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Product Successfully Updated',
+      })
+    } else if (toastAction === 'delete') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Product Successfully Deleted',
+      })
+    }
+    dispatch(resetToastAction())
   },[])
 
 
@@ -84,7 +102,7 @@ const ProductList = () => {
     // console.log('prod edit',product)
     dispatch(changeMode("update"));
     // dispatch(changeSelectedProduct(product));
-    navigate(`${product.id}`)
+    navigate(`/products/${product.id}`)
     // setDisplayAddProductModule(true);
   };
   const handleDelete = (product) => {

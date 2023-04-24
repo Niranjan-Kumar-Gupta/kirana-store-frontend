@@ -94,7 +94,7 @@ const CustomTable = (
                 options={dropdownItems}
                 placeholder={filterPlaceholder} 
                 className="p-column-filter" 
-                showClear />;
+                />;
       }
 
      const textFilterTemplate = (field,filterPlaceholder) => {

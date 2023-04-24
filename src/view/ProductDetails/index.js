@@ -107,6 +107,7 @@ const ProductDetails = () => {
     status: '',
     SKUCode: '',
     desc: '',
+    brandName: ''
   }
 
   const statusOption = [
@@ -138,6 +139,7 @@ const ProductDetails = () => {
       setValue('status', selectedProduct.status)
       setValue('SKUCode', selectedProduct.SKUCode)
       setValue('desc', selectedProduct.desc)
+      setValue('brandName', selectedProduct.brandName)
       handleImg(selectedProduct.url)
     }
   }, [selectedProduct])
@@ -277,7 +279,7 @@ const ProductDetails = () => {
   }
 
   let templabel =
-    mode !== 'update' || id === 'add' ? 'Add Product' : `Product #${id}`
+    mode !== 'update' || id === 'add' ? 'Add Product' : `${selectedProduct?.productName}`
   const itemslist = [
     { label: 'Products', url: '/products' },
     { label: templabel },
@@ -339,7 +341,7 @@ const ProductDetails = () => {
                     htmlFor='productName'
                     className={classNames({ 'p-error': errors.name })}
                   >
-                    Product Name*
+                    Product Name *
                   </label>
                   <Controller
                     name='productName'
@@ -393,7 +395,7 @@ const ProductDetails = () => {
                     htmlFor='SKUCode'
                     className={classNames({ 'p-error': errors.name })}
                   >
-                    SKUCode*
+                    SKUCode *
                   </label>
                   <Controller
                     name='SKUCode'
@@ -471,12 +473,12 @@ const ProductDetails = () => {
                     htmlFor='status'
                     className={classNames({ 'p-error': errors.name })}
                   >
-                    Product Status*
+                    Product Status *
                   </label>
                   <Controller
                     name='status'
                     control={control}
-                    rules={{ required: 'Status is required.' }}
+                    rules={{ required: 'Product Status is required.' }}
                     render={({ field, fieldState }) => (
                       <Dropdown
                         id={field.name}
@@ -499,16 +501,11 @@ const ProductDetails = () => {
 
               <div className='bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
-                  <label
-                    htmlFor='categoryid'
-                    className={classNames({ 'p-error': errors.name })}
-                  >
-                    Category
-                  </label>
+                  <label htmlFor='categoryid'>Category *</label>
                   <Controller
                     name='categoryId'
                     control={control}
-                    rules={{ required: 'Product Category Name is required' }}
+                    rules={{ required: 'Category is required' }}
                     render={({ field, fieldState }) => (
                       <TreeSelect
                         id={field.name}
@@ -518,29 +515,24 @@ const ProductDetails = () => {
                         filter
                         inputRef={field.ref}
                         options={catagories}
-                        placeholder='Select Item'
+                        placeholder='Select category'
                         className={classNames('w-full', {
                           'p-invalid': fieldState.error,
                         })}
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product Category Name')}
+                  {getFormErrorMessage('categoryId')}
                 </div>
               </div>
 
               <div className='bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
-                  <label
-                    htmlFor='price'
-                    className={classNames({ 'p-error': errors.name })}
-                  >
-                    Price*
-                  </label>
+                  <label htmlFor='price'>Price *</label>
                   <Controller
                     name='price'
                     control={control}
-                    rules={{ required: 'Product Price' }}
+                    rules={{ required: 'Price is required' }}
                     render={({ field, fieldState }) => (
                       <InputNumber
                         id={field.name}
@@ -559,7 +551,7 @@ const ProductDetails = () => {
                       />
                     )}
                   />
-                  {getFormErrorMessage('Product Price')}
+                  {getFormErrorMessage('price')}
                 </div>
               </div>
 
@@ -569,12 +561,12 @@ const ProductDetails = () => {
                     htmlFor='brandName'
                     className={classNames({ 'p-error': errors.name })}
                   >
-                    Brand Name*
+                    Brand Name *
                   </label>
                   <Controller
                     name='brandName'
                     control={control}
-                    rules={{ required: 'Product Brand Name' }}
+                    rules={{ required: 'Brand Name is required' }}
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}

@@ -17,7 +17,7 @@ import Loader from '../../components/Loader'
 import { API_GET_ORDERS } from '../../api/order.services';
 import { useDispatch, useSelector } from "react-redux";
 
-import { updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
+import { changeToastActionCheck, updateStocksHistory,updateStocksHistoryCheck } from '../../reducers/stocksHistoryTableSlice'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { Button } from 'primereact/button';
 import { ReactComponent as Delete } from '../../svg/delete.svg'
@@ -144,6 +144,9 @@ useEffect(() => {
         const { children, ...rest } = curr
         acc.push(rest)
         if (children) {
+          if (children.length === 0) {
+            acc[acc.length - 1].isDefault = true
+          }
           acc.push(...flatten(children))
         }
         return acc
@@ -153,7 +156,7 @@ useEffect(() => {
       const flattenedData = flatten(data)
       return ids.flatMap((id) => {
         const foundItem = flattenedData.find(
-          (item) => item.key == id && ('option1' in item || item.defaultProduct)
+          (item) => item.key == id && ('option1' in item || item.isDefault)
         )
         if (foundItem) {
           const existingItem = tableData.find(
@@ -168,10 +171,13 @@ useEffect(() => {
             productId: foundItem.productId ? foundItem.productId : foundItem.id,
             categoryId: foundItem.categoryId,
             price: foundItem.price,
-            productVariantId: foundItem.productId ? foundItem.id : null,
+            productVariantId: foundItem.productId
+            ? foundItem.id
+            : foundItem.productVariantId,
             SKUCode: foundItem.SKUCode,
-            orderedQuantity: foundItem ? foundItem.quantity: '',
-            isDefault: foundItem.defaultProduct ? true : false,
+            availableQuantity: foundItem.quantity,
+            checkInQuantity: existingItem ? existingItem.checkInQuantity : '',
+            isDefault: foundItem.isDefault ? true : false,
           }
         }
         return []
@@ -236,7 +242,9 @@ const productNameBody = (rowData) => {
   const onCellEditComplete = (e, rowIndex) => {
     let _products = [...tableData];
     _products[rowIndex].quantity = e.value; 
-    setTableData(_products);
+    if (e.value) {
+      setTableData(_products)
+    }
   }
  
   const qtyEditor = (rowData, colData) => {
@@ -246,11 +254,8 @@ const productNameBody = (rowData) => {
         placeholder="Enter Quantity"
         id={rowData.key}
         name={rowData.label}
-        showButtons
         style={{ width: '8rem' }}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onValueChange={(e) => onCellEditComplete(e, colData.rowIndex)}
       />
     )
@@ -262,19 +267,15 @@ const productNameBody = (rowData) => {
   }
  
   const checkInQuantityEditor = (rowData, colData) => {
-    
     return (
       <InputNumber
         value={rowData.checkInQuantity}
-        placeholder="Enter Check out Quantity"
+        placeholder="Enter Quantity"
         id={rowData.key}
         name={rowData.label}
-        showButtons
         style={{ width: '8rem' }}
         max={rowData.quantity}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onValueChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
       />
     )
@@ -297,7 +298,7 @@ const productNameBody = (rowData) => {
         <Column
           className='qtyCells'
           header='Available Quantity'
-          field='orderedQuantity'
+          field='availableQuantity'
          // body={qtyEditor}
         ></Column>
         <Column
@@ -333,21 +334,15 @@ const productNameBody = (rowData) => {
       comment:data.comment,
       productvariants:__prodVar
      }
-     console.log(finalData)
      dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
         .then((res) => {
           let Message_Success = 'Check Out Successfully '
           toast.current.show({ severity: 'success', detail: Message_Success })
-          setTimeout(() => {
-            {
-              goBack()
-            }
-          }, 500)
- 
+          goBack()
+          dispatch(changeToastActionCheck('checkOut'))
         })
         .catch((err)=>{
-          console.log(err)
           toast.current.show({ severity: 'error', detail: err.message }) 
        
         })
@@ -359,26 +354,18 @@ const productNameBody = (rowData) => {
       comment:data.comment,
       productvariants:__prodVar
      }
-     console.log(finalData)
      dispatch(updateStocksHistoryCheck(finalData))
      .unwrap()
      .then((res) => {
       let Message_Success = 'Check Out Successfully '
       toast.current.show({ severity: 'success', detail: Message_Success })
-      setTimeout(() => {
-        {
-          goBack()
-        }
-      }, 500)
-          
-        })
+        goBack()
+        dispatch(changeToastActionCheck('checkOut'))
+      })
       .catch((err)=>{
-        console.log(err)
         toast.current.show({ severity: 'error', detail: err.message }) 
      
       })
-
-      
    }
  
   }
