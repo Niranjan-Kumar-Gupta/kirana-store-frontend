@@ -111,6 +111,51 @@
   color: #000000 !important;
 }
 
+
+/* ------tree table----- */
+
+.skalebot-table.p-treetable .p-treetable-tbody > tr{
+ 
+  font-family: "Lato" !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  line-height: 1.1rem !important;
+ 
+}
+
+
+.skalebot-table.p-treetable .p-treetable-tbody{
+ 
+
+  border:  solid 1px rgba(0, 0, 0, 0.132);
+  border-top: none;
+}
+
+.skalebot-table.p-treetable .p-treetable-tbody > tr > td{
+border: none;
+padding:1rem 0.5rem;
+}
+.skalebot-table.p-treetable .p-treetable-thead > tr {
+background: #ededed ;
+
+overflow: hidden;
+}
+.skalebot-table.p-treetable .p-treetable-thead > tr > th {
+background: inherit ;
+color: #000000 ;
+font-size: 0.9rem ;
+font-weight: 600 ;
+border: none;
+padding: 1rem 0.5rem;
+
+
+}
+.skalebot-table2.p-treetable .p-treetable-thead > tr > th {
+color: #000000 !important;
+}
+
+
 .skalebot-table2 .p-checkbox .p-checkbox-box{
   /* background: #FFFFFF !important; */
   border: 0.5px solid rgba(0, 0, 0, 0.25) !important;
