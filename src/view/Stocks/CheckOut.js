@@ -32,6 +32,7 @@ const CheckOut = () => {
   const [prodVar, setprodVar] = useState([])
 
   const [orderId, setOrderId] = useState([])
+  const [showOrderDropdown, setShowOrderDropDown] = useState(false);
   const dispatch = useDispatch();
 
   const { 
@@ -63,13 +64,11 @@ const CheckOut = () => {
 
 
 
-  const [reasons, setReasons] = useState( [
+  const reasons = [
     {
-      //  key: 'orderDelivery',
+        key: 'orderDelivery',
         label: 'Order Delivery',
         data: 'Order Delivery',
-       
-        children: []
     },
     {
         key: 'damaged',
@@ -81,25 +80,15 @@ const CheckOut = () => {
         key: 'correction',
         label: 'Correction',
         data: 'Correction ',
-       
-    
     }
- ]);
+ ];
     
-useEffect(()=>{
-  console.log(orderId)
-  let _reason = [...reasons]
-  _reason[0].children = orderId
-  setReasons(_reason)
-},[orderId])
 
-  const [selectedReasons, setSelectedReasons] = useState(null);
+
   
   const getProdVariants = async () => {
-    console.log('ffff')
     try {
       const prodVariants = await API_GET_PRRODUCTS_WITH_VARIANTS(0, 100000)
-      console.log(prodVariants)
       setprodVar(prodVariants.rows)
     } catch (error) {
       console.log(error)
@@ -129,6 +118,7 @@ useEffect(() => {
         products: [],
         comment: '',
         reason: undefined,
+        order: ''
       }
     
       const {
@@ -330,7 +320,7 @@ const productNameBody = (rowData) => {
 
    if (data.reason == 'damaged' || data.reason == 'correction') {
     let finalData = {
-      reason:data.reason,  
+      reason:data.reason.key,  
       comment:data.comment,
       productvariants:__prodVar
      }
@@ -349,8 +339,8 @@ const productNameBody = (rowData) => {
      
    } else {
     let finalData = {
-      reason:`order ${data.reason}`,
-      orderId:data.reason,
+      reason:`order ${data.reason.id}`,
+      orderId:data.reason.id,
       comment:data.comment,
       productvariants:__prodVar
      }
@@ -469,8 +459,12 @@ const productNameBody = (rowData) => {
                         render={({ field, fieldState }) => (
                           <>
                             <div className="card w-full flex justify-content-center">
-                              <TreeSelect value={field.value} onChange={(e) => field.onChange(e.value)} options={reasons} 
-                                className="w-full" metaKeySelection={true}  onNodeSelect={onNodeSelect} placeholder="Select Reason"></TreeSelect>
+                              <Dropdown value={field.value} onChange={(e) => {
+                                field.onChange(e.value)
+                                if (e.value.key === 'orderDelivery') setShowOrderDropDown(true);
+                                else setShowOrderDropDown(false)
+                              }} options={reasons} 
+                                className="w-full" placeholder="Select Reason"></Dropdown>
                               
                             </div>
                             {getFormErrorMessage(field.name)} 
@@ -478,6 +472,27 @@ const productNameBody = (rowData) => {
                         )}
                       />
                      </div>
+                     {showOrderDropdown && (
+                      <div className='field w-full mb-3'>
+                      <label htmlFor='Reason'>Order *</label>
+                      <Controller
+                        name='order'
+                        control={control}
+                        rules={{ required: 'Order is required.' }}
+                        render={({ field, fieldState }) => (
+                          <>
+                            <div className="card w-full flex justify-content-center">
+                              <Dropdown value={field.value} onChange={(e) =>
+                                field.onChange(e.value)} options={orderId} 
+                                className="w-full" placeholder="Select Order"></Dropdown>
+                              
+                            </div>
+                            {getFormErrorMessage(field.name)} 
+                          </>
+                        )}
+                      />
+                     </div>
+                     )}
                   </div>
                   <div className='mt-5'>
                       <div className='field'>
