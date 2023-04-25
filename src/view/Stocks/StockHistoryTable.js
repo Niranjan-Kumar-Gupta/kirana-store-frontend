@@ -43,6 +43,10 @@ const StockHistoryTable = () => {
       />
     );
   };
+  const {
+    brandNames, 
+  } = useSelector((state) => state.productTable);
+ 
 
 
   const [stockHistoryTable,setStockHistoryTable] = useState([])
@@ -101,7 +105,7 @@ const StockHistoryTable = () => {
        
       {field: 'SKUCode', header: 'SKUCode',isFilter:false,filterPlaceholder:"Search by catogery"},     
       
-      {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'input',filterPlaceholder:"Search by Brand Name"},     
+      {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},     
           
       {field: 'flag', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:stockTypeItems,filterPlaceholder:"Search by Stock Type"},     
       {field: 'quantity', header: 'Quantity',isFilter:false,filterPlaceholder:"Search by catogery"},     
