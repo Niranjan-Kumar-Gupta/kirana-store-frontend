@@ -128,7 +128,8 @@
 .skalebot-table.p-treetable .p-treetable-tbody{
  
 
-  border:  solid 1px rgba(0, 0, 0, 0.192);
+  border:  solid 1px rgba(0, 0, 0, 0.132);
+  border-top: none;
 }
 
 .skalebot-table.p-treetable .p-treetable-tbody > tr > td{
