@@ -42,6 +42,12 @@ const Orders = () => {
   const navigate = useNavigate()
  
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
+  const {
+   
+    brandNames,
+   
+  } = useSelector((state) => state.productTable);
+ 
 
   useEffect(()=>{
     // dispatch(getOrders({page:page,limit:limit}))
@@ -70,6 +76,8 @@ const Orders = () => {
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+    {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},
+  
     {field: 'itemCount', header: 'Items'},
     {field: 'viewDetails', header: '',viewDetails:true},
     {field: 'actions', header: 'Actions',isActions:true,actionType:['delete']}, 
