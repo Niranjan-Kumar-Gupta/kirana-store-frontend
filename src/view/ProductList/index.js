@@ -20,6 +20,8 @@ import {
 } from "../../reducers/productTableSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
+import { API_GET_CATEGORIES_FLAT } from '../../api/category.services';
+
 
 const ProductList = () => {
   const navigate = useNavigate()
@@ -37,14 +39,23 @@ const ProductList = () => {
     toastAction,
     selectedProductsList,
   } = useSelector((state) => state.productTable);
- 
-// console.log(page,limit)
- let items = ['New','In Progress','Done']
+
+
+
+  const [categoryFlat, setCategoryFlat] = useState([])
+  useEffect(()=>{
+    const getCatFlat = async ()=>{
+      const categoryFlat = await API_GET_CATEGORIES_FLAT(0,1000000)
+      setCategoryFlat(categoryFlat); 
+    }
+    getCatFlat()
+  },[])
+
  const columns = [
     {field: 'SKUCode',header: 'SKU Id'},
     {field: 'productName', header: 'Product Name'},
     {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},
-    {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:items,filterPlaceholder:"Search by catogery"},
+    {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:categoryFlat,filterPlaceholder:"Search by catogery"},
     {field: 'status', header: 'Stock'},
     {field: 'price', header: 'Price (₹)'},
     {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
