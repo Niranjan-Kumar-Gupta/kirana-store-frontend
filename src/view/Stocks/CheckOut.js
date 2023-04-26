@@ -339,8 +339,8 @@ const productNameBody = (rowData) => {
      
    } else {
     let finalData = {
-      reason:`order ${data.reason.id}`,
-      orderId:data.reason.id,
+      reason:`order ${data.order.key}`,
+      orderId:data.order.key,
       comment:data.comment,
       productvariants:__prodVar
      }
