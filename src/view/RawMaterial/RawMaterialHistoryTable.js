@@ -23,6 +23,11 @@ const RawMaterialHistoryTable = () => {
     loading,
     totalRawMaterialHistoryCount,
   } = useSelector((state) => state.rawMaterialHistoryTable);
+  const {
+    brandNames, 
+  } = useSelector((state) => state.productTable);
+ 
+
 
 
   const quntBody = (rowData)=>{
@@ -37,17 +42,21 @@ const RawMaterialHistoryTable = () => {
        </div>
      )
    }
+   const rawTypeItems = ['CHECK IN','CHECK OUT']
+     
   const columns = [
 
-    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:""},     
+    {field: 'updatedAt', header: 'Date',isDate:true,isFilter:true,filterPlaceholder:"Search by date",filterType :'date'},     
   
     {field: 'materialName', header: 'Raw Material',isFilter:false,filterPlaceholder:""},     
     
     //{ field: 'productName',header: 'Product',isFilter:false,filterPlaceholder:""},     
      
     //{field: 'vendorName', header: 'Vender Name',isFilter:false,filterPlaceholder:""},     
+    {field: 'flag', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:rawTypeItems,filterPlaceholder:"Search by Stock Type"},     
     
-     
+    {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},     
+      
     {field: 'quantity', header: 'Quantity',isFilter:false,isBody:true,body:quntBody,filterPlaceholder:""},     
  
     {field: 'reason', header: 'Comment',isFilter:false,filterPlaceholder:""},     

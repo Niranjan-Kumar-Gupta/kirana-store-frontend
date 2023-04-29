@@ -48,7 +48,6 @@ const CustomTable = (
     const [isInputNumberChange, setIsInputNumberChange] = useState({isClick:false,columnId:''});
     const dispatch = useDispatch();
 
-   
     
     const initFilters = () => {
         let initData = {...filters}
@@ -64,6 +63,8 @@ const CustomTable = (
         setFilters(initData)
         setGlobalFilterValue('');  
     };
+
+  
 
     useEffect(()=>{
         initFilters()   
@@ -122,17 +123,28 @@ const CustomTable = (
         onApplyFilter(filtersData)
         const btn = document.querySelectorAll(".p-column-filter");
         let activeFilterIndex = 0
-
+       // console.log(btn)
+        let flag = true
         columns.map((col,index)=>{
+          
            if (col.isFilter) {
             if (filtersData.hasOwnProperty(col['field'])) {
-              console.log(filtersData[col['field']],index,activeFilterIndex)
+             // console.log(filtersData[col['field']],index,activeFilterIndex)
               if (filtersData[col['field']] !== null) {
-              // console.log(btn[index].children[0].children[0].style.color)
+               console.log(btn[index].children[0].children[0].style.color)
                btn[activeFilterIndex].children[0].children[0].style.color = 'white'
                btn[activeFilterIndex].classList.add('__activeFilter')           
               } 
-           }
+             }else if(filtersData.hasOwnProperty('startDate') && filtersData.hasOwnProperty('endDate')){
+              //console.log(filtersData.hasOwnProperty('startDate'))
+              if (filtersData['startDate'] !== null && filtersData['endDate'] !== null && flag) {
+                 console.log(filtersData.hasOwnProperty('startDate'),filtersData,index,activeFilterIndex,btn)
+                 console.log(btn[index].children[0].children[0].style.color)
+                 btn[activeFilterIndex].children[0].children[0].style.color = 'white'
+                 btn[activeFilterIndex].classList.add('__activeFilter') 
+                 flag = false          
+                } 
+             }
              activeFilterIndex += 1
            }
         })
@@ -147,9 +159,10 @@ const CustomTable = (
        }
 
      const onClickClearFilter = (e)=>{   
-       console.log(e)    
+       //console.log(e)    
         const btn = document.querySelectorAll(".p-column-filter");
         let activeFilterIndex = 0;
+        let flag = true
         columns.map((col,index)=>{
           //if (e.field == col['field']) {
              //console.log((e.field == col['field']),e.field,col['field'])
@@ -162,18 +175,15 @@ const CustomTable = (
                  btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
                  btn[activeFilterIndex].classList.remove('__activeFilter') 
                  console.log(filtersData[col['field']])
-                 delete filtersData[col['field']]
-                
+                 delete filtersData[col['field']]           
                  //console.log(paginationData)
                  for (const key in filtersData)
                  {
                    if (filtersData[key] === null) {
                        console.log(key);
                        delete filtersData[key]
-                   }
-                    
-                 }
-          
+                   }                   
+                 }         
                  let paginationData = {
                   page: paginator.page,
                   limit: paginator.limit,
@@ -182,7 +192,41 @@ const CustomTable = (
                 }; 
                  dispatch(dispatchFunction(paginationData))
                 } 
-                }
+              }
+              else if (filtersData.hasOwnProperty('startDate') && filtersData.hasOwnProperty('endDate') && flag) {
+                //console.log(filtersData[col['field']],index,activeFilterIndex)
+                if (filtersData['startDate'] && (e.field == col['field'])) {
+                 setFiltersData((filtersData)=>{ return {...filtersData,startDate: null} })
+                 setFiltersData((filtersData)=>{ return {...filtersData,endDate: null} })
+                
+                // console.log(btn[index].children[0].children[0].style.color)
+                 btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
+                 btn[activeFilterIndex].classList.remove('__activeFilter') 
+                 //console.log(filtersData[col['field']])
+                 delete filtersData['startDate'] 
+                 delete filtersData['endDate'] 
+                 
+                 flag = false
+                 console.log(filtersData)          
+                 //console.log(paginationData)
+                 for (const key in filtersData)
+                 {
+                   if (filtersData[key] === null) {
+                       console.log(key);
+                       delete filtersData[key]
+                   }                   
+                 }         
+                 let paginationData = {
+                  page: paginator.page,
+                  limit: paginator.limit,
+                  filterData:filtersData,
+                  globalFilterValue
+                }; 
+                 dispatch(dispatchFunction(paginationData))
+                } 
+              }
+              
+
                activeFilterIndex += 1
               }
           //}
@@ -410,13 +454,26 @@ const dateBodyTemplateTree = (rowData)=>{
  //return formatDate('2023-03-24T14:37:11.000Z')
 }
 
+// useEffect(()=>{
+//   setFiltersData({...filtersData,[`startDate`]:startDate})
+// },[startDate])
+
+// useEffect(()=>{
+//   setFiltersData({...filtersData,[`startDate`]:endDate})
+// },[endDate])
+
   const dateFilterTemplate = (field,placeholder) => {
+    console.log(filtersData)
     return <div className="card flex flex-column justify-content-center">
               <div>
                 <Text>From</Text>
                 <Calendar 
-                  value={filtersData[`from${field}`] || ''}
-                  onChange={(e) => setFiltersData({...filtersData,[`from${field}`]:e.target.value})} 
+                  value={filtersData[`startDate`] || ''}
+                  onChange={(e) => {
+                    setFiltersData({...filtersData,[`startDate`]:e.target.value})
+                   // setStartDate(e.target.value)
+                   
+                    }} 
                   dateFormat="dd-mm-yy" 
                   placeholder="dd-mm-yyyy"
                   mask="99/99/9999" 
@@ -428,15 +485,19 @@ const dateBodyTemplateTree = (rowData)=>{
               <div>
                 <Text>To</Text>
                 <Calendar 
-                  value={filtersData[`to${field}`] || ''}
-                  onChange={(e) => setFiltersData({...filtersData,[`to${field}`]:e.target.value})} 
+                  value={filtersData[`endDate`] || ''}
+                  onChange={(e) => {
+                    
+                    //setEndDate(e.target.value)
+                    setFiltersData({...filtersData,[`endDate`]:e.target.value})
+                   }} 
                   dateFormat="dd-mm-yy" 
                   placeholder="dd-mm-yyyy"
                   mask="99/99/9999" 
                   className="mt-1 dateInput"
                   showIcon 
                   maxDate={new Date()}
-                  minDate={filtersData[`from${field}`]}
+                  minDate={filtersData[`startDate`]}
                 />
               </div>
            </div>
@@ -567,10 +628,12 @@ const dateBodyTemplateTree = (rowData)=>{
                        />
                      }
                   }
-                  else if (col.isDate){               
+                  else if (col.isDate){ 
+                    console.log('date true')              
                    if (col.isFilter) {
+                    console.log('date filter')  
                     if (tableType=='dataTable') {
-                      <Column
+                    return <Column
                       key={col.field} 
                       field={col.field} 
                       header={col.header} 
@@ -579,14 +642,14 @@ const dateBodyTemplateTree = (rowData)=>{
                       dataType="date"
                       style={{ minWidth: '1rem' }}
                       body={dateBodyTemplate}
-                      filter filterElement={dateFilterTemplate(col.field,col.filterPlaceholder)} 
+                      filter filterElement={dateFilterTemplate(col?.field,col?.filterPlaceholder)} 
                       onFilterApplyClick={(e)=>onClickFilter(e)}
                       onFilterClear={()=>{onClickClearFilter(col)}} 
                       disabled={false} 
                       
                       />
                     } else if(tableType=='treeTable'){
-                      <Column
+                      return <Column
                                 key={col.field} 
                                 field={col.field} 
                                 header={col.header} 
