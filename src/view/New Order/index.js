@@ -621,38 +621,8 @@ const NewOrder = () => {
                       {getFormErrorMessage('freightAmount')}
                     </div>
                   </div>
-                  {/* <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                    <label className='w-12 mr-3' htmlFor='totalAmount'>
-                      Amount *
-                    </label>
-                    <div className='w-12'>
-                      <Controller
-                        name='totalAmount'
-                        control={control}
-                        rules={{ required: 'Please provide amount' }}
-                        render={({ field, fieldState }) => (
-                          <InputNumber
-                            id={field.name}
-                            disabled={!edit && mode === 'update'}
-                            value={field.value}
-                            onChange={(e) => field.onChange(e.value)}
-                            useGrouping={false}
-                            mode='currency'
-                            currency='INR'
-                            currencyDisplay='code'
-                            locale='en-IN'
-                            placeholder='Enter Amount'
-                            className={classNames({
-                              'p-invalid': fieldState.invalid,
-                            })}
-                          />
-                        )}
-                      />
-                      {getFormErrorMessage('totalAmount')}
-                    </div>
-                  </div> */}
                   <div className='flex align-items-center my-4'>
-                    <div className='mr-3 w-6 lg:w-3'>Total Amount: </div>
+                    <div className='mr-3 w-6 lg:w-3'>Total Amount </div>
                     <Text type={'heading'}>
                       INR{' '}
                       {finalAmount}
@@ -660,7 +630,7 @@ const NewOrder = () => {
                   </div>
                   <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
                     <label className='w-12 mr-3' htmlFor='paidAmount'>
-                      Amount Paid
+                      Paid Amount
                     </label>
                     <Controller
                       name='paidAmount'
@@ -676,7 +646,7 @@ const NewOrder = () => {
                           currency='INR'
                           currencyDisplay='code'
                           locale='en-IN'
-                          placeholder='Enter Amount Paid'
+                          placeholder='Enter Paid Amount'
                           className={classNames({
                             'p-invalid': fieldState.invalid,
                           })}
@@ -685,7 +655,7 @@ const NewOrder = () => {
                     />
                   </div>
                   <div className='flex align-items-center my-4'>
-                    <div className='mr-3 w-6 lg:w-3'>Balance: </div>
+                    <div className='mr-3 w-6 lg:w-3'>Balance </div>
                     <Text type={'heading'}>
                       INR{' '}
                       {finalAmount && amtPaid
