@@ -30,7 +30,7 @@ const RawMaterialCheckOut = () => {
 
   const [tableData, setTableData] = useState([])
   const toast = useRef(null)
-  const [selectedRawMaterial, setSelectedRawMaterial] = useState([])
+  const [selectedRawId, setSelectedRawId] = useState([])
   const [rawMaterial, setRawMaterial] = useState([])
   const dispatch = useDispatch();
 
@@ -46,44 +46,61 @@ const RawMaterialCheckOut = () => {
   const getRawMaterial = async () => {  
     try {
       const rawMaterial = await API_GET_RAW_STOCK_MATERIAL(0, 100000)
-      console.log(rawMaterial) 
-      
       rawMaterial.rows.forEach(ele => {
-         ele['checkInQuantity'] = ''
+        ele['key'] = ele.id
+        ele['label'] = ele.materialName
       });
       setRawMaterial(rawMaterial.rows)
-     
-
     } catch (error) {
       console.log(error)
     }
   }
-useEffect(()=>{
-   getRawMaterial()
-},[])
 
-// useEffect(() => {
-//   setTableData(selectedRawMaterial)
-//   //console.log(tableData)
-// }, [selectedRawMaterial])
+  const getDataByIds = (data, ids) => {
+    return ids.flatMap((id) => {
+      const foundItem = data.find((item) => item.key == id)
+      if (foundItem) {
+        const existingItem = tableData.find(
+          (item) => item.key === foundItem.key
+        )
+        return {
+          ...foundItem,
+          checkInQuantity: existingItem
+            ? existingItem.checkInQuantity
+            : undefined,
+        }
+      }
+      return []
+    })
+  }
+
+  useEffect(()=>{
+    getRawMaterial()
+  },[])
+
+  useEffect(() => {
+    const filteredData = getDataByIds(rawMaterial, selectedRawId)
+    setTableData(filteredData)
+  }, [selectedRawId, rawMaterial])
+
    
-    const navigate = useNavigate()
-    const goBack = () => {
-        navigate('/rawMaterial')
-      }
+  const navigate = useNavigate()
+  const goBack = () => {
+      navigate('/rawMaterial')
+    }
 
-      const defaultValues = {
-        rawMaterials: null,
-        comment: '',
-      }
-    
-      const {
-        control,
-        formState: { errors },
-        handleSubmit,
-        reset,
-        setValue,
-      } = useForm({ defaultValues })
+  const defaultValues = {
+    rawMaterials: null,
+    comment: '',
+  }
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset,
+    setValue,
+  } = useForm({ defaultValues })
 
 
 
@@ -96,11 +113,11 @@ useEffect(()=>{
   
 
   const onCellEditCompleteCheckIn = (e, rowIndex) => {
-     let _rawMaterial = [...tableData];
-     console.log(_rawMaterial);
-     _rawMaterial[rowIndex].checkInQuantity = e.value; 
-     console.log(_rawMaterial);
-     setTableData(_rawMaterial);
+    let _rawMaterial = [...tableData];
+    _rawMaterial[rowIndex].checkInQuantity = e.value; 
+    if (e.value) {
+      setTableData(_rawMaterial);
+    }
   }
  
   const checkInQuantityEditor = (rowData, colData) => {
@@ -108,14 +125,11 @@ useEffect(()=>{
     return (
       <InputNumber
         value={rowData.checkInQuantity}
-        placeholder="Enter Check In Quantity"
+        placeholder="Enter Quantity"
         id={rowData.id}
         name={rowData.materialName}
-        showButtons
         style={{ width: '8rem' }}
         min={0}
-        incrementButtonIcon='pi pi-plus'
-        decrementButtonIcon='pi pi-minus'
         onChange={(e) => onCellEditCompleteCheckIn(e, colData.rowIndex)}
       />
     )
@@ -136,7 +150,6 @@ useEffect(()=>{
           className='qtyCells'
           header='Available Quantity'
           field='quantity'
-          //body={qtyEditor}
         ></Column>
         <Column
           className='qtyCells'
@@ -150,47 +163,54 @@ useEffect(()=>{
   }
   const onSubmit = (data) => {
 
-    let checkInData = {
-      materialArray:[],
-      reason:data.comment
-   }
-
-     data.rawMaterials.forEach(ele => {
-         checkInData.materialArray.push({
-          materialId:ele.materialId,
-          quantity:-ele.checkInQuantity,
-          vendorName:'a'
-         })
-     });
-
-      dispatch(updateRawMaterialHistoryCheck(checkInData))
-      .unwrap()
-      .then((res) => {
-        goBack()
-        dispatch(changeToastActionRaw('checkOut'))
+    delete data.rawMaterials;
+    data.reason = data.comment;
+    delete data.comment;
+    data.materialArray = [];
+    tableData.forEach((ele) => {
+      data.materialArray.push({
+        materialId: ele.materialId,
+        quantity: -ele.checkInQuantity,
+        vendorName: 'a',
       })
-      .catch((err)=>{
-        toast.current.show({ severity: 'error', detail: err.message }) 
-     
-      })
+    })
+
+    let isQtyEmpty = false
+    tableData.forEach((raw) => {
+      if (!raw.checkInQuantity || raw.checkInQuantity === '') {
+        toast.current.show({
+          severity: 'error',
+          detail: `${raw.label} Check In Quantity is empty`,
+        })
+        isQtyEmpty = true
+      }
+    })
+
+    if (isQtyEmpty) return
+
+    dispatch(updateRawMaterialHistoryCheck(data))
+    .unwrap()
+    .then((res) => {
+      goBack()
+      dispatch(changeToastActionRaw('checkOut'))
+    })
+    .catch((err)=>{
+      toast.current.show({ severity: 'error', detail: err.message }) 
+    
+    })
    
   }
 
-  const multiSelectRef = useRef(null)
+  const treeSelectRef = useRef(null)
 
   const handleDelete = (e, rowData) => {
     e.preventDefault()
-   
-    let newData = tableData.filter((data) => data.id != rowData.id)
-    const oldSel = multiSelectRef.current.props.value
-
-    oldSel.forEach((ele,index) => {
-       if (rowData.id == ele.id) {
-          oldSel.splice(index,1)
-       }
-    });
-    console.log('dddddddd', oldSel)
-    setTableData(newData)
+    let newData = selectedRawId.filter((id) => id != rowData.key)
+    setSelectedRawId(newData)
+    const oldSel = treeSelectRef.current.props.value
+    oldSel[rowData.key].checked = false
+    if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
+      delete oldSel[rowData.key]
   }
 
 
@@ -260,24 +280,25 @@ useEffect(()=>{
                       rules={{ required: 'Please select a Raw Material.' }}
                       render={({ field, fieldState }) => (
                         <>
-                         <MultiSelect
-                            ref={multiSelectRef}
+                         <TreeSelect
+                            ref={treeSelectRef}
                             filter
                             id={field.name}
                             value={field.value} 
                             name='rawMaterials'                           
                             onChange={(e) => {
-                             console.log(e.value)
-                                
-                             field.onChange(e.value)
-                             
-                             //onChangeDrop(e.value)
-                             //setSelectedRawMaterial(e.value)       
-                             setTableData(e.value)
-                            }}                       
+                              let prodId = Object.keys(e.value).filter(
+                                (key) =>
+                                  e.value[key].checked &&
+                                  !e.value[key].partiallyChecked
+                              )
+                              setSelectedRawId(prodId)
+                              field.onChange(e.value)
+                            }}  
+                            selectionMode='checkbox'
+                            display='chip'                     
                             options={rawMaterial}
                             inputRef={field.ref}
-                            optionLabel="materialName" 
                             placeholder='Select Raw Materials'
                             className={classNames('w-full', {
                               'p-invalid': fieldState.error,
