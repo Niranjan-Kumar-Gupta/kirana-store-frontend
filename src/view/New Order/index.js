@@ -128,6 +128,16 @@ const NewOrder = () => {
       getProdVariants()
     }
     getAllCustomer()
+    if (id) {
+      try {
+        dispatch(updateMode('update'))
+        dispatch(getOrderDetails(id))
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      dispatch(updateMode('create'))
+    }
   }, [])
 
   useEffect(() => {
@@ -152,19 +162,6 @@ const NewOrder = () => {
       setFinalAmount(amt + frAmt);
     }
   },[amt, frAmt])
-
-  useEffect(() => {
-    if (id) {
-      try {
-        dispatch(updateMode('update'))
-        dispatch(getOrderDetails(id))
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      dispatch(updateMode('create'))
-    }
-  }, [id])
 
   useEffect(() => {
     if (mode === 'update' && selectedOrder) {

@@ -10,15 +10,17 @@ import { Toast } from 'primereact/toast'
 
 import {
   changeMode,
+  changeTab,
   resetMode,
   resetSelectedRawMaterial,
 } from '../../reducers/rawMaterialSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { resetToastActionRaw } from '../../reducers/rawMaterialHistoryTableSlice'
+import { resetSelectedRawMaterialHistory, resetToastActionRaw } from '../../reducers/rawMaterialHistoryTableSlice'
 
 const RawMaterial = () => {
   const [showRawMaterialForm, setShowRawMaterialForm] = useState(false)
-  const { toastAction } = useSelector(state => state.rawMaterialHistoryTable)
+  const { tab } =  useSelector(state => state.rawMaterialTable);
+  const { toastAction } = useSelector(state => state.rawMaterialHistoryTable);
   const dispatch = useDispatch()
   const toast = useRef(null)
 
@@ -27,11 +29,9 @@ const RawMaterial = () => {
     { name: 'History', value: 'rawMaterialHistory' },
   ]
   const navigate = useNavigate()
-  const [table, setTable] = useState('rawMaterial')
 
   const handleSwitch = (item) => {
-    //  console.log(item);
-    setTable(item)
+    dispatch(changeTab(item));
   }
 
   useEffect(() => {
@@ -45,12 +45,23 @@ const RawMaterial = () => {
         severity: 'success',
         detail: 'Check Out Successfully',
       })
+    } else if (toastAction == 'delete') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Raw Material History Successfully Deleted',
+      })
+    }  else if (toastAction === 'update') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Raw Material History Successfully Updated',
+      })
     }
     dispatch(resetToastActionRaw())
+    dispatch(resetSelectedRawMaterialHistory())
   },[])
 
-  const renderTable = (table) => {
-    switch (table) {
+  const renderTable = (tab) => {
+    switch (tab) {
       case 'rawMaterial':
         return (
           <RawMaterialTable
@@ -100,7 +111,7 @@ const RawMaterial = () => {
       <div className='flex flex-wrap mt-4 justify-content-between align-items-center gap-2'>
         <CustomSwitch
           options={switchButtons}
-          value={table}
+          value={tab}
           handleSwitch={handleSwitch}
         />
         <div className='flex flex-wrap justify-content-center align-items-center gap-2'>
@@ -131,7 +142,7 @@ const RawMaterial = () => {
           </div>
         </div>
       </div>
-      {renderTable(table)}
+      {renderTable(tab)}
     </div>
   )
 }

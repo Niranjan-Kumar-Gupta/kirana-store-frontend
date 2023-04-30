@@ -15,6 +15,7 @@ import { CustomButton } from '../../components/CustomButton'
 import { InputTextarea } from 'primereact/inputtextarea';
 import { API_GET_RAWMATERIAL,API_GET_RAW_STOCK_MATERIAL } from '../../api/rawMaterial.service'
 import Loader from '../../components/Loader'
+import { InputText } from 'primereact/inputtext'
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -90,6 +91,7 @@ const RawMaterialCheckOut = () => {
     }
 
   const defaultValues = {
+    brandName: '',
     rawMaterials: null,
     comment: '',
   }
@@ -245,12 +247,11 @@ const RawMaterialCheckOut = () => {
             </div>
             <div className='sm:w-12 md:w-5 lg:w-4'>
               <div className='flex justify-content-end gap-2'>
-                <Button
-                  className={`skalebot-button ${style.colored} w-6rem`}
+                <CustomButton
+                  varient='cancel w-7rem'
                   onClick={() => navigate('/rawMaterial')}
-                >
-                  Cancel
-                </Button>
+                  label={'Cancel'}
+                />
                 <CustomButton
                   varient='filled w-7rem pl-3'
                   type='submit'
@@ -272,6 +273,25 @@ const RawMaterialCheckOut = () => {
             <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
               <div className='lg:w-7 md:w-8 sm:w-full'>
                 <div className='bg-white p-3 border-round border-50 mb-3'>
+                  <div className='field w-12 lg:w-5'>
+                    <label htmlFor='customerId'>Brand Name </label>
+                    <Controller
+                      name='brandName'
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <InputText
+                          id={field.name}
+                          placeholder='Enter Brand Name'
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          className={classNames({
+                            'p-invalid': fieldState.invalid,
+                          })}
+                        />
+                      )}
+                    />
+                    {getFormErrorMessage('brandName')}
+                  </div>
                   <div className='field w-12 lg:w-5'>
                     <label htmlFor='categories'>Raw Material *</label>
                     <Controller

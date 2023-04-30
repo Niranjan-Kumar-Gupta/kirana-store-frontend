@@ -3,6 +3,8 @@ import CustomTable from "../../components/CustomTable";
 import { Text } from '../../components/Text';
 import Loader from '../../components/Loader'
 import { useDispatch, useSelector } from "react-redux";
+import { DeleteAlert } from '../../components/Alert/DeleteAlert';
+import { Toast } from 'primereact/toast';
 import {
   getRawMaterialHistory,
   changeMode,
@@ -10,7 +12,9 @@ import {
   changeSelectedRawMaterial,
   resetSelectedRawMaterial,
   changePage,
+  changeSelectedRawMaterialHistory,
 } from "../../reducers/rawMaterialHistoryTableSlice";
+import { useNavigate } from 'react-router-dom';
 
 
 const RawMaterialHistoryTable = () => {
@@ -22,8 +26,26 @@ const RawMaterialHistoryTable = () => {
     limit,
     loading,
     totalRawMaterialHistoryCount,
+    selectedRawMaterialHistory,
   } = useSelector((state) => state.rawMaterialHistoryTable);
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
 
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const toast = useRef(null);
+
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item="rawMaterialHistory"
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    );
+  };
 
   const quntBody = (rowData)=>{
     // console.log(rowData.quantity)
@@ -50,7 +72,9 @@ const RawMaterialHistoryTable = () => {
      
     {field: 'quantity', header: 'Quantity',isFilter:false,isBody:true,body:quntBody,filterPlaceholder:""},     
  
-    {field: 'reason', header: 'Comment',isFilter:false,filterPlaceholder:""},     
+    {field: 'reason', header: 'Comment',isFilter:false,filterPlaceholder:""},    
+    
+    {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
     
    ];
 
@@ -71,10 +95,23 @@ const RawMaterialHistoryTable = () => {
     return <Loader visible={loading} />
   }
 
+  const handleEdit = (rowData) => {
+    // dispatch(changeSelectedRawMaterialHistory(rowData));
+    dispatch(changeMode('update'))
+    navigate(`${rowData.id}`)
+  }
+
+  const handleDelete = (rowData) => {
+    setDisplayAlertDelete(true);
+    dispatch(changeSelectedRawMaterialHistory(rowData));
+  }
+
   
   return (
     <div className='w-full pt-3 m-auto'>
-    {loading ? loader() : <></>}
+      <Toast ref={toast} />
+    {loader()}
+    {displayAlertDelete && deleteModule()}
     <div className="mt-2">
           <CustomTable 
              tableName={'rawMatHISTable'}
@@ -86,6 +123,8 @@ const RawMaterialHistoryTable = () => {
              onClearFilter={onClearFilter}
              onClearSearch={onClearSearch}
              dispatchFunction={getRawMaterialHistory}
+             handleEdit={handleEdit}
+              handleDelete={handleDelete}
              //onEditNumberInput={onEditNumberInput}
              paginator={{page:page,limit:limit,totalRecords:totalRawMaterialHistoryCount,changePage:changePage}}
            />       

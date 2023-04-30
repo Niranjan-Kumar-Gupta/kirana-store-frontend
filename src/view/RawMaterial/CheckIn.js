@@ -17,26 +17,33 @@ import {
   API_GET_RAW_STOCK_MATERIAL,
 } from '../../api/rawMaterial.service'
 import Loader from '../../components/Loader'
+import { DeleteAlert } from '../../components/Alert/DeleteAlert'
+import { Tag } from 'primereact/tag'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from 'primereact/button'
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
-import { MultiSelect } from 'primereact/multiselect'
 import {
   changeToastActionRaw,
+  getRawMaterialHistoryById,
+  updateRawMaterialHistoryById,
   updateRawMaterialHistoryCheck,
 } from '../../reducers/rawMaterialHistoryTableSlice'
 import { API_GET_BRAND } from '../../api/product.services'
+import { InputText } from 'primereact/inputtext'
 
 const RawMaterialCheckIn = () => {
   const [tableData, setTableData] = useState([])
   const toast = useRef(null)
   const [selectedRawId, setSelectedRawId] = useState([])
   const [rawMaterial, setRawMaterial] = useState([])
-  const [brands, setBrands] = useState([])
+  const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
+  const [edit, setEdit] = useState(false)
   const dispatch = useDispatch()
+
+  const { id } = useParams()
 
   const paymentStatus = [
     { key: 'Fully Paid', value: 'Fully Paid' },
@@ -44,7 +51,37 @@ const RawMaterialCheckIn = () => {
     { key: 'Not Paid', value: 'Not Paid' },
   ]
 
-  const { loading } = useSelector((state) => state.rawMaterialHistoryTable)
+  const { loading, selectedRawMaterialHistory } = useSelector(
+    (state) => state.rawMaterialHistoryTable
+  )
+
+  const defaultValues = {
+    brandName: '',
+    rawMaterials: null,
+    amount: undefined,
+    paidAmount: undefined,
+    paymentStatus: '',
+    comment: '',
+    quantity: '',
+  }
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+  } = useForm({ defaultValues })
+
+  let amt = watch('amount')
+  let paidAmt = watch('paidAmount')
+
+  const getFormErrorMessage = (name) => {
+    return (
+      errors[name] && <small className='p-error'>{errors[name].message}</small>
+    )
+  }
 
   const loader = () => {
     return <Loader visible={loading} />
@@ -52,7 +89,13 @@ const RawMaterialCheckIn = () => {
 
   useEffect(() => {
     getRawMaterial()
-    getBrands()
+    if (id) {
+      try {
+        dispatch(getRawMaterialHistoryById(id))
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -60,14 +103,18 @@ const RawMaterialCheckIn = () => {
     setTableData(filteredData)
   }, [selectedRawId, rawMaterial])
 
-  const getBrands = async () => {
-    try {
-      const brand = await API_GET_BRAND()
-      setBrands(brand.rows)
-    } catch (error) {
-      console.log(error)
+  useEffect(() => {
+    if (id && selectedRawMaterialHistory) {
+      if (selectedRawMaterialHistory.flag === 'CHECK IN') {
+        setValue('amount', selectedRawMaterialHistory.amount)
+        setValue('paidAmount', selectedRawMaterialHistory.paidAmount)
+        setValue('paymentStatus', selectedRawMaterialHistory.paymentStatus)
+      }
+      setValue('brandName', selectedRawMaterialHistory.brandName)
+      setValue('comment', selectedRawMaterialHistory.reason)
+      setValue('quantity', selectedRawMaterialHistory.quantity)
     }
-  }
+  }, [id, selectedRawMaterialHistory])
 
   const getRawMaterial = async () => {
     try {
@@ -105,33 +152,6 @@ const RawMaterialCheckIn = () => {
     navigate('/rawMaterial')
   }
 
-  const defaultValues = {
-    brandName: '',
-    rawMaterials: null,
-    amount: undefined,
-    paidAmount: undefined,
-    paymentStatus: '',
-    comment: '',
-  }
-
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-  } = useForm({ defaultValues })
-
-  let amt = watch('amount')
-  let paidAmt = watch('paidAmount')
-
-  const getFormErrorMessage = (name) => {
-    return (
-      errors[name] && <small className='p-error'>{errors[name].message}</small>
-    )
-  }
-
   const onCellEditCompleteCheckIn = (e, rowIndex) => {
     let _rawMaterial = [...tableData]
     _rawMaterial[rowIndex].checkInQuantity = e.value
@@ -166,57 +186,81 @@ const RawMaterialCheckIn = () => {
         scrollHeight='500px'
       >
         <Column header='Raw Material Name' field='materialName'></Column>
+        {id ? (
+          ''
+        ) : (
+          <Column
+            className='qtyCells'
+            header='Available Quantity'
+            field='quantity'
+          ></Column>
+        )}
+
         <Column
           className='qtyCells'
-          header='Available Quantity'
           field='quantity'
+          header={
+            id && selectedRawMaterialHistory.flag === 'CHECK OUT'
+              ? 'Check Out Quantity'
+              : 'Check In Quantity'
+          }
+          body={id ? '' : checkInQuantityEditor}
         ></Column>
-        <Column
-          className='qtyCells'
-          header='Check In Quantity'
-          field='quantity'
-          body={checkInQuantityEditor}
-        ></Column>
-        <Column header='Actions' body={actionBody}></Column>
+        {id ? '' : <Column header='Actions' body={actionBody}></Column>}
       </DataTable>
     )
   }
   const onSubmit = (data) => {
-
-    delete data.rawMaterials;
-    data.reason = data.comment;
-    delete data.comment;
-    data.materialArray = [];
-    tableData.forEach((ele) => {
-      data.materialArray.push({
-        materialId: ele.materialId,
-        quantity: ele.checkInQuantity,
-        vendorName: 'a',
-      })
-    })
-
-    let isQtyEmpty = false
-    tableData.forEach((raw) => {
-      if (!raw.checkInQuantity || raw.checkInQuantity === '') {
-        toast.current.show({
-          severity: 'error',
-          detail: `${raw.label} Check In Quantity is empty`,
-        })
-        isQtyEmpty = true
+    if (id) {
+      delete data.rawMaterials
+      if (selectedRawMaterialHistory.flag === 'CHECK OUT') {
+        data.quantity = -data.quantity
+        delete data.paymentStatus
       }
-    })
-
-    if (isQtyEmpty) return
-
-    dispatch(updateRawMaterialHistoryCheck(data))
+      dispatch(updateRawMaterialHistoryById({id, data}))
       .unwrap()
-      .then((res) => {
-        goBack()
-        dispatch(changeToastActionRaw('checkIn'))
+        .then((res) => {
+          goBack()
+        })
+        .catch((err) => {
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
+    } else {
+      delete data.rawMaterials
+      data.reason = data.comment
+      delete data.comment
+      data.materialArray = []
+      tableData.forEach((ele) => {
+        data.materialArray.push({
+          materialId: ele.materialId,
+          quantity: ele.checkInQuantity,
+          vendorName: 'a',
+        })
       })
-      .catch((err) => {
-        toast.current.show({ severity: 'error', detail: err.message })
+
+      let isQtyEmpty = false
+      tableData.forEach((raw) => {
+        if (!raw.checkInQuantity || raw.checkInQuantity === '') {
+          toast.current.show({
+            severity: 'error',
+            detail: `${raw.label} Check In Quantity is empty`,
+          })
+          isQtyEmpty = true
+        }
       })
+
+      if (isQtyEmpty) return
+
+      dispatch(updateRawMaterialHistoryCheck(data))
+        .unwrap()
+        .then((res) => {
+          goBack()
+          dispatch(changeToastActionRaw('checkIn'))
+        })
+        .catch((err) => {
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
+    }
   }
 
   const treeSelectRef = useRef(null)
@@ -242,35 +286,84 @@ const RawMaterialCheckIn = () => {
     )
   }
 
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item='rawMaterialHistory'
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    )
+  }
+
   const itemslist = [
     { label: 'Raw Material', url: '/rawMaterial' },
-    { label: 'Check In' },
+    {
+      label:
+        id && selectedRawMaterialHistory
+          ? selectedRawMaterialHistory.materialName
+          : 'Check In',
+    },
   ]
 
   return (
     <div className='w-11 m-auto mb-6'>
       <Toast ref={toast} />
-      {loading ? loader() : <></>}
+      {loader()}
+      {displayAlertDelete && deleteModule()}
       <div
         className={`md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
       >
         <div className='flex flex-column md:flex-row lg:flex-row lg:w-10 md:w-8 md:justify-content-between align-items-center justify-content-center mb-3'>
-          <div className='lg:w-7 md:w-6 flex align-items-center'>
+          <div className='flex align-items-center'>
             <CustomBreadcrumb className='pl-0' itemslist={itemslist} />
+            {id && selectedRawMaterialHistory ? (
+              <div className='hidden sm:block'>
+                <Tag
+                  value={`${selectedRawMaterialHistory.flag}`}
+                  severity={
+                    selectedRawMaterialHistory.flag === 'CHECK IN'
+                      ? 'success'
+                      : 'warning'
+                  }
+                />
+              </div>
+            ) : (
+              ''
+            )}
           </div>
           <div className='sm:w-12 md:w-5 lg:w-4'>
             <div className='flex justify-content-end gap-2'>
-              <Button
-                className={`skalebot-button ${style.colored} w-6rem`}
-                onClick={() => navigate('/rawMaterial')}
-              >
-                Cancel
-              </Button>
               <CustomButton
-                varient='filled w-7rem pl-3'
+                varient={'cancel w-7rem'}
+                type='button'
+                label={!id ? 'Cancel' : edit ? 'Cancel' : 'Delete'}
+                onClick={
+                  !id
+                    ? () => {
+                        navigate('/rawMaterial')
+                      }
+                    : edit
+                    ? () => {
+                        setEdit(false)
+                      }
+                    : () => {
+                        setDisplayAlertDelete(true)
+                      }
+                }
+              />
+              <CustomButton
+                varient='filled w-7rem'
                 type='submit'
-                onClick={handleSubmit(onSubmit)}
-                label={'Check In'}
+                label={!id ? 'Check In' : edit ? 'Update' : 'Edit'}
+                onClick={
+                  !id
+                    ? handleSubmit(onSubmit)
+                    : edit
+                    ? handleSubmit(onSubmit)
+                    : () => setEdit(true)
+                }
               />
             </div>
           </div>
@@ -285,22 +378,58 @@ const RawMaterialCheckIn = () => {
           <div className='lg:flex lg:flex-row lg:align-items-start lg:justify-content-center lg:gap-3 md:flex md:flex-column md:align-items-center'>
             <div className='lg:w-7 md:w-8 sm:w-full'>
               <div className='bg-white p-3 border-round border-50 mb-3'>
+                {id && selectedRawMaterialHistory ? (
+                  <>
+                    <div className='flex mb-5 mt-3'>
+                      <div className='mr-8'>
+                        <label>Material Name: </label>
+                      </div>
+                      <Text type={'heading'}>
+                        {selectedRawMaterialHistory.materialName}
+                      </Text>
+                    </div>
+                    <div className='field w-12 lg:w-5'>
+                      <label htmlFor='quantity'>
+                        {selectedRawMaterialHistory.flag === 'CHECK OUT'
+                          ? 'Check Out'
+                          : 'Check In'}{' '}
+                        Quantity{' '}
+                      </label>
+                      <Controller
+                        name='quantity'
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <InputNumber
+                            id={field.name}
+                            disabled={id && !edit}
+                            placeholder='Enter Quanity'
+                            value={Math.abs(field.value)}
+                            onChange={(e) => field.onChange(e.value)}
+                            className={classNames({
+                              'p-invalid': fieldState.invalid,
+                            })}
+                          />
+                        )}
+                      />
+                      {getFormErrorMessage('quantity')}
+                    </div>
+                  </>
+                ) : (
+                  ''
+                )}
+
                 <div className='field w-12 lg:w-5'>
-                  <label htmlFor='customerId'>Brand Name *</label>
+                  <label htmlFor='brandName'>Brand Name </label>
                   <Controller
                     name='brandName'
                     control={control}
-                    rules={{ required: 'Brand Name is required.' }}
                     render={({ field, fieldState }) => (
-                      <Dropdown
-                        filter
+                      <InputText
                         id={field.name}
-                        options={brands}
-                        optionLabel='brandName'
-                        optionValue='id'
-                        placeholder='Select Brand Name'
+                        disabled={id && !edit}
+                        placeholder='Enter Brand Name'
                         value={field.value}
-                        onChange={(e) => field.onChange(e.value)}
+                        onChange={(e) => field.onChange(e.target.value)}
                         className={classNames({
                           'p-invalid': fieldState.invalid,
                         })}
@@ -309,135 +438,158 @@ const RawMaterialCheckIn = () => {
                   />
                   {getFormErrorMessage('brandName')}
                 </div>
-                <div className='field w-12 lg:w-5'>
-                  <label htmlFor='categories'>Raw Material *</label>
-                  <Controller
-                    name='rawMaterials'
-                    control={control}
-                    rules={{ required: 'Please select a Raw Material.' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <TreeSelect
-                          ref={treeSelectRef}
-                          filter
-                          id={field.name}
-                          value={field.value}
-                          name='rawMaterials'
-                          onChange={(e) => {
-                            let prodId = Object.keys(e.value).filter(
-                              (key) =>
-                                e.value[key].checked &&
-                                !e.value[key].partiallyChecked
-                            )
-                            setSelectedRawId(prodId)
-                            field.onChange(e.value)
-                          }}
-                          selectionMode='checkbox'
-                          display='chip'
-                          options={rawMaterial}
-                          inputRef={field.ref}
-                          placeholder='Select Raw Materials'
-                          className={classNames('w-full', {
-                            'p-invalid': fieldState.error,
-                          })}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                </div>
+
+                {id ? (
+                  ''
+                ) : (
+                  <div className='field w-12 lg:w-5'>
+                    <label htmlFor='categories'>Raw Material *</label>
+                    <Controller
+                      name='rawMaterials'
+                      control={control}
+                      rules={{ required: 'Please select a Raw Material.' }}
+                      render={({ field, fieldState }) => (
+                        <>
+                          <TreeSelect
+                            ref={treeSelectRef}
+                            filter
+                            id={field.name}
+                            value={field.value}
+                            name='rawMaterials'
+                            onChange={(e) => {
+                              let prodId = Object.keys(e.value).filter(
+                                (key) =>
+                                  e.value[key].checked &&
+                                  !e.value[key].partiallyChecked
+                              )
+                              setSelectedRawId(prodId)
+                              field.onChange(e.value)
+                            }}
+                            selectionMode='checkbox'
+                            display='chip'
+                            options={rawMaterial}
+                            inputRef={field.ref}
+                            placeholder='Select Raw Materials'
+                            className={classNames('w-full', {
+                              'p-invalid': fieldState.error,
+                            })}
+                          />
+                          {getFormErrorMessage(field.name)}
+                        </>
+                      )}
+                    />
+                  </div>
+                )}
+
                 {tableData && tableData.length !== 0
                   ? selectedRawMaterialTable()
                   : ''}
               </div>
-              <div className='field bg-white p-3 border-round border-50 mb-3'>
-                <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                  <label className='w-12 mr-3' htmlFor='amount'>
-                    Amount *
-                  </label>
-                  <div className='w-12'>
+              {selectedRawMaterialHistory &&
+              selectedRawMaterialHistory.flag === 'CHECK OUT' ? (
+                ''
+              ) : (
+                <div className='field bg-white p-3 border-round border-50 mb-3'>
+                  <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                    <label className='w-12 mr-3' htmlFor='amount'>
+                      Amount
+                    </label>
+                    <div className='w-12'>
+                      <Controller
+                        name='amount'
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <InputNumber
+                            id={field.name}
+                            value={field.value}
+                            disabled={id && !edit}
+                            onChange={(e) => field.onChange(e.value)}
+                            useGrouping={false}
+                            mode='currency'
+                            currency='INR'
+                            currencyDisplay='code'
+                            locale='en-IN'
+                            placeholder='Enter Amount'
+                            className={classNames({
+                              'p-invalid': fieldState.invalid,
+                            })}
+                          />
+                        )}
+                      />
+                      {getFormErrorMessage('amount')}
+                    </div>
+                  </div>
+                  <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                    <label className='w-12 mr-3' htmlFor='paidAmount'>
+                      Amount Paid
+                    </label>
                     <Controller
-                      name='amount'
+                      name='paidAmount'
                       control={control}
-                      rules={{ required: 'Please provide amount' }}
                       render={({ field, fieldState }) => (
                         <InputNumber
                           id={field.name}
                           value={field.value}
+                          disabled={id && !edit}
                           onChange={(e) => field.onChange(e.value)}
                           useGrouping={false}
                           mode='currency'
                           currency='INR'
                           currencyDisplay='code'
                           locale='en-IN'
-                          placeholder='Enter Amount'
+                          placeholder='Enter Amount Paid'
                           className={classNames({
                             'p-invalid': fieldState.invalid,
                           })}
                         />
                       )}
                     />
-                    {getFormErrorMessage('amount')}
+                  </div>
+                  <div className='flex align-items-center my-4'>
+                    <div className='mr-3 w-6 lg:w-3'>Balance </div>
+                    <Text type={'heading'}>
+                      INR{' '}
+                      {amt && !paidAmt
+                        ? amt
+                        : amt && paidAmt
+                        ? amt - paidAmt
+                        : 0}
+                    </Text>
                   </div>
                 </div>
-                <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                  <label className='w-12 mr-3' htmlFor='paidAmount'>
-                    Amount Paid
-                  </label>
+              )}
+            </div>
+            <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
+              {selectedRawMaterialHistory &&
+              selectedRawMaterialHistory.flag === 'CHECK OUT' ? (
+                ''
+              ) : (
+                <div className='field'>
+                  <label htmlFor='paymentStatus'>Payment Status *</label>
                   <Controller
-                    name='paidAmount'
+                    name='paymentStatus'
                     control={control}
+                    rules={{ required: 'Payment Status is required.' }}
                     render={({ field, fieldState }) => (
-                      <InputNumber
+                      <Dropdown
                         id={field.name}
+                        options={paymentStatus}
+                        disabled={id && !edit}
+                        optionLabel='key'
+                        optionValue='value'
+                        placeholder='Choose payment status'
                         value={field.value}
                         onChange={(e) => field.onChange(e.value)}
-                        useGrouping={false}
-                        mode='currency'
-                        currency='INR'
-                        currencyDisplay='code'
-                        locale='en-IN'
-                        placeholder='Enter Amount Paid'
                         className={classNames({
                           'p-invalid': fieldState.invalid,
                         })}
                       />
                     )}
                   />
+                  {getFormErrorMessage('paymentStatus')}
                 </div>
-                <div className='flex align-items-center my-4'>
-                  <div className='mr-3 w-6 lg:w-3'>Balance: </div>
-                  <Text type={'heading'}>
-                    INR{' '}
-                    {amt && !paidAmt ? amt : amt && paidAmt ? amt - paidAmt : 0}
-                  </Text>
-                </div>
-              </div>
-            </div>
-            <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
-              <div className='field'>
-                <label htmlFor='paymentStatus'>Payment Status *</label>
-                <Controller
-                  name='paymentStatus'
-                  control={control}
-                  rules={{ required: 'Payment Status is required.' }}
-                  render={({ field, fieldState }) => (
-                    <Dropdown
-                      id={field.name}
-                      options={paymentStatus}
-                      optionLabel='key'
-                      optionValue='value'
-                      placeholder='Choose payment status'
-                      value={field.value}
-                      onChange={(e) => field.onChange(e.value)}
-                      className={classNames({
-                        'p-invalid': fieldState.invalid,
-                      })}
-                    />
-                  )}
-                />
-                {getFormErrorMessage('paymentStatus')}
-              </div>
+              )}
+
               <div className='field'>
                 <label htmlFor='comment'>Comment</label>
                 <Controller
@@ -446,6 +598,7 @@ const RawMaterialCheckIn = () => {
                   render={({ field, fieldState }) => (
                     <InputTextarea
                       value={field.value}
+                      disabled={id && !edit}
                       onChange={(e) => field.onChange(e.target.value)}
                       rows={5}
                       placeholder='Enter Comment'
@@ -458,13 +611,6 @@ const RawMaterialCheckIn = () => {
               </div>
             </div>
           </div>
-
-          {/* <div className='flex justify-content-end gap-2 mt-3 '>
-              <div className='flex  '>
-                <CustomButton varient='filled' type='submit' label={'Check In'} />
-            
-              </div>
-             </div> */}
         </form>
       </div>
     </div>
