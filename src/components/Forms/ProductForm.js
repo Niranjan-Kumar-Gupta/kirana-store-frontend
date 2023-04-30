@@ -391,7 +391,7 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
             />
             {getFormErrorMessage('desc')}
           </div>
-          <div className='field'>
+          {/* <div className='field'>
             <div className='flex justify-content-between  align-items-center'>
               <div className='flex justify-content-between  align-items-center gap-3'>
                 {imageBodyTemplate()}
@@ -426,7 +426,7 @@ export const ProductForm = ({ showProductForm, setShowProductForm, toast }) => {
             ) : (
               <small>* Image size should be less than 8MB. </small>
             )}
-          </div>
+          </div> */}
 
           <div className='flex gap-2'>
             <CustomButton

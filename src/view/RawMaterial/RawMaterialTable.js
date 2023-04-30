@@ -43,7 +43,7 @@ const RawMaterialTable = ({setShowRawMaterialForm, toast}) => {
 
   const columns = [
    {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
-    {field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+    //{field: 'url', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
 
     
     {field: 'materialName', header: 'Raw Material',isFilter:false,filterPlaceholder:"Search by catogery"},     

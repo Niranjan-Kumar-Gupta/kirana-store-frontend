@@ -72,7 +72,7 @@ const Orders = () => {
 
  const columns = [
     {field: 'id', header: 'Order Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Id"},
-    {field: 'updatedAt', header: 'Date',isFilter:false,filterType:'input', isDate: true},
+    {field: 'updatedAt', header: 'Date',isFilter:true, isDate: true,filterPlaceholder:"Search by date",filterType :'date'},
     {field: 'customerName', header: 'Customer Name',isFilter:false,filterType:'input',filterPlaceholder:"Search by Customer Name"},
     {field: 'status', header: 'Status',isFilter:true,filterType:'dropdown',dropdownItems:statusItems,filterPlaceholder:"Search by Status"},
     {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},

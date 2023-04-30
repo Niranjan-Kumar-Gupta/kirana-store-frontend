@@ -424,7 +424,7 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              <div className='bg-white p-3 border-round border-50 mb-3'>
+              {/* <div className='bg-white p-3 border-round border-50 mb-3'>
                 <div className='field'>
                   <div className='flex justify-content-between  align-items-center'>
                     <div className='flex justify-content-between  align-items-center gap-3'>
@@ -464,7 +464,36 @@ const ProductDetails = () => {
                     <small>* Image size should be less than 8MB. </small>
                   )}
                 </div>
+              </div> */}
+
+              <div className='bg-white p-3 border-round border-50 mb-3'>
+                <div className='field'>
+                  <label
+                    htmlFor='brandName'
+                    className={classNames({ 'p-error': errors.name })}
+                  >
+                    Brand Name *
+                  </label>
+                  <Controller
+                    name='brandName'
+                    control={control}
+                    rules={{ required: 'Brand Name is required' }}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id={field.name}
+                        disabled={!edit && mode === 'update'}
+                        className={classNames({
+                          'p-invalid': fieldState.invalid,
+                        })}
+                        placeholder='Enter Brand Name'
+                        {...field}
+                      />
+                    )}
+                  />
+                  {getFormErrorMessage('brandName')}
+                </div>
               </div>
+
             </div>
             <div className='lg:w-3 md:w-8'>
               <div className='bg-white p-3 border-round border-50 mb-3'>
@@ -555,33 +584,7 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              <div className='bg-white p-3 border-round border-50 mb-3'>
-                <div className='field'>
-                  <label
-                    htmlFor='brandName'
-                    className={classNames({ 'p-error': errors.name })}
-                  >
-                    Brand Name *
-                  </label>
-                  <Controller
-                    name='brandName'
-                    control={control}
-                    rules={{ required: 'Brand Name is required' }}
-                    render={({ field, fieldState }) => (
-                      <InputText
-                        id={field.name}
-                        disabled={!edit && mode === 'update'}
-                        className={classNames({
-                          'p-invalid': fieldState.invalid,
-                        })}
-                        placeholder='Enter Brand Name'
-                        {...field}
-                      />
-                    )}
-                  />
-                  {getFormErrorMessage('brandName')}
-                </div>
-              </div>
+             
             </div>
           </div>
 
