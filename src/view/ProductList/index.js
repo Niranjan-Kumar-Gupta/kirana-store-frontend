@@ -58,7 +58,7 @@ const ProductList = () => {
     {field: 'categoryName', header: 'Category',isFilter:true,filterType:'dropdown',dropdownItems:categoryFlat,filterPlaceholder:"Search by catogery"},
     {field: 'status', header: 'Stock'},
     {field: 'price', header: 'Price (₹)'},
-    {field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
+    //{field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
     {field: 'desc', header: 'Description'}, 
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
   ];

@@ -96,10 +96,10 @@ const StockHistoryTable = () => {
    const stockTypeItems = ['Check In','Check Out']
      
      const columns = [
-      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:false,filterPlaceholder:"Search by catogery"},     
+      {field: 'updatedAt', header: 'Date',isDate:true,isFilter:true,filterPlaceholder:"Search by date",filterType :'date'},     
      
       {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
-      {field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
+      //{field: 'previewUrl', header: 'image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},   
      
       { field: 'product',header: 'Product',isBody:true,body:productBodyTemp,isFilter:false,filterPlaceholder:"Search by code"},     
        
