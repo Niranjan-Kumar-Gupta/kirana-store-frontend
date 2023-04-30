@@ -79,6 +79,7 @@ function App() {
           <Route path='rawMaterial' element={<RawMaterial />} />
           <Route path='rawMaterial/checkIn' element={<RawMaterialCheckIn/>}/>
           <Route path='rawMaterial/checkOut' element={<RawMaterialCheckOut/>}/>
+          <Route path='rawMaterial/:id' element={<RawMaterialCheckIn/>}/>
 
           <Route path='products' element={<ProductList />} />
           <Route

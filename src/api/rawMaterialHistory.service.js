@@ -47,30 +47,46 @@ const API_PUT_RAWMATERIAL_HISTORY =  async (__data) => {
 
 
 const API_PUT_RAWMATERIAL_HISTORY_CHECK =  async (data) => {
-  console.log(data)
-  
-  //console.log(__data.id,__data.data)
   try {
     const resp = await axiosInstance.put(`/rawstock/`, data); 
-    console.log(resp)
     return resp;
   } catch (err) {
     throw err;
   }
 };
 
-const API_DELETE_RAWMATERIAL_HISTORY = async (__data) => {
+const API_DELETE_RAWMATERIAL_HISTORY = async (id) => {
   try {
-    const resp = await axiosInstance.delete(`/rawstockhistory/${__data.id}`, __data.data); 
+    const resp = await axiosInstance.delete(`/rawstockhistory/${id}`); 
     return resp.data;
   } catch (err) {
     throw err;
   }
 };
 
+const API_GET_RAWMATERIAL_HISTORY_BY_ID = async (id) => {
+  try {
+    const resp = await axiosInstance.get(`/rawstockhistory/${id}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+const API_UPDATE_RAWMATERIAL_HISTORY_BY_ID= async (id, data) => {
+  try {
+    const resp = await axiosInstance.put(`/rawstockhistory/${id}`, data);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export {
   API_GET_RAWMATERIAL_HISTORY,
   API_PUT_RAWMATERIAL_HISTORY,
   API_DELETE_RAWMATERIAL_HISTORY,
-  API_PUT_RAWMATERIAL_HISTORY_CHECK
+  API_PUT_RAWMATERIAL_HISTORY_CHECK,
+  API_GET_RAWMATERIAL_HISTORY_BY_ID,
+  API_UPDATE_RAWMATERIAL_HISTORY_BY_ID
 };

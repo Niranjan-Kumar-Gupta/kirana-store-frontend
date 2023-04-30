@@ -15,6 +15,7 @@ const initialState = {
   page: 0,
   limit: 10,
   mode: null,
+  tab: 'rawMaterial',
 };
 
 export const getRawMaterial = createAsyncThunk(
@@ -91,6 +92,9 @@ const rawMaterialTableSlice = createSlice({
     changePage(state, action) {
       state.page = action.payload
     },
+    changeTab(state, action) {
+      state.tab = action.payload;
+    }
   },
 
   extraReducers: (builder) => {
@@ -174,6 +178,7 @@ export const {
   changeSelectedRawMaterial,
   resetSelectedRawMaterial,
   changePage,
+  changeTab
 } = rawMaterialTableSlice.actions;
 
 export default rawMaterialTableSlice.reducer;
