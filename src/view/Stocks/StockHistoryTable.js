@@ -169,6 +169,7 @@ const StockHistoryTable = () => {
     
   return (
     <div className='w-full pt-3 m-auto'>
+      <Toast ref={toast} />
         {displayAlertDelete && deleteModule()}
         {loading ? loader() : <></>}
          <div className="mt-2">

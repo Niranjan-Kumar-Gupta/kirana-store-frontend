@@ -37,6 +37,7 @@ const NewOrder = () => {
   const [tableData, setTableData] = useState()
   const [edit, setEdit] = useState(false)
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
+  const [finalAmount, setFinalAmount] = useState(0);
 
   const { id } = useParams()
   const { mode, orderDet, selectedOrder, loading } = useSelector(
@@ -67,6 +68,8 @@ const NewOrder = () => {
     paymentStatus: '',
     status: '',
     completedAt: null,
+    amount: undefined,
+    freightAmount : undefined,
     totalAmount: undefined,
     paidAmount: undefined,
   }
@@ -80,6 +83,8 @@ const NewOrder = () => {
     watch,
   } = useForm({ defaultValues })
 
+  let amt = watch('amount')
+  let frAmt = watch('freightAmount')
   let amtEntered = watch('totalAmount')
   let amtPaid = watch('paidAmount')
 
@@ -123,14 +128,6 @@ const NewOrder = () => {
       getProdVariants()
     }
     getAllCustomer()
-  }, [])
-
-  useEffect(() => {
-    const filteredData = getDataByIds(prodVar, selectedProdId)
-    setTableData(filteredData)
-  }, [selectedProdId, prodVar])
-
-  useEffect(() => {
     if (id) {
       try {
         dispatch(updateMode('update'))
@@ -141,14 +138,38 @@ const NewOrder = () => {
     } else {
       dispatch(updateMode('create'))
     }
-  }, [id])
+  }, [])
+
+  useEffect(() => {
+    const filteredData = getDataByIds(prodVar, selectedProdId)
+    setTableData(filteredData)
+  }, [selectedProdId, prodVar])
+
+  useEffect(() => {
+    if (tableData && tableData.length > 0) {
+      let amt = 0;
+      tableData.forEach((prod) => {
+        amt += prod.price * prod?.orderedQuantity
+      })
+      setValue('amount', amt);
+    }
+  },[selectedProdId, tableData])
+
+  useEffect(() => {
+    if (amt && !frAmt) {
+      setFinalAmount(amt);
+    } else if (amt && frAmt) {
+      setFinalAmount(amt + frAmt);
+    }
+  },[amt, frAmt])
 
   useEffect(() => {
     if (mode === 'update' && selectedOrder) {
       setValue('customerId', selectedOrder.customerId)
       setValue('paymentStatus', selectedOrder.paymentStatus)
       setValue('status', selectedOrder.status)
-      setValue('totalAmount', selectedOrder.totalAmount)
+      setValue('amount', selectedOrder.amount)
+      setValue('freightAmount', selectedOrder.freightAmount)
       setValue('paidAmount', selectedOrder.paidAmount)
       setValue(
         'completedAt',
@@ -172,8 +193,7 @@ const NewOrder = () => {
 
   const getDataByIds = (data, ids) => {
     const flattenedData = flatten(data)
-    console.log(flattenedData)
-
+   
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
         (item) => item.key == id && ('option1' in item || item.isDefault)
@@ -356,7 +376,7 @@ const NewOrder = () => {
         scrollHeight='500px'
       >
         <Column header='Sl.No' body={slNoBody}></Column>
-        <Column header='Image' body={productImgBody}></Column>
+        {/* <Column header='Image' body={productImgBody}></Column> */}
         <Column
           header='Products'
           field='productName'
@@ -540,12 +560,12 @@ const NewOrder = () => {
 
                 <div className='field bg-white p-3 border-round border-50 mb-3'>
                   <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
-                    <label className='w-12 mr-3' htmlFor='totalAmount'>
+                    <label className='w-12 mr-3' htmlFor='amount'>
                       Amount *
                     </label>
                     <div className='w-12'>
                       <Controller
-                        name='totalAmount'
+                        name='amount'
                         control={control}
                         rules={{ required: 'Please provide amount' }}
                         render={({ field, fieldState }) => (
@@ -566,12 +586,48 @@ const NewOrder = () => {
                           />
                         )}
                       />
-                      {getFormErrorMessage('totalAmount')}
+                      {getFormErrorMessage('amount')}
                     </div>
                   </div>
                   <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
+                    <label className='w-12 mr-3' htmlFor='freightAmount'>
+                      Freight Amount 
+                    </label>
+                    <div className='w-12'>
+                      <Controller
+                        name='freightAmount'
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <InputNumber
+                            id={field.name}
+                            disabled={!edit && mode === 'update'}
+                            value={field.value}
+                            onChange={(e) => field.onChange(e.value)}
+                            useGrouping={false}
+                            mode='currency'
+                            currency='INR'
+                            currencyDisplay='code'
+                            locale='en-IN'
+                            placeholder='Enter Freight Amount'
+                            className={classNames({
+                              'p-invalid': fieldState.invalid,
+                            })}
+                          />
+                        )}
+                      />
+                      {getFormErrorMessage('freightAmount')}
+                    </div>
+                  </div>
+                  <div className='flex align-items-center my-4'>
+                    <div className='mr-3 w-6 lg:w-3'>Total Amount </div>
+                    <Text type={'heading'}>
+                      INR{' '}
+                      {finalAmount}
+                    </Text>
+                  </div>
+                  <div className='field sm:w-full md:w-12 lg:w-6 flex align-items-center'>
                     <label className='w-12 mr-3' htmlFor='paidAmount'>
-                      Amount Paid (optional)
+                      Paid Amount
                     </label>
                     <Controller
                       name='paidAmount'
@@ -587,7 +643,7 @@ const NewOrder = () => {
                           currency='INR'
                           currencyDisplay='code'
                           locale='en-IN'
-                          placeholder='Enter Amount Paid'
+                          placeholder='Enter Paid Amount'
                           className={classNames({
                             'p-invalid': fieldState.invalid,
                           })}
@@ -596,13 +652,13 @@ const NewOrder = () => {
                     />
                   </div>
                   <div className='flex align-items-center my-4'>
-                    <div className='mr-3 w-6 lg:w-3'>Balance: </div>
+                    <div className='mr-3 w-6 lg:w-3'>Balance </div>
                     <Text type={'heading'}>
                       INR{' '}
-                      {amtEntered && amtPaid
-                        ? amtEntered - amtPaid
-                        : amtEntered && !amtPaid
-                        ? amtEntered
+                      {finalAmount && amtPaid
+                        ? finalAmount - amtPaid
+                        : finalAmount && !amtPaid
+                        ? finalAmount
                         : 0}
                     </Text>
                   </div>

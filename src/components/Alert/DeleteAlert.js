@@ -15,12 +15,14 @@ import { changeShowNotice } from "../../reducers/appSlice";
 import { deleteOrder, resetSelectedOrder, resetToastActionOrder } from "../../reducers/orderTableSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteRawMaterial } from "../../reducers/rawMaterialSlice";
+import { deleteRawMaterialHistory, resetToastActionRaw } from "../../reducers/rawMaterialHistoryTableSlice";
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
   const { selectedProduct } = useSelector(state => state.productTable);
   const { selectedOrder } = useSelector(state => state.orderTable);
   const { selectedRawMaterial } = useSelector(state => state.rawMaterialTable)
+  const { selectedRawMaterialHistory } = useSelector(state => state.rawMaterialHistoryTable)
     
   const {
     selectedStockHistory,
@@ -102,22 +104,19 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
   }
 
   const deleteStockHistoryItem = () => {
-
     const __data = {
       id:selectedStockHistory.id,
       data:selectedStockHistory
     }
-    console.log(__data)
     dispatch(deleteStocksHistory(__data))
       .unwrap()
       .then(res => {
         //show toast here
-        //let Message_Success = 'Stock History Successfully Deleted';
-        //toast.current.show({ severity: 'success', detail: Message_Success });
+        let Message_Success = 'Stock History Successfully Deleted';
+        toast.current.show({ severity: 'success', detail: Message_Success });
       })
       .catch(err => {
-        //show toast here
-        //toast.current.show({ severity: 'error', detail: err.response.data });
+        toast.current.show({ severity: 'error', detail: err.response.data });
       })
   }
 
@@ -132,6 +131,23 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       .catch(err => {
         //show toast here
         toast.current.show({ severity: 'error', detail: err.response.data });
+      })
+  } 
+
+  const deleteRawMaterialHistoryItem = () => {
+    dispatch(deleteRawMaterialHistory(selectedRawMaterialHistory.id))
+      .unwrap()
+      .then(res => {
+        if (onDetailsPage()) {
+          navigate('/rawMaterial')
+        } else {
+          dispatch(resetToastActionRaw());
+        }
+        let Message_Success = 'Raw Material History Successfully Deleted';
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        toast.current.show({ severity: 'error', detail: err.message });
       })
   } 
 
@@ -179,6 +195,9 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         break;
       case "rawMaterial":
         deleteRawMaterialItem()
+        break;
+      case "rawMaterialHistory":
+        deleteRawMaterialHistoryItem()
         break;
     }
     onHide();
