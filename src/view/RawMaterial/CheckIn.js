@@ -32,7 +32,6 @@ import {
   updateRawMaterialHistoryCheck,
 } from '../../reducers/rawMaterialHistoryTableSlice'
 import { API_GET_BRAND } from '../../api/product.services'
-import { InputText } from 'primereact/inputtext'
 
 const RawMaterialCheckIn = () => {
   const [tableData, setTableData] = useState([])
@@ -41,6 +40,8 @@ const RawMaterialCheckIn = () => {
   const [rawMaterial, setRawMaterial] = useState([])
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [brand, setBrand] = useState([])
+
   const dispatch = useDispatch()
 
   const { id } = useParams()
@@ -89,6 +90,7 @@ const RawMaterialCheckIn = () => {
 
   useEffect(() => {
     getRawMaterial()
+    getBrandName()
     if (id) {
       try {
         dispatch(getRawMaterialHistoryById(id))
@@ -115,6 +117,15 @@ const RawMaterialCheckIn = () => {
       setValue('quantity', selectedRawMaterialHistory.quantity)
     }
   }, [id, selectedRawMaterialHistory])
+
+  const getBrandName = async () => {
+    try {
+      const _brand = await API_GET_BRAND()
+      setBrand(_brand.rows);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const getRawMaterial = async () => {
     try {
@@ -217,8 +228,8 @@ const RawMaterialCheckIn = () => {
         data.quantity = -data.quantity
         delete data.paymentStatus
       }
-      dispatch(updateRawMaterialHistoryById({id, data}))
-      .unwrap()
+      dispatch(updateRawMaterialHistoryById({ id, data }))
+        .unwrap()
         .then((res) => {
           goBack()
         })
@@ -227,6 +238,7 @@ const RawMaterialCheckIn = () => {
         })
     } else {
       delete data.rawMaterials
+      delete data.quantity
       data.reason = data.comment
       delete data.comment
       data.materialArray = []
@@ -418,27 +430,6 @@ const RawMaterialCheckIn = () => {
                   ''
                 )}
 
-                <div className='field w-12 lg:w-5'>
-                  <label htmlFor='brandName'>Brand Name </label>
-                  <Controller
-                    name='brandName'
-                    control={control}
-                    render={({ field, fieldState }) => (
-                      <InputText
-                        id={field.name}
-                        disabled={id && !edit}
-                        placeholder='Enter Brand Name'
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        className={classNames({
-                          'p-invalid': fieldState.invalid,
-                        })}
-                      />
-                    )}
-                  />
-                  {getFormErrorMessage('brandName')}
-                </div>
-
                 {id ? (
                   ''
                 ) : (
@@ -589,6 +580,30 @@ const RawMaterialCheckIn = () => {
                   {getFormErrorMessage('paymentStatus')}
                 </div>
               )}
+
+              <div className='field'>
+                <label htmlFor='brandName'>Brand Name </label>
+                <Controller
+                  name='brandName'
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Dropdown
+                      id={field.name}
+                      options={brand}
+                      optionLabel='brandName'
+                      optionValue='brandName'
+                      disabled={id && !edit}
+                      placeholder='Sekect Brand Name'
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.value)}
+                      className={classNames({
+                        'p-invalid': fieldState.invalid,
+                      })}
+                    />
+                  )}
+                />
+                {getFormErrorMessage('brandName')}
+              </div>
 
               <div className='field'>
                 <label htmlFor='comment'>Comment</label>
