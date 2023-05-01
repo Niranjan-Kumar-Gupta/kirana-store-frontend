@@ -221,7 +221,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
               />
             {getFormErrorMessage('unit')}
         </div>
-        <div className='field'>
+        {/* <div className='field'>
             <div className='flex justify-content-between  align-items-center'>
               <div className='flex justify-content-between  align-items-center gap-3'>
                 {imageBodyTemplate()}
@@ -256,7 +256,7 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
             ) : (
               <small>* Image size should be less than 8MB. </small>
             )}
-          </div>      
+          </div>       */}
         <div className='flex justify-content-end gap-2 mt-5'>
          <CustomButton
             label={'Cancel'}
