@@ -61,7 +61,7 @@ const ProductList = () => {
     //{field: 'url', header: 'Image',isFilter:false,isImageBody:true,imageBodyType:'carousel'},  
     {field: 'desc', header: 'Description'}, 
     {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']},
-  ];
+  ]; 
 
   useEffect(()=>{
     // dispatch(getProducts({page, limit})).unwrap().then((resp) => {

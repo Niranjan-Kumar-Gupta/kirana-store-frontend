@@ -376,7 +376,7 @@ const NewOrder = () => {
         scrollHeight='500px'
       >
         <Column header='Sl.No' body={slNoBody}></Column>
-        <Column header='Image' body={productImgBody}></Column>
+        {/* <Column header='Image' body={productImgBody}></Column> */}
         <Column
           header='Products'
           field='productName'

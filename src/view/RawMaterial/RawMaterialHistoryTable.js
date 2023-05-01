@@ -29,6 +29,11 @@ const RawMaterialHistoryTable = () => {
     selectedRawMaterialHistory,
   } = useSelector((state) => state.rawMaterialHistoryTable);
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
+  const {
+    brandNames,
+  } = useSelector((state) => state.productTable);
+
+
 
 
   const dispatch = useDispatch();
