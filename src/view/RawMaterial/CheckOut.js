@@ -26,6 +26,7 @@ import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import { MultiSelect } from 'primereact/multiselect';
 import { changeToastActionRaw, updateRawMaterialHistoryCheck } from '../../reducers/rawMaterialHistoryTableSlice'
+import { API_GET_BRAND } from '../../api/product.services'
 
 const RawMaterialCheckOut = () => {
 
@@ -33,6 +34,8 @@ const RawMaterialCheckOut = () => {
   const toast = useRef(null)
   const [selectedRawId, setSelectedRawId] = useState([])
   const [rawMaterial, setRawMaterial] = useState([])
+  const [brand, setBrand] = useState([])
+
   const dispatch = useDispatch();
 
   const { 
@@ -57,6 +60,15 @@ const RawMaterialCheckOut = () => {
     }
   }
 
+  const getBrandName = async () => {
+    try {
+      const _brand = await API_GET_BRAND()
+      setBrand(_brand.rows);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const getDataByIds = (data, ids) => {
     return ids.flatMap((id) => {
       const foundItem = data.find((item) => item.key == id)
@@ -77,6 +89,7 @@ const RawMaterialCheckOut = () => {
 
   useEffect(()=>{
     getRawMaterial()
+    getBrandName()
   },[])
 
   useEffect(() => {
@@ -274,25 +287,6 @@ const RawMaterialCheckOut = () => {
               <div className='lg:w-7 md:w-8 sm:w-full'>
                 <div className='bg-white p-3 border-round border-50 mb-3'>
                   <div className='field w-12 lg:w-5'>
-                    <label htmlFor='customerId'>Brand Name </label>
-                    <Controller
-                      name='brandName'
-                      control={control}
-                      render={({ field, fieldState }) => (
-                        <InputText
-                          id={field.name}
-                          placeholder='Enter Brand Name'
-                          value={field.value}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          className={classNames({
-                            'p-invalid': fieldState.invalid,
-                          })}
-                        />
-                      )}
-                    />
-                    {getFormErrorMessage('brandName')}
-                  </div>
-                  <div className='field w-12 lg:w-5'>
                     <label htmlFor='categories'>Raw Material *</label>
                     <Controller
                       name='rawMaterials'                  
@@ -335,6 +329,29 @@ const RawMaterialCheckOut = () => {
                 </div>
                 <div className='lg:w-3 md:w-8 sm:w-full bg-white p-3 border-round border-50 mb-3'>
                  
+                  <div className='field'>
+                    <label htmlFor='brandName'>Brand Name </label>
+                    <Controller
+                      name='brandName'
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Dropdown
+                          id={field.name}
+                          options={brand}
+                          optionLabel='brandName'
+                          optionValue='brandName'
+                          placeholder='Sekect Brand Name'
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.value)}
+                          className={classNames({
+                            'p-invalid': fieldState.invalid,
+                          })}
+                        />
+                      )}
+                    />
+                    {getFormErrorMessage('brandName')}
+                  </div>
+
                     <div className=''>
                        <div className='field'>
                          <label htmlFor='comment'>Comment</label>
