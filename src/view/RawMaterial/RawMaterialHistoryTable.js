@@ -5,6 +5,7 @@ import Loader from '../../components/Loader'
 import { useDispatch, useSelector } from "react-redux";
 import { DeleteAlert } from '../../components/Alert/DeleteAlert';
 import { Toast } from 'primereact/toast';
+import { Tag } from 'primereact/tag';
 import {
   getRawMaterialHistory,
   changeMode,
@@ -64,7 +65,29 @@ const RawMaterialHistoryTable = () => {
        </div>
      )
    }
+
+   
+const getSeverity = (data) => {
+  switch (data.paymentStatus) {
+      case 'Fully Paid':
+          return 'success';
+
+      case 'Partially Paid':
+          return 'warning';
+
+      case 'Not Paid':
+          return 'danger';
+
+      default:
+          return null;
+  }
+};
    const rawTypeItems = ['CHECK IN','CHECK OUT']
+   let paymentItems = ['Fully Paid', 'Partially Paid', 'Not Paid']
+   const statusBodyTemplate = (data) => {
+    // console.log(data)
+     return <Tag className='__tag' value={data.paymentStatus} severity={getSeverity(data)}></Tag>;
+   };
      
   const columns = [
 
@@ -78,7 +101,10 @@ const RawMaterialHistoryTable = () => {
     {field: 'flag', header: 'stockType',isFilter:true,filterType:'dropdown',dropdownItems:rawTypeItems,filterPlaceholder:"Search by Stock Type"},     
     
     {field: 'brandName', header: 'Brand Name',isFilter:true,filterType:'dropdown',dropdownItems:brandNames,filterPlaceholder:"Search by Brand Name"},     
-      
+   
+    {field: 'paymentStatus', header: 'Payment Status',isBody:true,body:statusBodyTemplate,isFilter:true,filterType:'dropdown',dropdownItems:paymentItems,filterPlaceholder:"Search by Payment Status"},
+   
+    
     {field: 'quantity', header: 'Quantity',isFilter:false,isBody:true,body:quntBody,filterPlaceholder:""},     
  
     {field: 'reason', header: 'Comment',isFilter:false,filterPlaceholder:""},    

@@ -110,11 +110,11 @@ const CustomTable = (
   
      const onClickFilter=(e)=>{        
         //console.log(e) 
-        console.log(filtersData)
+       // console.log(filtersData)
         for (const key in filtersData)
         {
           if (filtersData[key] === null) {
-              console.log(key);
+              //console.log(key);
               delete filtersData[key]
           }
            
@@ -123,23 +123,23 @@ const CustomTable = (
         onApplyFilter(filtersData)
         const btn = document.querySelectorAll(".p-column-filter");
         let activeFilterIndex = 0
-       // console.log(btn)
+        //console.log(btn)
         let flag = true
         columns.map((col,index)=>{
           
            if (col.isFilter) {
             if (filtersData.hasOwnProperty(col['field'])) {
-             // console.log(filtersData[col['field']],index,activeFilterIndex)
+              //console.log(filtersData[col['field']],index,activeFilterIndex)
               if (filtersData[col['field']] !== null) {
-               console.log(btn[index].children[0].children[0].style.color)
+               
                btn[activeFilterIndex].children[0].children[0].style.color = 'white'
                btn[activeFilterIndex].classList.add('__activeFilter')           
               } 
              }else if(filtersData.hasOwnProperty('startDate') && filtersData.hasOwnProperty('endDate')){
               //console.log(filtersData.hasOwnProperty('startDate'))
               if (filtersData['startDate'] !== null && filtersData['endDate'] !== null && flag) {
-                 console.log(filtersData.hasOwnProperty('startDate'),filtersData,index,activeFilterIndex,btn)
-                 console.log(btn[index].children[0].children[0].style.color)
+                // console.log(filtersData.hasOwnProperty('startDate'),filtersData,index,activeFilterIndex,btn)
+                 
                  btn[activeFilterIndex].children[0].children[0].style.color = 'white'
                  btn[activeFilterIndex].classList.add('__activeFilter') 
                  flag = false          
@@ -154,7 +154,7 @@ const CustomTable = (
           filterData:filtersData,
           globalFilterValue
         }; 
-        console.log(paginationData)
+        //console.log(paginationData)
         dispatch(dispatchFunction(paginationData))
        }
 
@@ -168,13 +168,13 @@ const CustomTable = (
              //console.log((e.field == col['field']),e.field,col['field'])
              if (col.isFilter) {
               if (filtersData.hasOwnProperty(col['field'])) {
-                console.log(filtersData[col['field']],index,activeFilterIndex)
+                //console.log(filtersData[col['field']],index,activeFilterIndex)
                 if (filtersData[col['field']] && (e.field == col['field'])) {
                  setFiltersData({...filtersData,[e.field]: null})
                 // console.log(btn[index].children[0].children[0].style.color)
                  btn[activeFilterIndex].children[0].children[0].style.color = '#6c757d'
                  btn[activeFilterIndex].classList.remove('__activeFilter') 
-                 console.log(filtersData[col['field']])
+                 //console.log(filtersData[col['field']])
                  delete filtersData[col['field']]           
                  //console.log(paginationData)
                  for (const key in filtersData)
@@ -207,12 +207,12 @@ const CustomTable = (
                  delete filtersData['endDate'] 
                  
                  flag = false
-                 console.log(filtersData)          
+                 //console.log(filtersData)          
                  //console.log(paginationData)
                  for (const key in filtersData)
                  {
                    if (filtersData[key] === null) {
-                       console.log(key);
+                       //console.log(key);
                        delete filtersData[key]
                    }                   
                  }         
@@ -233,7 +233,7 @@ const CustomTable = (
          
         })
 
-       console.log(filtersData)
+      // console.log(filtersData)
       //  for (const key in filtersData)
       //  {
       //    if (filtersData[key] === null) {
@@ -463,7 +463,7 @@ const dateBodyTemplateTree = (rowData)=>{
 // },[endDate])
 
   const dateFilterTemplate = (field,placeholder) => {
-    console.log(filtersData)
+   // console.log(filtersData)
     return <div className="card flex flex-column justify-content-center">
               <div>
                 <Text>From</Text>
@@ -629,9 +629,9 @@ const dateBodyTemplateTree = (rowData)=>{
                      }
                   }
                   else if (col.isDate){ 
-                    console.log('date true')              
+                    //console.log('date true')              
                    if (col.isFilter) {
-                    console.log('date filter')  
+                    //console.log('date filter')  
                     if (tableType=='dataTable') {
                     return <Column
                       key={col.field} 
