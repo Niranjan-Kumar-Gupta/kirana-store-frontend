@@ -53,9 +53,27 @@ const API_PUT_STOCKS_HISTORY_CHECK =  async (__data) => {
   }
 };
 
-const API_DELETE_STOCKS_HISTORY = async (__data) => {
+const API_DELETE_STOCKS_HISTORY = async (id) => {
   try {
-    const resp = await axiosInstance.delete(`/stockhistory/${__data.id}`, __data.data); 
+    const resp = await axiosInstance.delete(`/stockhistory/${id}`); 
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_GET_STOCKS_HISTORY_BY_ID = async (id) => {
+  try {
+    const resp = await axiosInstance.get(`/stockhistory/${id}`); 
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_UPDATE_STOCKS_HISTORY_BY_ID = async (id, data) => {
+  try {
+    const resp = await axiosInstance.put(`/stockhistory/${id}`, data); 
     return resp.data;
   } catch (err) {
     throw err;
@@ -66,5 +84,7 @@ export {
   API_GET_STOCKS_HISTORY,
   API_PUT_STOCKS_HISTORY,
   API_DELETE_STOCKS_HISTORY,
-  API_PUT_STOCKS_HISTORY_CHECK
+  API_PUT_STOCKS_HISTORY_CHECK,
+  API_GET_STOCKS_HISTORY_BY_ID,
+  API_UPDATE_STOCKS_HISTORY_BY_ID,
 };

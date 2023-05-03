@@ -16,6 +16,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 import { useNavigate, useParams } from 'react-router-dom'
+import { getBrand } from '../../reducers/productTableSlice';
 
 
 const StockHistoryTable = () => {
@@ -31,6 +32,8 @@ const StockHistoryTable = () => {
     loading,
     totalStockHistoryCount,
   } = useSelector((state) => state.stocksHistoryTable);
+  const { brandNames } = useSelector((state) => state.productTable);
+
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false);
 
   const deleteModule = () => {
@@ -43,27 +46,16 @@ const StockHistoryTable = () => {
       />
     );
   };
-  const {
-    brandNames, 
-  } = useSelector((state) => state.productTable);
+
  
 
 
   const [stockHistoryTable,setStockHistoryTable] = useState([])
   
   useEffect(()=>{
-    // console.log(page,limit)
-    // dispatch(getStocksHistory({page:page,limit:limit}))
-    // .unwrap()
-    // .then(()=>{ 
+    dispatch(getBrand())
+  },[]);
 
-    // }) 
-    // console.log(stockHistoryData)
-  },[page,limit])
-
-  useEffect(()=>{
-
-  },[])
 
   useEffect(()=>{
     let data = []
@@ -150,10 +142,8 @@ const StockHistoryTable = () => {
   }
 
   const handleEdit = (data) => {
-    
-    navigate('edit') 
-    dispatch(changeSelectedStockHistory(data))
-   
+    navigate(`${data.id}`) 
+    dispatch(changeMode('update'))
  };
 
  const handleDelete = (data) => {

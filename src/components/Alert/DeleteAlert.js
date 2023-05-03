@@ -8,6 +8,7 @@ import {
  
   deleteStocksHistory,
   resetSelectedStockHistory,
+  resetToastActionStock,
 } from "../../reducers/stocksHistoryTableSlice";
 
 import * as Messag from '../../config/ToastMessage';
@@ -104,14 +105,14 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
   }
 
   const deleteStockHistoryItem = () => {
-    const __data = {
-      id:selectedStockHistory.id,
-      data:selectedStockHistory
-    }
-    dispatch(deleteStocksHistory(__data))
+    dispatch(deleteStocksHistory(selectedStockHistory.id))
       .unwrap()
       .then(res => {
-        //show toast here
+        if (onDetailsPage()) {
+          navigate('/stocks')
+        } else {
+          dispatch(resetToastActionStock());
+        }
         let Message_Success = 'Stock History Successfully Deleted';
         toast.current.show({ severity: 'success', detail: Message_Success });
       })

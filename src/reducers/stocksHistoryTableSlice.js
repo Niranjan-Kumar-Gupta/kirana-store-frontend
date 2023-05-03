@@ -7,6 +7,7 @@ import {
     API_PUT_STOCKS_HISTORY,
     API_DELETE_STOCKS_HISTORY,
     API_PUT_STOCKS_HISTORY_CHECK,
+    API_GET_STOCKS_HISTORY_BY_ID,
 } from "../api/stockHistory.service";
 
 import {
@@ -15,6 +16,7 @@ import {
   getUnselectedProducts,
   isProductInList,
 } from "../utils/tableUtils";
+import { API_UPDATE_STOCKS_HISTORY_BY_ID } from "../api/stockHistory.service";
 
 
 const initialState = {
@@ -44,7 +46,6 @@ export const getStocksHistory = createAsyncThunk(
 export const updateStocksHistory = createAsyncThunk(
   "stockTable/putStock",
   async ( data, thunkAPI) => {
-    console.log(data)
     try {
       const stocks = await API_PUT_STOCKS_HISTORY(data);
       return stocks;
@@ -57,7 +58,6 @@ export const updateStocksHistory = createAsyncThunk(
 export const updateStocksHistoryCheck = createAsyncThunk(
   "stockTable/checkStock",
   async ( data, thunkAPI) => {
-    console.log(data)
     try {
       const stocks = await API_PUT_STOCKS_HISTORY_CHECK(data);
       return stocks;
@@ -69,10 +69,33 @@ export const updateStocksHistoryCheck = createAsyncThunk(
 
 export const deleteStocksHistory = createAsyncThunk(
   "stockTable/deleteStock",
-  async ( data, thunkAPI) => {
-    console.log(data)
+  async ( id, thunkAPI) => {
     try {
-      const stocks = await API_DELETE_STOCKS_HISTORY(data);
+      const stocks = await API_DELETE_STOCKS_HISTORY(id);
+      return stocks;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  }
+);
+
+export const getStockHistoryById = createAsyncThunk(
+  "stockTable/getStockHistortyById",
+  async ( id, thunkAPI) => {
+    try {
+      const stocks = await API_GET_STOCKS_HISTORY_BY_ID(id);
+      return stocks;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data)
+    }
+  }
+);
+
+export const updateStockHistoryById = createAsyncThunk(
+  "stockTable/updateStockHistortyById",
+  async ( { id, data }, thunkAPI) => {
+    try {
+      const stocks = await API_UPDATE_STOCKS_HISTORY_BY_ID(id, data);
       return stocks;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -105,7 +128,7 @@ const stocksHistoryTableSlice = createSlice({
     changeToastActionCheck(state, action) {
       state.toastAction = action.payload
     },
-    resetToastActionCheck(state) {
+    resetToastActionStock(state) {
       state.toastAction = null;
     }
   },
@@ -170,10 +193,31 @@ const stocksHistoryTableSlice = createSlice({
       state.loading = false;
     });
 
-   
+    builder.addCase(getStockHistoryById.fulfilled, (state, action) => {
+      state.selectedStockHistory = action.payload
+      state.loading = false;
+    });
 
-   
+    builder.addCase(getStockHistoryById.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase(getStockHistoryById.rejected, (state) => {
+      state.loading = false;
+    });
 
+    builder.addCase(updateStockHistoryById.fulfilled, (state, action) => {
+      state.toastAction = 'update'
+      state.loading = false;
+    });
+
+    builder.addCase(updateStockHistoryById.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase(updateStockHistoryById.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 
@@ -183,7 +227,7 @@ export const {
   changeSelectedStockHistory,
   resetSelectedStockHistory,
   changePage,
-  resetToastActionCheck,
+  resetToastActionStock,
   changeToastActionCheck,
 } = stocksHistoryTableSlice.actions;
 

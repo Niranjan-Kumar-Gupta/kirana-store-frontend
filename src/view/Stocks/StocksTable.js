@@ -13,6 +13,7 @@ import {
 } from "../../reducers/stocksTableSlice";
 
 import { useDispatch, useSelector } from "react-redux";
+import { getBrand } from '../../reducers/productTableSlice';
 
 const StocksTable = () => {
 
@@ -23,24 +24,15 @@ const StocksTable = () => {
     loading,
     totalStockCount,
   } = useSelector((state) => state.stockTable);
+  const { brandNames } = useSelector((state) => state.productTable);
+  
+  
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    // dispatch(getStocks({page:page,limit:limit}))
-    // .unwrap()
-    // .catch(()=>{ 
-    //   //console.log(stockData)
+    dispatch(getBrand())
+  },[]);
 
-    // }) 
-   
-
-  },[page,limit])
-
-  const {
-   
-    brandNames,
-   
-  } = useSelector((state) => state.productTable);
  
 
 

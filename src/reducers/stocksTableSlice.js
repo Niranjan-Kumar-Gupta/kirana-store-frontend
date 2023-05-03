@@ -13,6 +13,7 @@ const initialState = {
   page: 0,
   limit: 10,
   mode: null,
+  tab: 'stock',
 };
 
 export const getStocks = createAsyncThunk(
@@ -65,6 +66,9 @@ const stockTableSlice = createSlice({
     changePage(state, action) {
       state.page = action.payload
     },
+    changeTab(state, action) {
+      state.tab = action.payload;
+    }
   },
 
   extraReducers: (builder) => {
@@ -105,6 +109,7 @@ export const {
   changeSelectedStock,
   resetSelectedStock,
   changePage,
+  changeTab,
 } = stockTableSlice.actions;
 
 export default stockTableSlice.reducer;

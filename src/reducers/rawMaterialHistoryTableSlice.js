@@ -66,7 +66,7 @@ export const updateRawMaterialHistoryCheck = createAsyncThunk(
 );
 
 export const deleteRawMaterialHistory = createAsyncThunk(
-  "stockTable/deleteStock",
+  "stockTable/deleteRawMaterialHistory",
   async ( id, thunkAPI) => {
     try {
       const RawMaterial = await API_DELETE_RAWMATERIAL_HISTORY(id);
