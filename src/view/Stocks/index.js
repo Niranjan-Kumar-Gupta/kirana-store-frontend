@@ -9,10 +9,12 @@ import { useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
-import { resetToastActionCheck } from '../../reducers/stocksHistoryTableSlice';
+import { changeTab } from '../../reducers/stocksTableSlice';
+import { resetToastActionStock } from '../../reducers/stocksHistoryTableSlice';
 
 export const Stocks = () => {
 
+  const { tab } = useSelector(state => state.stockTable)
   const { toastAction, loading} = useSelector((state) => state.stocksHistoryTable)
 
   const switchButtons = [
@@ -23,11 +25,8 @@ export const Stocks = () => {
   const navigate = useNavigate()
   const toast = useRef(null)
 
-
-const [table, setTable] = useState('stock')
-
   const handleSwitch = (item) => {
-    setTable(item)
+    dispatch(changeTab(item));
   };
 
   const loader = () => {
@@ -35,8 +34,8 @@ const [table, setTable] = useState('stock')
   }
 
 
-  const renderTable = (table) => {
-    switch (table) {
+  const renderTable = (tab) => {
+    switch (tab) {
       case "stock":
         return <StocksTable />;
       case "stockHistory":
@@ -67,8 +66,18 @@ const [table, setTable] = useState('stock')
         severity: 'success',
         detail: 'Check Out Successfully',
       })
+    } else if (toastAction === 'update') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Stock History Successfully Updated',
+      })
+    } else if (toastAction === 'delete') {
+      toast.current.show({
+        severity: 'success',
+        detail: 'Stock History Successfully Deleted',
+      })
     }
-    dispatch(resetToastActionCheck())
+    dispatch(resetToastActionStock())
   },[])
 
 
@@ -81,7 +90,7 @@ const [table, setTable] = useState('stock')
          <div className="flex mt-4 justify-content-between align-items-center gap-2">
           <CustomSwitch
                 options={switchButtons}
-                value={table}
+                value={tab}
                 handleSwitch={handleSwitch}
               />
            <div className="flex  justify-content-center align-items-center gap-2" >  
@@ -99,7 +108,7 @@ const [table, setTable] = useState('stock')
            </div>  
          
          </div>
-          {renderTable(table)}
+          {renderTable(tab)}
 
       </div>
     );

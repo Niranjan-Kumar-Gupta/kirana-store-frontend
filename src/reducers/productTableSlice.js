@@ -28,7 +28,8 @@ const initialState = {
   varient:[],
   selectedProductsList: [],
   vartable:[],
-  toastAction: null
+  toastAction: null,
+  brandNames: [],
 };
 
 export const getProducts = createAsyncThunk(
@@ -245,9 +246,8 @@ const productTableSlice = createSlice({
 
 
     builder.addCase(getBrand.fulfilled, (state, action) => {
-      let x = action.payload.rows;
-      state.brandNames = x.map((a)=>{console.log(a.brandName);
-         return a.brandName});
+      let brands = action.payload.rows;
+      state.brandNames = brands.map(brand => brand.brandName );
       state.loading = false;
     });
     builder.addCase(getBrand.pending, (state) => {

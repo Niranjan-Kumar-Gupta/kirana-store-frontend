@@ -22,6 +22,7 @@ import "./style.css"
 import { DeleteAlert } from "../../components/Alert/DeleteAlert";
 
 import CustomBreadcrumb from '../../components/CustomBreadcrumb'
+import { getBrand } from '../../reducers/productTableSlice'
 const Orders = () => {
 
     
@@ -106,6 +107,7 @@ const handleEdit = (rowData) => {
 };
 
 useEffect(() => {
+  dispatch(getBrand())
   if (toastAction === 'add') {
     toast.current.show({
       severity: 'success',

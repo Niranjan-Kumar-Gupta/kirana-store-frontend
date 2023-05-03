@@ -16,6 +16,7 @@ import {
   changeSelectedRawMaterialHistory,
 } from "../../reducers/rawMaterialHistoryTableSlice";
 import { useNavigate } from 'react-router-dom';
+import { getBrand } from '../../reducers/productTableSlice';
 
 
 const RawMaterialHistoryTable = () => {
@@ -30,12 +31,7 @@ const RawMaterialHistoryTable = () => {
     selectedRawMaterialHistory,
   } = useSelector((state) => state.rawMaterialHistoryTable);
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
-  const {
-    brandNames,
-  } = useSelector((state) => state.productTable);
-
-
-
+  const { brandNames } = useSelector((state) => state.productTable);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,6 +48,10 @@ const RawMaterialHistoryTable = () => {
       />
     );
   };
+
+  useEffect(() => {
+    dispatch(getBrand());
+  },[])
 
   const quntBody = (rowData)=>{
     // console.log(rowData.quantity)
@@ -131,7 +131,6 @@ const getSeverity = (data) => {
   }
 
   const handleEdit = (rowData) => {
-    // dispatch(changeSelectedRawMaterialHistory(rowData));
     dispatch(changeMode('update'))
     navigate(`${rowData.id}`)
   }
