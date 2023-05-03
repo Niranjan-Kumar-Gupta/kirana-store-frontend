@@ -90,28 +90,28 @@ const RawMaterialForm = ({ onHide, showRawMaterialForm,toast}) => {
     const onSubmit = (data) => {
 
       
-    if (selectedImage === null) {
-      toast.current.show({
-        severity: 'error',
-        detail: 'Please select an image.',
-      })
-      return
-    }
-    if (typechecker(selectedImage) || typeof selectedImage === 'string') {
-      if (selectedImage.size > 8000000) {
-        toast.current.show({
-          severity: 'error',
-          detail: 'Image size should be less than 8 MB.',
-        })
-        return
-      }
-    } else {
-      toast.current.show({
-        severity: 'error',
-        detail: 'Please select .jpg or .png format image.',
-      })
-      return
-    }
+    // if (selectedImage === null) {
+    //   toast.current.show({
+    //     severity: 'error',
+    //     detail: 'Please select an image.',
+    //   })
+    //   return
+    // }
+    // if (typechecker(selectedImage) || typeof selectedImage === 'string') {
+    //   if (selectedImage.size > 8000000) {
+    //     toast.current.show({
+    //       severity: 'error',
+    //       detail: 'Image size should be less than 8 MB.',
+    //     })
+    //     return
+    //   }
+    // } else {
+    //   toast.current.show({
+    //     severity: 'error',
+    //     detail: 'Please select .jpg or .png format image.',
+    //   })
+    //   return
+    // }
 
         const __data = {
           materialName:data.rawMaterialName,
