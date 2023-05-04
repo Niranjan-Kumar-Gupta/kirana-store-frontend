@@ -169,7 +169,7 @@ const StockHistoryEdit = () => {
       setValue('SKUCode', selectedStockHistory.productvariants?.SKUCode)
       setValue(
         'reason',
-        selectedStockHistory.reason.split(' ')[0] === 'order'
+        selectedStockHistory.reason?.length > 0 && selectedStockHistory.reason.split(' ')[0] === 'order'
           ? 'orderDelivery'
           : selectedStockHistory.reason
       )
@@ -179,7 +179,7 @@ const StockHistoryEdit = () => {
       setValue('stockType', selectedStockHistory.flag)
 
       if (selectedStockHistory && selectedStockHistory.flag === 'CHECK OUT') {
-        if (selectedStockHistory.reason.split(' ')[0] === 'order') {
+        if (selectedStockHistory.reason?.length > 0 && selectedStockHistory.reason.split(' ')[0] === 'order') {
           setShowOrderDropDown(true)
           setValue('order', parseInt(selectedStockHistory.reason.split(' ')[1]))
         }
