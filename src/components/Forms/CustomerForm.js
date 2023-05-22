@@ -220,16 +220,15 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                   {getFormErrorMessage('name')}
                 </div>
                 <div className='field bg-white p-2 border-round border-50 mb-2'>
-                  <label htmlFor='phone'>Phone *</label>
+                  <label htmlFor='phone'>Phone </label>
                   <Controller
                     name='phone'
                     control={control}
-                    rules={{
-                      required: 'phone number is required.',
-                      validate: (value) =>
-                        isValidPhoneNumber(value.toString()) ||
-                        'Please enter a valid phone number. ',
-                    }}
+                    // rules={{
+                    //   validate: (value) =>
+                    //     isValidPhoneNumber(value.toString()) ||
+                    //     'Please enter a valid phone number. ',
+                    // }}
                     render={({ field, fieldState }) => (
                       <PhoneInputWithCountry
                         name='phone'
@@ -337,11 +336,10 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
               </div>
 
                 <div className='field'>
-                  <label htmlFor='pincode'>Pincode *</label>
+                  <label htmlFor='pincode'>Pincode</label>
                   <Controller
                     name='pincode'
                     control={control}
-                    rules={{ required: 'Pincode is required.' }}
                     render={({ field, fieldState }) => (
                       <InputNumber
                         id={field.name}
