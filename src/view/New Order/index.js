@@ -38,13 +38,14 @@ const NewOrder = () => {
   const [edit, setEdit] = useState(false)
   const [displayAlertDelete, setDisplayAlertDelete] = useState(false)
   const [finalAmount, setFinalAmount] = useState(0);
+  const [temp, setTemp] = useState({}); 
 
   const { id } = useParams()
   const { mode, orderDet, selectedOrder, loading } = useSelector(
     (state) => state.orderTable
     )
     
-    const paymentStatus = [
+    const paymentStatus = [ 
     { key: 'Fully Paid', value: 'Fully Paid' },
     { key: 'Partially Paid', value: 'Partially Paid' },
     { key: 'Not Paid', value: 'Not Paid' },
@@ -123,10 +124,27 @@ const NewOrder = () => {
     )
   }
 
+
   useEffect(() => {
-    if (mode !== 'update') {
-      getProdVariants()
-    }
+    // if (mode !== 'update') {
+    //   getProdVariants()
+    // }
+    getProdVariants()
+
+    // if (orderDet.productvariants) { 
+    //   let __productSVar = [...orderDet?.productvariants] 
+    //   const tempdata = {} 
+    //   const prodId = []  
+    //   __productSVar.forEach(ele => {
+    //    tempdata[`${ele.productId}`] = {
+    //     "checked":true,
+    //     "partiallyChecked":false
+    //    }
+    //    prodId.push(`${ele.productId}`)
+    //   });
+    //   setSelectedProdId(prodId)
+    //   setTemp(tempdata)
+    // } 
     getAllCustomer()
     if (id) {
       try {
@@ -140,10 +158,40 @@ const NewOrder = () => {
     }
   }, [])
 
+  useEffect(()=>{
+    if (orderDet.productvariants) { 
+      let __productSVar = [...orderDet?.productvariants] 
+      const tempdata = {} 
+      const prodId = []  
+      __productSVar.forEach(ele => {
+       tempdata[`${ele.productId}`] = {
+        "checked":true,
+        "partiallyChecked":false
+       }
+       prodId.push(`${ele.productId}`)
+      });
+      setSelectedProdId(prodId)
+      setTemp(tempdata)
+    } 
+  },[orderDet.productvariants])
+
   useEffect(() => {
+  
     const filteredData = getDataByIds(prodVar, selectedProdId)
+     if (orderDet?.productvariants) {
+      orderDet?.productvariants.forEach(proV => {
+        filteredData.forEach((filData,index) => { 
+          if (proV.productId==filData.productId) {
+             console.log(filData)
+            filteredData[index].orderedQuantity = proV.orderedQuantity
+          }
+      });
+     });
+    }
+    console.log(filteredData,selectedProdId)
     setTableData(filteredData)
-  }, [selectedProdId, prodVar])
+    console.log(tableData)
+  }, [selectedProdId, prodVar])  
 
   useEffect(() => {
     if (tableData && tableData.length > 0) {
@@ -176,8 +224,21 @@ const NewOrder = () => {
         selectedOrder.completedAt ? new Date(selectedOrder.completedAt) : null
       )
     }
+    setValue('products',temp)
   }, [selectedOrder])
 
+  useEffect(()=>{
+    setValue('products',temp) 
+  },[temp,setTemp]) 
+
+  useEffect(()=>{
+      if (orderDet.productvariants) {
+        let __productSVar = [...orderDet?.productvariants] 
+       // console.log(__productSVar)
+       // setTableData(__productSVar)
+      }
+  },[])
+ 
   const flatten = (arr) =>
     arr.reduce((acc, curr) => {
       const { children, ...rest } = curr
@@ -193,6 +254,7 @@ const NewOrder = () => {
 
   const getDataByIds = (data, ids) => {
     const flattenedData = flatten(data)
+    console.log(flattenedData) 
    
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
@@ -234,13 +296,15 @@ const NewOrder = () => {
       }
       updatedData.orderDetails = data
       delete updatedData.orderDetails.products
+      updatedData.productvariants = tableData
+      console.log(updatedData)
       const orderId = id
-      dispatch(updateOrder({ orderId, updatedData }))
-        .unwrap()
-        .then((res) => navigate('/orders'))
-        .catch((err) => {
-          toast.current.show({ severity: 'error', detail: err.message })
-        })
+      // dispatch(updateOrder({ orderId, updatedData }))
+      //   .unwrap()
+      //   .then((res) => navigate('/orders'))
+      //   .catch((err) => {
+      //     toast.current.show({ severity: 'error', detail: err.message })
+      //   })
     } else {
       let isQtyEmpty = false
       tableData.forEach((prod) => {
@@ -277,6 +341,7 @@ const NewOrder = () => {
 
   const onCellEditComplete = (e, rowIndex) => {
     let _products = [...tableData]
+    // let clone = { ..._products[rowIndex] };
     _products[rowIndex].orderedQuantity = e.value
     if (e.value) {
       setTableData(_products)
@@ -284,10 +349,12 @@ const NewOrder = () => {
   }
 
   const qtyEditor = (rowData, colData) => {
+    //console.log(rowData,colData); 
     return (
       <InputNumber
         value={rowData.orderedQuantity}
         placeholder='Enter Quantity'
+        disabled={!edit && mode === 'update'}
         id={rowData.key}
         name={rowData.label}
         style={{ width: '8rem' }}
@@ -311,8 +378,9 @@ const NewOrder = () => {
   }
 
   const actionBody = (rowData) => {
-    return (
+    return ( 
       <button
+        disabled={!edit && mode === 'update'}
         style={{ border: 'none', background: 'none', cursor: 'pointer' }}
         onClick={(e) => handleDelete(e, rowData)}
       >
@@ -363,11 +431,10 @@ const NewOrder = () => {
   }
 
   const selectedProdTable = () => {
-    return (mode === 'create' && tableData && tableData.length > 0) ||
-      mode === 'update' ? (
+    return (
       <DataTable
-        value={mode === 'create' ? tableData : orderDet.productvariants}
-        dataKey='id'
+        value={ tableData }
+        dataKey='id' 
         responsiveLayout='scroll'
         resizableColumns
         columnResizeMode='expand'
@@ -387,19 +454,14 @@ const NewOrder = () => {
           className='qtyCells'
           header='Ordered Quantity'
           field='orderedQuantity'
-          body={mode === 'create' ? qtyEditor : ''}
-        ></Column>
-        {mode === 'update' ? (
+          body={qtyEditor}
+        ></Column>   
           <Column
             header='Delivered Quantity'
             field='deliveredQuantity'
           ></Column>
-        ) : (
           <Column header='Actions' body={actionBody}></Column>
-        )}
       </DataTable>
-    ) : (
-      <></>
     )
   }
 
@@ -516,11 +578,12 @@ const NewOrder = () => {
                   </div>
                 </div>
                 <div className='field bg-white p-3 border-round border-50 mb-3'>
-                  {mode === 'create' ? (
+                  {true ? (
                     <div className='field w-12 lg:w-5'>
                       <label htmlFor='categories'>Products *</label>
                       <Controller
                         name='products'
+
                         control={control}
                         rules={{ required: 'Please select products.' }}
                         render={({ field, fieldState }) => (
@@ -528,8 +591,10 @@ const NewOrder = () => {
                             ref={treeSelectRef}
                             filter
                             id={field.name}
+                            disabled={!edit && mode === 'update'}
                             value={field.value}
                             onChange={(e) => {
+                             
                               let prodId = Object.keys(e.value).filter(
                                 (key) =>
                                   e.value[key].checked &&
