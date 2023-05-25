@@ -126,25 +126,7 @@ const NewOrder = () => {
 
 
   useEffect(() => {
-    // if (mode !== 'update') {
-    //   getProdVariants()
-    // }
     getProdVariants()
-
-    // if (orderDet.productvariants) { 
-    //   let __productSVar = [...orderDet?.productvariants] 
-    //   const tempdata = {} 
-    //   const prodId = []  
-    //   __productSVar.forEach(ele => {
-    //    tempdata[`${ele.productId}`] = {
-    //     "checked":true,
-    //     "partiallyChecked":false
-    //    }
-    //    prodId.push(`${ele.productId}`)
-    //   });
-    //   setSelectedProdId(prodId)
-    //   setTemp(tempdata)
-    // } 
     getAllCustomer()
     if (id) {
       try {
@@ -159,38 +141,58 @@ const NewOrder = () => {
   }, [])
 
   useEffect(()=>{
+    if (mode === 'update' && selectedOrder) {
     if (orderDet.productvariants) { 
+      console.log(orderDet.productvariants)
       let __productSVar = [...orderDet?.productvariants] 
       const tempdata = {} 
       const prodId = []  
       __productSVar.forEach(ele => {
-       tempdata[`${ele.productId}`] = {
-        "checked":true,
-        "partiallyChecked":false
-       }
-       prodId.push(`${ele.productId}`)
+        if (ele.isActive) {
+          tempdata[`${ele.productId}`] = {
+            "checked":true,
+            "partiallyChecked":false
+           }
+          prodId.push(`${ele.productId}`)
+        } 
       });
+      console.log(prodId)
       setSelectedProdId(prodId)
+      
       setTemp(tempdata)
+    
     } 
+   }
   },[orderDet.productvariants])
 
   useEffect(() => {
-  
+    
     const filteredData = getDataByIds(prodVar, selectedProdId)
-     if (orderDet?.productvariants) {
-      orderDet?.productvariants.forEach(proV => {
-        filteredData.forEach((filData,index) => { 
-          if (proV.productId==filData.productId) {
-             console.log(filData)
-            filteredData[index].orderedQuantity = proV.orderedQuantity
-          }
+    if (mode === 'update' && selectedOrder) {
+      if (orderDet?.productvariants) {
+        orderDet?.productvariants.forEach(proV => {
+          filteredData.forEach((filData,index) => { 
+            console.log(filteredData.length,orderDet.productvariants.length)
+            
+            if (proV.productId==filData.productId) {
+              //console.log(proV)   
+              filteredData[index].id = proV.id    
+              filteredData[index].isActive = true        
+              filteredData[index].orderId = proV.orderId
+              filteredData[index].orderedQuantity = proV.orderedQuantity
+              filteredData[index]['deliveredQuantity'] = proV.deliveredQuantity
+              filteredData[index]['orderproductId'] = proV.orderproductId
+             // console.log(proV,filData)
+            }else{
+              filteredData[index].orderId = parseInt(id)
+              filteredData[index].id = filteredData[index].productVariantId
+            }
+        });
       });
-     });
+      }
     }
-    console.log(filteredData,selectedProdId)
+    // console.log(filteredData,selectedProdId)
     setTableData(filteredData)
-    console.log(tableData)
   }, [selectedProdId, prodVar])  
 
   useEffect(() => {
@@ -223,21 +225,18 @@ const NewOrder = () => {
         'completedAt',
         selectedOrder.completedAt ? new Date(selectedOrder.completedAt) : null
       )
+      setValue('products',temp)
     }
-    setValue('products',temp)
+    
   }, [selectedOrder])
 
   useEffect(()=>{
-    setValue('products',temp) 
+    if (mode === 'update' && selectedOrder) {
+      setValue('products',temp) 
+    }
   },[temp,setTemp]) 
 
-  useEffect(()=>{
-      if (orderDet.productvariants) {
-        let __productSVar = [...orderDet?.productvariants] 
-       // console.log(__productSVar)
-       // setTableData(__productSVar)
-      }
-  },[])
+
  
   const flatten = (arr) =>
     arr.reduce((acc, curr) => {
@@ -253,13 +252,14 @@ const NewOrder = () => {
     }, [])
 
   const getDataByIds = (data, ids) => {
+    
     const flattenedData = flatten(data)
-    console.log(flattenedData) 
-   
+ 
     return ids.flatMap((id) => {
       const foundItem = flattenedData.find(
-        (item) => item.key == id && ('option1' in item || item.isDefault)
+        (item) => item.key == id && ('option1' in item || item.isDefault || item.isActive)
       )
+     
       if (foundItem) {
         const existingItem = tableData.find(
           (item) => item.key === foundItem.key
@@ -293,18 +293,44 @@ const NewOrder = () => {
     if (mode === 'update') {
       let updatedData = {
         orderDetails: {},
+        productvariants:[]
       }
       updatedData.orderDetails = data
       delete updatedData.orderDetails.products
-      updatedData.productvariants = tableData
-      console.log(updatedData)
+      //updatedData.productvariants = tableData
+      const __newProductV = tableData
+      const  __oldProductV = orderDet?.productvariants
+      const remProduct = []
+     for (let i = 0; i < __oldProductV.length; i++) {
+       let j = 0
+       for (j = 0; j < __newProductV.length; j++) {
+          if (__oldProductV[i].id == __newProductV[j].id) {
+            break         
+          }    
+        }
+        if (j==__newProductV.length) {
+          //console.log('nope',__oldProductV[i])
+          remProduct.push(__oldProductV[i])
+        }      
+      }
+      //console.log('reem',remProduct)
+
+      remProduct.forEach((remPro) => {
+          const clone = {...remPro}
+          clone.isActive = false
+         __newProductV.push(clone)
+      });
+
+      //console.log('updateData',__newProductV)
+      updatedData.productvariants = __newProductV
+     // console.log(updatedData)
       const orderId = id
-      // dispatch(updateOrder({ orderId, updatedData }))
-      //   .unwrap()
-      //   .then((res) => navigate('/orders'))
-      //   .catch((err) => {
-      //     toast.current.show({ severity: 'error', detail: err.message })
-      //   })
+      dispatch(updateOrder({ orderId, updatedData }))
+        .unwrap()
+        .then((res) => navigate('/orders'))
+        .catch((err) => {
+          toast.current.show({ severity: 'error', detail: err.message })
+        })
     } else {
       let isQtyEmpty = false
       tableData.forEach((prod) => {
@@ -374,8 +400,8 @@ const NewOrder = () => {
     oldSel[rowData.key].checked = false
     if (!oldSel[rowData.key].checked && !oldSel[rowData.key].partiallyChecked)
       delete oldSel[rowData.key]
-    delete oldSel[rowData?.productId]
-  }
+      delete oldSel[rowData?.productId]
+    }
 
   const actionBody = (rowData) => {
     return ( 

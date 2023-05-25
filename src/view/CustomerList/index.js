@@ -60,9 +60,13 @@ const CustomerList = () => {
   }
 
   const bodyPhone = (rowData) => {
-    return (
-      <Text>+{rowData.phone}</Text>
-    )
+    if (rowData.phone) {
+    return (  
+        <Text>+{rowData.phone}</Text>    
+      )
+    }else{
+      return <></>
+    }
   }
 
 
