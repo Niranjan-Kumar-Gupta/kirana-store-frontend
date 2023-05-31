@@ -32,6 +32,8 @@ import StockHistoryEdit from './view/Stocks/stockHistoryEdit'
 import RawMaterial from './view/RawMaterial'
 import RawMaterialCheckIn from './view/RawMaterial/CheckIn'
 import RawMaterialCheckOut from './view/RawMaterial/CheckOut'
+import User from './view/User'
+import Location from './view/Location'
 
 
 function App() {
@@ -92,7 +94,9 @@ function App() {
           />
           <Route path='categories' element={<Categories />} />
           <Route path='userProfile' element={<UserProfile />} />
-          <Route path='paymentHistory' element={<PaymentHistory />} />
+          <Route path='user' element={<User/>} />
+          <Route path='location' element={<Location/>} />
+          {/* <Route path='paymentHistory' element={<PaymentHistory />} /> */}
         </Route>
         <Route index path='login' element={<Login />} />
         {/* <Route path="/resetpass" element={<ResetPass />} /> */}

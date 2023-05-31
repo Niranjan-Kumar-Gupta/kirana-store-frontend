@@ -1,0 +1,104 @@
+.panel-border {
+    border-style: none none dotted none !important;
+    border-width: 0.5px;
+}
+
+
+.sales-card {
+    background: #E2EBF1;
+    border: 0.5px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.panel-right {
+    margin-top: 10px;
+    border-style: dotted none none none !important;
+    border-width: 0.5px;
+}
+
+.logo {
+    border: none;
+    background-color: #fff;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.logo::after {
+    content: '\A';
+    position: absolute;
+    width: 100%; height:100%;
+    top:0; 
+    left:0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: all 300ms ease-in;
+    -webkit-transition: all 300ms ease-in;
+    z-index: 1;
+}
+
+.logo:hover::after {
+    opacity: 1;
+}
+
+.logo:hover .editIcon {
+    display: block;
+}
+
+.logoImg {
+    max-width: 60px;
+    height: auto;
+    object-fit: contain;
+}
+
+.logo img.editIcon {
+    opacity: 0;
+    width: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* add this */
+}
+
+.logo:hover img.editIcon {
+    opacity: 1;
+}
+
+.logoDisplay {
+    width: 250px;
+}
+
+.file-upload .p-button {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #bcbcbc !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    font-family: "Lato" !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    line-height: 140% !important;
+}
+.file-upload .p-button:focus{
+  box-shadow:none !important
+}
+
+.file-upload .p-button-icon {
+  display: none !important;
+}
+
+@media only screen and (min-width: 992px) {
+    .panel-right {
+        border-style: none none none dotted !important;
+    }
+
+}
+
+@media only screen and (max-width: 992px) {
+    .panel-right {
+        display: flex !important;
+        justify-content: flex-start !important;
+    }
+}

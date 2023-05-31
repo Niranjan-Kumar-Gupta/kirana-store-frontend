@@ -21,6 +21,7 @@ import {
   resetMode,
   updateMode,
   updateOrder,
+  changeOrderDetails
 } from '../../reducers/orderTableSlice'
 import { API_GET_PRRODUCTS_WITH_VARIANTS } from '../../api/product.services'
 import Loader from '../../components/Loader'
@@ -367,7 +368,16 @@ const NewOrder = () => {
 
   const onCellEditComplete = (e, rowIndex) => {
     let _products = [...tableData]
-    // let clone = { ..._products[rowIndex] };
+    if (mode === 'update' && selectedOrder) {
+      if (orderDet?.productvariants) {
+        orderDet?.productvariants.forEach((proV,index) => {  
+          if (proV.productId==_products[rowIndex].productId) {
+             dispatch(changeOrderDetails({index,value:e.value}))
+          }   
+        });
+      }
+    }
+
     _products[rowIndex].orderedQuantity = e.value
     if (e.value) {
       setTableData(_products)

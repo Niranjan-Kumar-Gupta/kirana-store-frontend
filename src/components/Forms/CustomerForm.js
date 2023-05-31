@@ -210,7 +210,6 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                       <InputText
                         id={field.name}
                         disabled={!edit && mode === 'update'}
-                        maxLength={24}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter Customer Name'
                         {...field}
@@ -281,7 +280,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
-                        maxLength={24}
+                        maxLength={15}
                         disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter GST Number'
@@ -300,7 +299,7 @@ export const CustomerForm = ({ onHide, showCustomerForm, toast }) => {
                     render={({ field, fieldState }) => (
                       <InputText
                         id={field.name}
-                        maxLength={24}
+                        maxLength={10}
                         disabled={!edit && mode === 'update'}
                         className={classNames({ 'p-invalid': fieldState.invalid })}
                         placeholder='Enter PAN Number'

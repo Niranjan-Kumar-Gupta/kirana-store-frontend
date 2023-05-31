@@ -105,6 +105,9 @@ const orderTableSlice = createSlice({
     resetSelectedOrdersList(state) {
       state.selectedOrdersList = []
     },
+    changeOrderDetails(state,action) {
+      state.orderDet.productvariants[action.payload.index]['orderedQuantity'] = action.payload.value
+    },
     resetOrderDetails(state) {
       state.orderDet = {}
       state.selectedOrder = {}
@@ -188,6 +191,6 @@ const orderTableSlice = createSlice({
   },
 });
 
-export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder, resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails, resetToastActionOrder } = orderTableSlice.actions;
+export const { updateMode, changePage, changeSelectedOrder, resetSelectedOrder,changeOrderDetails ,resetMode, updateSelectedOrdersList, resetSelectedOrdersList, resetOrderDetails, resetToastActionOrder } = orderTableSlice.actions;
 
 export default orderTableSlice.reducer;
