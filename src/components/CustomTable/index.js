@@ -33,6 +33,7 @@ const CustomTable = (
                         onClearSearch = () => {},
                         dispatchFunction=()=>{},
                         onEditNumberInput=()=>{},
+                        selectedData=null,
                         tableType = 'dataTable',
                         paginator = null
                       }
@@ -64,6 +65,10 @@ const CustomTable = (
         setGlobalFilterValue('');  
     };
 
+    useEffect(()=>{ 
+      //console.log(allLocation,selectedLocation)
+      
+  },[selectedData])
   
 
     useEffect(()=>{
@@ -296,19 +301,29 @@ const CustomTable = (
     }
 
     useEffect(()=>{
+      console.log(selectedData)
       let paginationData = {
         page: paginator.page,
         limit: paginator.limit,
         filterData:filtersData,
         globalFilterValue
       }; 
+
+      if (selectedData) {
+        console.log(selectedData)
+        dispatch(dispatchFunction(selectedData))
+        .unwrap()
+        .catch(()=>{ 
+          //console.log(stockData)
+        }) 
+      }else{
       dispatch(dispatchFunction(paginationData))
       .unwrap()
       .catch(()=>{ 
         //console.log(stockData)
-  
       }) 
-    },[paginator.page,paginator.limit])
+    }
+    },[paginator.page,paginator.limit,selectedData])
   
 
     function handelKeyDown(e) {

@@ -1,38 +1,35 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import CustomBreadcrumb from "../../components/CustomBreadcrumb";
 import CustomTable from "../../components/CustomTable";
 import { Text } from '../../components/Text';
 import Loader from '../../components/Loader'
-import {
-    getStocks,
-    changeMode,
-    resetMode,
-    changeSelectedStock,
-    resetSelectedStock,
-    changePage,
-  } from "../../reducers/stocksTableSlice";
-  import { useDispatch, useSelector } from "react-redux";  
 
+import { useDispatch, useSelector } from "react-redux"; 
+import { API_GET_OUTLET } from '../../api/user.service';
+import { getOutlet,changePage, } from '../../reducers/userSlice';
+
+ 
 const itemslist=[{ label: 'Location', url: '/location'  }, ];
 
 const Location = () => {
 
-    const {
-        stockData,
+      const {
+        locationData,
         page,
         limit,
         loading,
-        totalStockCount,
-      } = useSelector((state) => state.stockTable);
-      const { brandNames } = useSelector((state) => state.productTable);
-      
+        totalLocationCount,
+      } = useSelector((state) => state.user);
 
    
     const columns = [
          {field: 'id', header: 'Id',isFilter:false,filterType:'input',filterPlaceholder:"Search by Name"},    
-         {field: 'productName', header: 'Location',isFilter:false,filterPlaceholder:"Search by catogery"},      
-         {field: 'quantity', header: 'User',isFilter:false,filterPlaceholder:"Search by catogery"},     
-         {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
+         {field: 'updatedAt', header: 'Date',isFilter:false, isDate: true,filterPlaceholder:"Search by date",filterType :'date'},
+         {field: 'location', header: 'Location',isFilter:false,filterPlaceholder:"Search by catogery"},      
+         {field: 'name', header: 'Name',isFilter:false,filterPlaceholder:"Search by catogery"},     
+         {field: 'pincode', header: 'Pincode',isFilter:false,filterPlaceholder:"Search by catogery"},     
+        
+        // {field: 'actions', header: 'Actions',isActions:true,actionType:['edit','delete']}, 
  
        ];
 
@@ -48,13 +45,11 @@ const Location = () => {
          <div className="mt-2">
             <CustomTable 
                  tableName={'locationTable'}
-                  data={stockData}
+                  data={locationData}
                   columns={columns}
-                  globalSearch={true}
-                 
-                  dispatchFunction={getStocks}
-                  //onEditNumberInput={onEditNumberInput}
-                  paginator={{page:page,limit:limit,totalRecords:totalStockCount,changePage:changePage}}
+                  globalSearch={true}    
+                  dispatchFunction={getOutlet}
+                  paginator={{page:page,limit:limit,totalRecords:totalLocationCount,changePage:changePage}}
                 />         
          </div>
       </div>
