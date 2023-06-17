@@ -9,14 +9,51 @@ import { useLocation } from "react-router-dom";
 import { SlideBar } from "../SlideBar";
 import { changeSidebarOpenStatus } from "../../reducers/appSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { API_GET_OUTLET, API_GET_USERINOUTLET } from '../../api/user.service';
+import { changeUserLocation, getUserProfile } from '../../reducers/userSlice';
+import { Dropdown } from 'primereact/dropdown'
 
 function Header() {
   const { slidebarOpen } = useSelector((state) => state.application);
+  const {
+    selectedUserLocation,
+    userProfile,
+  } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.authenticate);
+ 
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(getUserProfile(user.id))
+    .unwrap()
+      .then((res) => {
+       
+      })
+      .catch((err) => {
+        
+      });
+  },[])
 
   const handleSlide = () => {
     dispatch(changeSidebarOpenStatus());
   };
+
+  const [allLocation, setAllLocation] = useState([]);
+  useEffect(()=>{
+
+    const getOutlet = async()=>{
+      const __outletData = await API_GET_OUTLET({page:0,limit:100000})
+      setAllLocation(__outletData.rows)
+     // console.log(__outletData,allLocation)
+      __outletData.rows.forEach(ele => {
+         if (ele.id == user.outletId) {
+          dispatch(changeUserLocation(ele))
+         }
+      });
+    }
+    getOutlet()
+
+  },[])
 
   return (
     <div className="relative" style={{ backgroundColor: "#1C738E" }}>
@@ -26,8 +63,20 @@ function Header() {
               <SkaleworkLogo className={`${styles["logo-css"]}`} />
             </div>
 
-          
-            <div className="w-10 flex align-items-center justify-content-end gap-4">
+            <div className="w-full ml-4">
+            <Dropdown
+                    id={''}
+                    disabled={userProfile?.role=='admin'?false:true}
+                    value={selectedUserLocation}
+                    onChange={(e) =>  dispatch(changeUserLocation(e.value))} 
+                    options={allLocation}
+                    optionLabel="location"                
+                    placeholder='Choose Location'
+                    className='w-7'
+                  />
+            </div>
+
+            <div className="w-10 flex align-items-center  gap-4">
               <div className={`${styles["desktop-nav"]}`}>
                 <SbNavbar />
               </div>

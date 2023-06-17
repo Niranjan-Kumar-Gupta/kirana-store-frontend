@@ -34,14 +34,18 @@ import RawMaterialCheckIn from './view/RawMaterial/CheckIn'
 import RawMaterialCheckOut from './view/RawMaterial/CheckOut'
 import User from './view/User'
 import Location from './view/Location'
+import AddLocation from './view/AddLocation'
+import AddUser from './view/AddUser'
 
 
 function App() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
+  let logedUser = 'admin'
 
   useEffect(() => {
+
     const currentPath = location.pathname
     const token = localStorage.getItem('token')
     if (token) {
@@ -94,8 +98,10 @@ function App() {
           />
           <Route path='categories' element={<Categories />} />
           <Route path='userProfile' element={<UserProfile />} />
-          <Route path='user' element={<User/>} />
-          <Route path='location' element={<Location/>} />
+          <Route path='user' element={ logedUser == 'admin' ? <User/> : <p>There's nothing here... </p>} />
+          <Route path='user/new' element={logedUser == 'admin' ? <AddUser /> : <p>There's nothing here... </p>}  />
+          <Route path='location' element={logedUser == 'admin' ? <Location/> : <p>There's nothing here... </p>}  />
+          <Route path='location/new' element={logedUser == 'admin' ? <AddLocation /> : <p>There's nothing here... </p>} />
           {/* <Route path='paymentHistory' element={<PaymentHistory />} /> */}
         </Route>
         <Route index path='login' element={<Login />} />

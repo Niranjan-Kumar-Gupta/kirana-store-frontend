@@ -1,26 +1,5 @@
 import axiosInstance from "./axios.instance";
 
-const API_GET_USER_PROFILE = async (id) => {
-    try {
-        const resp = await axiosInstance.get(`/user/${id}`);
-        return resp.data;
-    } catch (err) {
-        console.log(err)
-        throw err
-    }
-}
-
-const API_ADD_USER = async (data) => {
-  console.log(data)
-  try {
-      const resp = await axiosInstance.post(`/user`,data);
-      return resp.data;
-  } catch (err) {
-      console.log(err)
-      throw err
-  }
-}
-
 
 const API_GET_OUTLET = async (pageNo, limit,filterData,globalFilterValue) => {
     try {
@@ -54,9 +33,8 @@ const API_GET_OUTLET = async (pageNo, limit,filterData,globalFilterValue) => {
 
 
 const API_GET_USERINOUTLET = async (id) => {
-  console.log(id)
     try {
-        const resp = await axiosInstance.get(`/outlet/${id}/users`);
+        const resp = await axiosInstance.get(`/outlet/${id}`);
         return resp.data;
     } catch (err) {
         console.log(err)
@@ -64,4 +42,17 @@ const API_GET_USERINOUTLET = async (id) => {
     }
 }
 
-export { API_GET_USER_PROFILE,API_ADD_USER,API_GET_OUTLET,API_GET_USERINOUTLET };
+const API_ADD_OUTLET = async (data) => {
+  console.log(data)
+  try {
+      const resp = await axiosInstance.post(`/outlet`,data);
+      return resp.data;
+  } catch (err) {
+      console.log(err)
+      throw err
+  }
+}
+
+
+
+export {API_GET_OUTLET,API_GET_USERINOUTLET,API_ADD_OUTLET};

@@ -12,12 +12,13 @@ import { Toast } from "primereact/toast";
 import { Text } from "../../components/Text";
 import VersionTag from "../../config/VersionTag";
 import { useSelector } from "react-redux";
+import { getUserProfile } from "../../reducers/userSlice";
 
 
 
 export const Login = () => {
   
-  const {isLogedIn} = useSelector(state => state.authenticate);
+  const {isLogedIn,user} = useSelector(state => state.authenticate);
   
     
   const toast = useRef();
@@ -56,6 +57,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (isLogedIn) {
+      dispatch(getUserProfile(user.id))
       navigate("/products");
     }
   }, []);

@@ -14,8 +14,8 @@ const navbarItems = [
   { label: "RawMaterial", icon: "rawMaterial", route: "/rawMaterial" },
   // { label: "Production Cards", icon: "category", route: "/productionCards" },
   { label: "Customers", icon: "customer", route: "/customers" },
-  
 ];
+
 Object.freeze(navbarItems);
 
 export const SbNavbar = () => {

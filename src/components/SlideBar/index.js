@@ -10,16 +10,27 @@ import { ReactComponent as  SkaleworkLogo } from "../../assets/svgIcons/Skalewor
 import { useNavigate } from "react-router-dom";
 import VersionTag from "../../config/VersionTag";
 import axiosInstance from "../../api/axios.instance";
+import { useEffect } from "react";
+import { getUserProfile } from "../../reducers/userSlice";
 
 const slideContentTab = [
    { label: "User Profile", route: "/userprofile" },
-   { label: "User", route: "/user" },
-   { label: "Location", route: "/location" },
+   //{ label: "User", route: "/user" },
+   //{ label: "Location", route: "/location" },
 ];
 
 export const SlideBar = () => {
   const navigate=useNavigate();
   const { slidebarOpen } = useSelector((state) => state.application);
+  const { user } = useSelector((state) => state.authenticate);
+  const {
+    selectedUserLocation,
+    userProfile
+  } = useSelector((state) => state.user);
+  
+
+ 
+  
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -37,6 +48,23 @@ export const SlideBar = () => {
         //show toast message from here
       });
   };
+
+  useEffect(()=>{
+    let logedUser = userProfile?.role//'admin'\
+    console.log(logedUser)
+    if (logedUser=='admin') {
+      if (slideContentTab.length<3) {
+        slideContentTab.push(
+          { label: "User", route: "/user" },
+        )
+        slideContentTab.push(
+          { label: "Location", route: "/location" },
+        )
+      }
+    }
+    //console.log('user is........',user)
+  },[userProfile])
+
   const nav=(path)=>{
     navigate(path);
     if(slidebarOpen) dispatch(changeSidebarOpenStatus())

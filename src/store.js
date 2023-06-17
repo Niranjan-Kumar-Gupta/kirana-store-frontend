@@ -18,6 +18,7 @@ import { getDefaultMiddleware } from '@reduxjs/toolkit';
 import rawMaterialSlice from "./reducers/rawMaterialSlice";
 import rawMaterialHistoryTableSlice from "./reducers/rawMaterialHistoryTableSlice";
 import userSlice from "./reducers/userSlice";
+import outletSlice from "./reducers/outletSlice";
 
 const customizedMiddleware = getDefaultMiddleware({
     serializableCheck: false
@@ -42,7 +43,8 @@ const store = configureStore({
         stocksHistoryTable:stocksHistoryTableSlice,
         rawMaterialTable:rawMaterialSlice,
         rawMaterialHistoryTable :rawMaterialHistoryTableSlice,
-        user:userSlice
+        user:userSlice,
+        outletTable:outletSlice
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
