@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../api/axios.instance";
-import {API_GET_USER_PROFILE ,API_GET_USERINOUTLET,API_ADD_USER} from "../api/user.service";
+import {API_GET_USER_PROFILE ,API_GET_USERINOUTLET,API_ADD_USER, API_DELETE_USER, API_PUT_USER} from "../api/user.service";
+
+import {
+  removeDeleteData,
+} from "../utils/tableUtils";
+
 
 const initialState = {
   loading: false,
@@ -8,6 +13,7 @@ const initialState = {
   usersInOutletData:[],
   selectedUserLocation:null,
   totalUserOutletCount:0,
+  selectedUser:null,
   page: 0,
   limit: 10,
   mode: null,
@@ -17,6 +23,19 @@ const initialState = {
 
 export const getUserProfile = createAsyncThunk(
     "user/userProfile",
+    async (id, thunkAPI) => {
+      try {
+        const data = await API_GET_USER_PROFILE(id);
+        return data;
+      }
+      catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data)
+      }
+    }
+  );
+  
+  export const getUserById = createAsyncThunk(
+    "user/getUserById",
     async (id, thunkAPI) => {
       try {
         const data = await API_GET_USER_PROFILE(id);
@@ -56,6 +75,32 @@ export const getUserProfile = createAsyncThunk(
     }
   );
 
+
+  export const deleteUser = createAsyncThunk(
+    "user/deleteUser",
+    async ( data, thunkAPI) => {
+      try {
+        const outlet = await  API_DELETE_USER(data);
+        return outlet;
+      } catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data)
+      }
+    }
+  );
+  
+  export const updateUser = createAsyncThunk(
+    "user/updateUser",
+    async ( data, thunkAPI) => {
+      try {
+        const stocks = await API_PUT_USER(data);
+        return stocks;
+      } catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data)
+      }
+    } 
+  );
+  
+
 const userSlice = createSlice({
   name: "userTable",
   initialState,
@@ -74,12 +119,16 @@ const userSlice = createSlice({
       console.log(action)
       state.selectedUserLocation = action.payload
     },
+    changeSelectedUser(state, action) {
+      console.log(action)
+      state.selectedUser = action.payload
+    },
   },
 
   extraReducers: (builder) => {
 
     builder.addCase( getUserProfile.fulfilled, (state, action) => {
-      console.log(action.payload)
+     // console.log(action.payload)
       state.userProfile = action.payload;
       state.loading = false;
     });
@@ -91,6 +140,18 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
+    builder.addCase( getUserById.fulfilled, (state, action) => {     
+      console.log(action.payload)
+      state.selectedUser = action.payload;
+      state.loading = false;
+    });
+    builder.addCase( getUserById.pending, (state) => {
+      state.loading = true
+      ;
+    });
+    builder.addCase( getUserById.rejected, (state) => {
+      state.loading = false;
+    });
 
     builder.addCase( usersInOutlet.fulfilled, (state, action) => {
       console.log(action.payload)
@@ -125,6 +186,34 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
+      //delete user
+
+      builder.addCase(deleteUser.fulfilled, (state, action) => {
+        state.usersInOutletData = removeDeleteData(state.usersInOutletData, action.payload.id);
+        state.totalUserOutletCount -= 1;
+        state.loading = false
+        state.mode =  null
+        state.toastAction = 'delete'
+      });
+  
+      builder.addCase(deleteUser.pending, (state) => {
+        state.loading = true
+        ;
+      });
+      builder.addCase(deleteUser.rejected, (state) => {
+        state.loading = false;
+      });
+
+      builder.addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+      });
+      builder.addCase(updateUser.pending, (state) => {
+        state.loading = true;
+      });
+      builder.addCase(updateUser.rejected, (state) => {
+        state.loading = false;
+      });
+
   },
 });
 
@@ -132,7 +221,8 @@ export const {
   changeMode,
   resetMode,
   changePage,
-  changeUserLocation
+  changeUserLocation,
+  changeSelectedUser
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -15,15 +15,17 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { DeleteAlert } from '../../components/Alert/DeleteAlert'
 import { InputText } from 'primereact/inputtext'
 import { API_GET_OUTLET} from '../../api/user.service';
-import { addUser } from '../../reducers/userSlice'
+import { addUser, getUserById, updateUser } from '../../reducers/userSlice'
 
 
 const AddUser = () => {
   
   const toast = useRef(null)
+  const { id } = useParams()
   const {
    mode,
-   selectedUserLocation
+   selectedUserLocation,
+   selectedUser
   } = useSelector((state) => state.user);
 
 
@@ -36,16 +38,17 @@ const AddUser = () => {
   const [selectedLocation, setSelectedLocation] = useState('New York');
   const [allLocation, setAllLocation] = useState([]);
 
-  // useEffect(()=>{
-  //   const getOutlet = async()=>{
-  //     const __outletData = await API_GET_OUTLET({page:0,limit:100000})
-  //     setAllLocation(__outletData.rows)
-  //     console.log(allLocation)
-  //   }
-  //   getOutlet()
-
-  // },[])
-
+  
+  const deleteModule = () => {
+    return (
+      <DeleteAlert
+        item='location'
+        displayAlertDelete={displayAlertDelete}
+        setDisplayAlertDelete={setDisplayAlertDelete}
+        toast={toast}
+      />
+    )
+  }
 
   const defaultValues = {
     userName: '',
@@ -63,8 +66,19 @@ const AddUser = () => {
   } = useForm({ defaultValues })
 
   useEffect(()=>{
-    console.log(mode)
-   },[])
+    if (id) {
+      dispatch(getUserById(id)).unwrap().then().catch()
+    }
+  },[])
+  
+  useEffect(() => {
+    console.log(selectedUser,mode)
+    if (mode === 'update' && selectedUser) {
+      setValue('userName', selectedUser.userName)
+      setValue('phone', selectedUser.phone) 
+      setValue('email', selectedUser.email)     
+    }
+  }, [selectedUser])
  
    const onSubmit = (data) => {
      console.log(data)
@@ -74,6 +88,17 @@ const AddUser = () => {
       outletId:selectedUserLocation?.id
      }
 
+     if (mode=='update') {
+      dispatch(updateUser({id:id,data:__data}))
+      .unwrap()
+      .then((res) => {
+        navigate('/user')
+      })
+      .catch((err) => {
+        toast.current.show({ severity: 'error', detail: err.message })
+      })
+    }else{
+
      dispatch(addUser(__data))
     .unwrap()
     .then((res) => {
@@ -82,6 +107,8 @@ const AddUser = () => {
     .catch((err) => {
       toast.current.show({ severity: 'error', detail: err.message })
     })
+    }
+
    }
   
    const getFormErrorMessage = (name) => {

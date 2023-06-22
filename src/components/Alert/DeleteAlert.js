@@ -17,6 +17,9 @@ import { deleteOrder, resetSelectedOrder, resetToastActionOrder } from "../../re
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteRawMaterial } from "../../reducers/rawMaterialSlice";
 import { deleteRawMaterialHistory, resetToastActionRaw } from "../../reducers/rawMaterialHistoryTableSlice";
+import { deleteOutlet } from "../../reducers/outletSlice";
+import { deleteUser } from "../../reducers/userSlice";
+
 export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, toast }) => {
    const { selectedCustomer } = useSelector(state => state.customerTable);
    const { selectedCategory, page, limit } = useSelector(state => state.categoryTable);
@@ -24,10 +27,14 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
   const { selectedOrder } = useSelector(state => state.orderTable);
   const { selectedRawMaterial } = useSelector(state => state.rawMaterialTable)
   const { selectedRawMaterialHistory } = useSelector(state => state.rawMaterialHistoryTable)
-    
+  const { selectedUser } = useSelector((state) => state.user);
+  
   const {
     selectedStockHistory,
   } = useSelector((state) => state.stocksHistoryTable);
+  const {
+    selectedLocation
+  } = useSelector((state) => state.outletTable);
 
  const dispatch = useDispatch();
  const navigate = useNavigate()
@@ -152,6 +159,40 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
       })
   } 
 
+  const  deleteLocationItem = () =>{
+    dispatch(deleteOutlet(selectedLocation.id))
+      .unwrap()
+      .then(res => {
+        if (onDetailsPage()) {
+          navigate('/location')
+        } else {
+          dispatch(resetToastActionRaw());
+        }
+        let Message_Success = 'Location Successfully Deleted';
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        toast.current.show({ severity: 'error', detail: err.message });
+      })
+  }
+  
+  
+  const  deleteUserItem = () =>{
+    dispatch(deleteUser(selectedUser.id))
+      .unwrap()
+      .then(res => {
+        if (onDetailsPage()) {
+          navigate('/user')
+        } else {
+          dispatch(resetToastActionRaw());
+        }
+        let Message_Success = 'User Successfully Deleted';
+        toast.current.show({ severity: 'success', detail: Message_Success });
+      })
+      .catch(err => {
+        toast.current.show({ severity: 'error', detail: err.message });
+      })
+  }
   
 
 
@@ -199,6 +240,12 @@ export const DeleteAlert = ({ item, displayAlertDelete, setDisplayAlertDelete, t
         break;
       case "rawMaterialHistory":
         deleteRawMaterialHistoryItem()
+        break;
+      case "location":
+        deleteLocationItem()
+        break;
+      case "user":
+        deleteUserItem()
         break;
     }
     onHide();

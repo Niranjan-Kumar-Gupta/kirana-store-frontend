@@ -15,13 +15,15 @@ import CustomBreadcrumb from '../../components/CustomBreadcrumb'
 import { useNavigate, useParams } from 'react-router-dom'
 import { DeleteAlert } from '../../components/Alert/DeleteAlert'
 import { InputText } from 'primereact/inputtext'
-import { addOutlet } from '../../reducers/outletSlice';
+import { addOutlet, getOutletbyid, updateOutlet } from '../../reducers/outletSlice';
 
 const AddLocation = () => {
 
+  const { id } = useParams()
   const toast = useRef(null)
   const {
    mode,
+   selectedLocation
   } = useSelector((state) => state.outletTable);
 
   const navigate = useNavigate()
@@ -58,8 +60,18 @@ const AddLocation = () => {
 
 
   useEffect(()=>{
-   console.log(mode)
+    if (id) {
+      dispatch(getOutletbyid({ id })).unwrap().then().catch()
+    }
   },[])
+
+  useEffect(() => {
+    //console.log(mode,selectedLocation)
+    if (mode === 'update' && selectedLocation) {
+      setValue('locationName', selectedLocation.name)
+      setValue('pincode', selectedLocation.pincode)    
+    }
+  }, [selectedLocation])
 
   const onSubmit = (data) => {
     const __data = {}
@@ -67,6 +79,16 @@ const AddLocation = () => {
     __data['location'] = data.locationName
     __data['pincode'] = data.pincode
     console.log(data)
+    if (mode=='update') {
+      dispatch(updateOutlet({id:id,data:__data}))
+      .unwrap()
+      .then((res) => {
+        navigate('/location')
+      })
+      .catch((err) => {
+        toast.current.show({ severity: 'error', detail: err.message })
+      })
+    }else{
     dispatch(addOutlet(__data))
     .unwrap()
     .then((res) => {
@@ -75,6 +97,7 @@ const AddLocation = () => {
     .catch((err) => {
       toast.current.show({ severity: 'error', detail: err.message })
     })
+   }
   }
 
   
@@ -91,6 +114,7 @@ const AddLocation = () => {
     <>
     <div className='w-11 m-auto mb-6'>
       <Toast ref={toast} />
+      {displayAlertDelete && deleteModule()}
       <div
         className={`block md:flex md:justify-content-center pt-3 ${style.stickySubNav}`}
       >

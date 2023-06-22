@@ -15,6 +15,7 @@ import { Toast } from 'primereact/toast'
 import { ReactComponent as Delete } from '../../svg/delete.svg'
 import './style.css'
 import { getUserProfile } from "../../reducers/userSlice";
+import ChangePassword from "../../components/ChangePassword";
 
 const itemslist=[{ label: 'User Profile', url: '/userprofile'  }, ];
 const UserProfile = () => {
@@ -25,6 +26,8 @@ const UserProfile = () => {
     selectedUserLocation,
     userProfile
   } = useSelector((state) => state.user);
+  const [showChangePassword, setChangeShowPassword] = useState(false);
+
   
   const dispatch = useDispatch();
   
@@ -82,12 +85,22 @@ const UserProfile = () => {
   const onSubmit = async (data) => {
    
   }
+  const handelChangePassword = ()=>{
+    setChangeShowPassword(true)
+  }
 
   console.log(user)
   return (
-    
+     
       <div className="w-11 pt-3 m-auto">
         <Toast ref={toast} />
+        {showChangePassword && (
+          <ChangePassword
+            showChangePassword={showChangePassword}
+            hideChangePassword={() => setChangeShowPassword(false)}
+            toast={toast}
+          />
+        )}
         <div
         className={`block md:flex md:justify-content-center pt-3`}
         >
@@ -112,14 +125,13 @@ const UserProfile = () => {
               <CustomButton
                 varient='filled'
                 type={mode ? 'submit' : ''}
-                onClick={handelmode}
+                onClick={handelChangePassword}
                 label={'Change Password'}
               />
             </div>
           </div>
         </div>
       </div>
-
   
         <div className={`xl:flex lg:flex lg:w-10 md:w-8 sm:justify-content-between align-items-center pb-3 m-auto pb-8`}>
           <div className={`w-12 xl:w-6 lg:w-6 `}>
@@ -151,8 +163,7 @@ const UserProfile = () => {
                   />
                   {getFormErrorMessage('Enter User Name')}
               </div>
-             
-             
+                        
               <div className='field'>
                 <label
                   htmlFor='phone'

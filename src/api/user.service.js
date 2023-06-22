@@ -52,6 +52,25 @@ const API_GET_OUTLET = async (pageNo, limit,filterData,globalFilterValue) => {
     }
   };
 
+  
+const API_DELETE_USER = async (ID) => {
+  try {
+    const resp = await axiosInstance.delete(`/user/${ID}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const API_PUT_USER =  async (__data) => {
+  try {
+    const resp = await axiosInstance.put(`/user/${__data.id}`, __data.data); 
+    return resp;
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 const API_GET_USERINOUTLET = async (id) => {
   console.log(id)
@@ -63,5 +82,14 @@ const API_GET_USERINOUTLET = async (id) => {
         throw err
     }
 }
+const API_CHANGE_PASSWORD = async ( configData) =>{
+  try {
+    const resp = await axiosInstance.put(`/user/resetpassword`,configData);
+    return resp
+  } catch (error) {
+    throw error
+  }
+}
 
-export { API_GET_USER_PROFILE,API_ADD_USER,API_GET_OUTLET,API_GET_USERINOUTLET };
+
+export { API_GET_USER_PROFILE,API_ADD_USER,API_GET_OUTLET,API_GET_USERINOUTLET,API_DELETE_USER,API_PUT_USER,API_CHANGE_PASSWORD };

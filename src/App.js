@@ -100,8 +100,12 @@ function App() {
           <Route path='userProfile' element={<UserProfile />} />
           <Route path='user' element={ logedUser == 'admin' ? <User/> : <p>There's nothing here... </p>} />
           <Route path='user/new' element={logedUser == 'admin' ? <AddUser /> : <p>There's nothing here... </p>}  />
+          <Route path='user/:id' element={logedUser == 'admin' ? <AddUser /> : <p>There's nothing here... </p>}  />
+         
           <Route path='location' element={logedUser == 'admin' ? <Location/> : <p>There's nothing here... </p>}  />
           <Route path='location/new' element={logedUser == 'admin' ? <AddLocation /> : <p>There's nothing here... </p>} />
+          <Route path='location/:id' element={logedUser == 'admin' ? <AddLocation /> : <p>There's nothing here... </p>} />
+         
           {/* <Route path='paymentHistory' element={<PaymentHistory />} /> */}
         </Route>
         <Route index path='login' element={<Login />} />
